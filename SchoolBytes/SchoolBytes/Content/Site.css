@@ -1,8 +1,8 @@
 ﻿/* Set padding to keep content from hitting the edges */
 .body-content {
-    margin-top: 15px;
     padding-left: 15px;
     padding-right: 15px;
+    background-color: #eaeaea
 }
 
 /* Override the default bootstrap behavior where horizontal description lists 
@@ -17,4 +17,43 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+/* Wrapper for the entire page */
+.page-wrapper {
+    display: flex;
+    max-width: 1350px; /* Adjust as needed */
+    margin: 0 auto;
+    align-items: flex-start;
+}
+
+/* Main content area (navbar, main content, and footer) */
+.main-content {
+    flex: 1; /* Allow the main content to take the remaining space */
+}
+
+/* Empty columns on each side with a fixed width */
+.column {
+    width: 40px; /* Set to a specific width as desired */
+}
+
+/* Footer styling */
+footer {
+    text-align: center;
+    color: white;
+    padding: 10px 0;
+    background-color: #40484f; /* Optional */
+    /*margin-top: 20px;*/
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .column {
+        display: none; /* Hide columns on smaller screens */
+    }
+
+    .page-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
 }
