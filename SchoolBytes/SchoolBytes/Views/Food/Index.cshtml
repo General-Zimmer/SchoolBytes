@@ -1,0 +1,37 @@
+﻿@model FoodModule
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <h1>Opret et madhold</h1>
+    <div>
+        @using (Html.BeginForm("CreateFoodModule", "Food", new { fm = @Model }))
+        {
+            @Html.EditorForModel()
+
+            <br />
+            @Html.LabelFor(fm => fm.Course)
+            @Html.DisplayFor(fm => fm.Course)
+            //@Html.DropDownList("course")
+
+            <br />
+            //@Html.LabelFor(fm => fm.Teacher)
+            //@Html.DropDownList("teacher")
+
+            <br />
+            <input type="submit" value="Opret" />
+        }
+
+    </div>
+</body>
+</html>
