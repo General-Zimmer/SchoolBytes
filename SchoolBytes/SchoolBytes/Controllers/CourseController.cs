@@ -9,14 +9,14 @@ namespace SchoolBytes
     public class CourseController : Controller
     {
         private List<Course> courses = new List<Course>();
-        
+
         //Initial test data
         public void testData()
         {
             Teacher teacher1 = new Teacher { Name = "John Doe" };
             Participant participant1 = new Participant { Name = "Alice" };
             Participant participant2 = new Participant { Name = "Bob" };
-            
+
             Course course1 = new Course(
                 "Math 101",
                 "An introductory course to basic math concepts",
@@ -26,7 +26,7 @@ namespace SchoolBytes
             );
             course1.Participants.Add(participant1);
             course1.Participants.Add(participant2);
-            
+
             Course course2 = new Course(
                 "Science 101",
                 "A foundational course in basic scientific principles",
@@ -34,7 +34,7 @@ namespace SchoolBytes
                 DateTime.Now.AddMonths(1).AddDays(1),
                 25
             );
-            courses.Add(course1); 
+            courses.Add(course1);
             courses.Add(course2);
         }
 
@@ -46,7 +46,7 @@ namespace SchoolBytes
             return View(course);
         }
 
-		// GET: Course
+        // GET: Course
         public ActionResult Index()
         {
             return View(courses);
@@ -61,6 +61,7 @@ namespace SchoolBytes
             {
                 return HttpNotFound("Course not found");
             }
+
             return View(course);
         }
 
@@ -73,22 +74,29 @@ namespace SchoolBytes
             {
                 return HttpNotFound("Course not found");
             }
-            
+
             course.Name = updatedCourse.Name;
             course.Description = updatedCourse.Description;
             course.StartDate = updatedCourse.StartDate;
             course.EndDate = updatedCourse.EndDate;
             course.maxCapacity = updatedCourse.MaxCapacity;
-                
+
             return View(course);
         }
 
-		// DELETE: api/Course/{id} (Remove course)
+        // DELETE: api/Course/{id} (Remove course)
         [HttpDelete]
         public ActionResult DeleteCourse(Course course)
         {
             courses.Remove(course);
             return View();
         }
+
+        public ActionResult CourseOverview(int? selectedCourseId = null)
+        {
+            ViewBag.SelectedCourseId = selectedCourseId;
+            return View(courses);
+        }
+    }
         
  

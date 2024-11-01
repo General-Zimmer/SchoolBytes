@@ -6,6 +6,36 @@
 <h2>Hold oversigt</h2>
 
 <form asp-action="CreateCourse">
+    <div>
+        <label for="Name">Kursusnavn:</label>
+        <input type="text" id="Name" name="Name" required />
+    </div>
+
+    <div>
+        <label for="Description">Beskrivelse:</label>
+        <textarea id="Description" name="Description" required></textarea>
+    </div>
+
+    <div>
+        <label for="Teacher">Lærer:</label>
+        <input type="text" id="Teacher" name="Teacher.Name" required />
+    </div>
+
+    <div>
+        <label for="StartDate">Startdato:</label>
+        <input type="date" id="StartDate" name="StartDate" required />
+    </div>
+
+    <div>
+        <label for="EndDate">Slutdato:</label>
+        <input type="date" id="EndDate" name="EndDate" required />
+    </div>
+
+    <div>
+        <label for="MaxCapacity">Maksimal kapacitet:</label>
+        <input type="number" id="MaxCapacity" name="MaxCapacity" min="1" required />
+    </div>
+
     <button type="submit">Opret nyt hold</button>
 </form>
 
@@ -30,13 +60,13 @@
                     <p><b>Beskrivelse:</b> @course.Description</p>
                     <p><b>Maksimum antal deltagere:</b> @course.MaxCapacity</p>
 
-                    <form asp-action="EditCourse" method="post">
-                        <input type="hidden" name="courseId" value="@course.Id" />
+                    <form asp-action="UpdateCourse" method="post">
+                        <input type="hidden" name="Id" value="@course.Id" />
                         <button type="submit">Rediger hold</button>
                     </form>
 
                     <form asp-action="DeleteCourse" method="post">
-                        <input type="hidden" name="courseId" value="@course.Id" />
+                        <input type="hidden" name="Id" value="@course.Id" />
                         <button type="submit">Slet hold</button>
                     </form>
                 </div>
