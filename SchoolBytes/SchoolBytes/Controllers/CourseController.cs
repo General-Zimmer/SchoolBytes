@@ -8,23 +8,15 @@ namespace SchoolBytes.Controllers
 {
     public class CourseController : Controller
     {
-
         private List<Course> courses = new List<Course>();
-
-        // GET: Course
-        public ActionResult Index()
-        {
-            return View();
-        }
-
+        
+        //Initial test data
         public void testData()
         {
-            //Test kodning
             Teacher teacher1 = new Teacher { Name = "John Doe" };
             Participant participant1 = new Participant { Name = "Alice" };
             Participant participant2 = new Participant { Name = "Bob" };
-
-            // Creating the first course
+            
             Course course1 = new Course(
                 "Math 101",
                 "An introductory course to basic math concepts",
@@ -34,8 +26,7 @@ namespace SchoolBytes.Controllers
             );
             course1.Participants.Add(participant1);
             course1.Participants.Add(participant2);
-
-            // Creating the second course
+            
             Course course2 = new Course(
                 "Science 101",
                 "A foundational course in basic scientific principles",
@@ -43,58 +34,61 @@ namespace SchoolBytes.Controllers
                 DateTime.Now.AddMonths(1).AddDays(1),
                 25
             );
-
-            // Create a list of courses
             courses.Add(course1); 
             courses.Add(course2);
         }
 
-
-        //CRUD METODER
-
-
-
+        // POST: api/Course (Add new course)
         [HttpPost]
-        public ActionResult addCourse(Course course)
+        public ActionResult AddCourse(Course course)
         {
             courses.Add(course);
-
             return View(course);
         }
 
-        [HttpDelete]
-        public ActionResult removeCourse(Course course)
+		// GET: Course
+        public ActionResult Index()
         {
-            courses.Remove(course);
-
-            return View();
+            return View(courses);
         }
 
-        [Route("hold/{id}")]
-        public ActionResult getCourse(string id)
+        // GET: api/Course/{id} (Get course by ID)
+        [Route("course/{id}")]
+        public ActionResult GetCourse(string id)
         {
             var course = courses.SingleOrDefault(c => c.id == id);
-
-            return View(course);
-        }
-
-        [HttpPost]
-        public ActionResult updateCourse(string id, Course updatedCourse)
-        {
-            //FIND EKSISTERENDE HOLD
-            var course = courses.SingleOrDefault(c => c.id == updatedCourse.id);
-
-            if (course != null)
+            if (course == null)
             {
-                course.Name = updatedCourse.Name;
-                course.Description = updatedCourse.Description;
-                course.StartDate = updatedCourse.StartDate;
-                course.EndDate = updatedCourse.EndDate;
-                course.maxCapacity = updatedCourse.MaxCapacity;
-            } 
-
+                return HttpNotFound("Course not found");
+            }
             return View(course);
         }
 
+        // POST: api/Course/{id} (Update course)
+        [HttpPost]
+        public ActionResult UpdateCourse(string id, Course updatedCourse)
+        {
+            var course = courses.SingleOrDefault(c => c.id == updatedCourse.id);
+            if (course == null)
+            {
+                return HttpNotFound("Course not found");
+            }
+            
+            course.Name = updatedCourse.Name;
+            course.Description = updatedCourse.Description;
+            course.StartDate = updatedCourse.StartDate;
+            course.EndDate = updatedCourse.EndDate;
+            course.maxCapacity = updatedCourse.MaxCapacity;
+                
+            return View(course);
+        }
+
+		// DELETE: api/Course/{id} (Remove course)
+        [HttpDelete]
+        public ActionResult RemoveCourse(Course course)
+        {
+            courses.Remove(course);
+            return View();
+        }
     }
 }
