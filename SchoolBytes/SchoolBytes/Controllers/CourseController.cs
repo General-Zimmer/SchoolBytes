@@ -58,33 +58,32 @@ namespace SchoolBytes
 
         // GET: api/Course/{id} (Get course by ID)
         [Route("course/{id}")]
-        public ActionResult GetCourse(string id)
+        public ActionResult GetCourse(int id)
         {
-            var course = courses.SingleOrDefault(c => c.id == id);
+            var course = courses.SingleOrDefault(c => c.Id == id);
             if (course == null)
             {
                 return HttpNotFound("Course not found");
             }
-
             return View(course);
         }
 
         // POST: api/Course/{id} (Update course)
         [HttpPost]
-        public ActionResult UpdateCourse(string id, Course updatedCourse)
+        public ActionResult UpdateCourse(Int id, Course updatedCourse)
         {
-            var course = courses.SingleOrDefault(c => c.id == updatedCourse.id);
-            if (course == null)
+            var course = courses.SingleOrDefault(c => c.Id == updatedCourse.id);
+            if (ModelState.IsValid)
             {
-                return HttpNotFound("Course not found");
+                course.Name = updatedCourse.Name;
+                course.Description = updatedCourse.Description;
+                course.StartDate = updatedCourse.StartDate;
+                course.EndDate = updatedCourse.EndDate;
+                course.maxCapacity = updatedCourse.MaxCapacity;
+                
+                return RedirectToAction("Index");
             }
-
-            course.Name = updatedCourse.Name;
-            course.Description = updatedCourse.Description;
-            course.StartDate = updatedCourse.StartDate;
-            course.EndDate = updatedCourse.EndDate;
-            course.maxCapacity = updatedCourse.MaxCapacity;
-
+            
             return View(course);
         }
 
@@ -98,7 +97,7 @@ namespace SchoolBytes
 
         public ActionResult CourseOverview(int? selectedCourseId = null)
         {
-
+            testData();
             ViewBag.SelectedCourseId = selectedCourseId;
             return View(courses);
         }
