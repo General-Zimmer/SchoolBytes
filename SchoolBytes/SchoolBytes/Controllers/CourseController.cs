@@ -94,6 +94,7 @@ namespace SchoolBytes
 
         public ActionResult CourseOverview(int? selectedCourseId = null)
         {
+
             ViewBag.SelectedCourseId = selectedCourseId;
             return View(courses);
         }
