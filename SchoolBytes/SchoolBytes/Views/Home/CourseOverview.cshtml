@@ -1,0 +1,46 @@
+﻿@model List<Course>
+@{
+    int? selectedCourseId = ViewBag.SelectedCourseId as int?;
+}
+
+<h2>Hold oversigt</h2>
+
+<form asp-action="CreateCourse">
+    <button type="submit">Opret nyt hold</button>
+</form>
+
+<ul id="courseList">
+    @foreach (var course in Model)
+    {
+        <li>
+            <div>
+                <form asp-action="CourseOverview" method="get">
+                    <input type="hidden" name="selectedCourseId" value="@course.Id" />
+                    @course.Name <button type="submit">&#9660;</button> <!-- down arrow -->
+                </form>
+            </div>
+
+            @if (selectedCourseId == course.Id)
+            {
+                <div class="course-details">
+                    <h4>@course.Name</h4>
+                    <p><b>Underviser:</b> @course.Teacher.Name</p>
+                    <p><b>Start:</b> @course.StartDate.ToString("dd-MM-yyyy")</p>
+                    <p><b>Slut:</b> @course.EndDate.ToString("dd-MM-yyyy")</p>
+                    <p><b>Beskrivelse:</b> @course.Description</p>
+                    <p><b>Maksimum antal deltagere:</b> @course.MaxCapacity</p>
+
+                    <form asp-action="EditCourse" method="post">
+                        <input type="hidden" name="courseId" value="@course.Id" />
+                        <button type="submit">Rediger hold</button>
+                    </form>
+
+                    <form asp-action="DeleteCourse" method="post">
+                        <input type="hidden" name="courseId" value="@course.Id" />
+                        <button type="submit">Slet hold</button>
+                    </form>
+                </div>
+            }
+        </li>
+    }
+</ul>

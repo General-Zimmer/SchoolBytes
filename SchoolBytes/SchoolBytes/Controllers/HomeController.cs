@@ -26,5 +26,20 @@ namespace SchoolBytes.Controllers
 
             return View();
         }
+
+        public ActionResult CourseOverview(int? selectedCourseId = null)
+        {
+            var courses = new List<Course>
+            {
+                new Course { Name = "Holdnavn 1", Description = "Description for Holdnavn 1",
+                    Teacher = new Teacher { Name = "Underviser 1" }, StartDate = DateTime.Today, EndDate = DateTime.Today.AddDays(30), MaxCapacity = 25, Id = 1 },
+                new Course { Name = "Holdnavn 2", Description = "Description for Holdnavn 2",
+            Teacher = new Teacher { Name = "Underviser 2" }, StartDate = DateTime.Today.AddDays(1), EndDate = DateTime.Today.AddDays(60), MaxCapacity = 10, Id = 2 }
+            };
+
+            ViewBag.SelectedCourseId = selectedCourseId;
+            
+            return View(courses);
+        }
     }
 }
