@@ -23,14 +23,17 @@ public class Course
         MaxCapacity = maxCapacity;
         Id = id;
     }
+    
      // +Teacher
-    public Course(string name, string description, Teacher teacher, DateTime startDate, DateTime endDate, int maxCapacity)
+    public Course(string name, string description, Teacher teacher, DateTime startDate, DateTime endDate, int maxCapacity, int id)
     {
         Name = name;
         Description = description;
         StartDate = startDate;
         EndDate = endDate;
         MaxCapacity = maxCapacity;
+        Id = id;
+        Teacher = teacher;
     }
 
 }

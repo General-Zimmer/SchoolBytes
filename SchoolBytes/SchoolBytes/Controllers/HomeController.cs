@@ -1,30 +1,109 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
-namespace SchoolBytes.Controllers
+namespace SchoolBytes
 {
-    public class HomeController : Controller
+    public class CourseController : Controller
     {
+        private List<Course> courses = new List<Course>();
+
+        //Initial test data
+        public void testData()
+        {
+            var teacher1 = new Teacher { Name = "John Doe" };
+            var participant1 = new Participant { Name = "Alice" };
+            var participant2 = new Participant { Name = "Bob" };
+
+            var course1 = new Course(
+                "Science 101",
+                "A foundational course in basic scientific principles",
+                teacher1,
+                DateTime.Now,
+                DateTime.Now.AddMonths(1).AddDays(1),
+                25,
+                1
+            );
+            course1.Participants.Add(participant1);
+            course1.Participants.Add(participant2);
+
+            var course2 = new Course(
+                "Math 101",
+                "A foundational course in basic math principles",
+                teacher1,
+                DateTime.Now.AddDays(1),
+                DateTime.Now.AddMonths(1).AddDays(1),
+                25,
+                2
+
+            );
+            courses.Add(course1);
+            courses.Add(course2);
+        }
+
+        // POST: api/Course (Add new course)
+        [HttpPost]
+        public ActionResult AddCourse(Course course)
+        {
+            courses.Add(course);
+            return View(course);
+        }
+
+        // GET: Course
         public ActionResult Index()
         {
+            return View(courses);
+        }
+
+        // GET: api/Course/{id} (Get course by ID)
+        [Route("course/{id}")]
+        public ActionResult GetCourse(int id)
+        {
+            var course = courses.SingleOrDefault(c => c.Id == id);
+            if (course == null)
+            {
+                return HttpNotFound("Course not found");
+            }
+
+            return View(course);
+        }
+
+        // POST: api/Course/{id} (Update course)
+        [HttpPost]
+        public ActionResult UpdateCourse(int id, Course updatedCourse)
+        {
+            var course = courses.SingleOrDefault(c => c.Id == updatedCourse.Id);
+
+            if (ModelState.IsValid)
+            {
+                course.Name = updatedCourse.Name;
+                course.Description = updatedCourse.Description;
+                course.StartDate = updatedCourse.StartDate;
+                course.EndDate = updatedCourse.EndDate;
+                course.MaxCapacity = updatedCourse.MaxCapacity;
+
+                return RedirectToAction("Index");
+            }
+
+            return View(course);
+        }
+
+        // DELETE: api/Course/{id} (Remove course)
+        [HttpDelete]
+        public ActionResult DeleteCourse(Course course)
+        {
+            courses.Remove(course);
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult CourseOverview(int? selectedCourseId = null)
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            testData();
+            ViewBag.SelectedCourseId = selectedCourseId;
+            return View(courses);
         }
     }
 }
+        
+ 
