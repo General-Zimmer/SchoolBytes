@@ -10,6 +10,19 @@ namespace SchoolBytes.Controllers
     {
         public ActionResult Index()
         {
+            //Replace this with an actual list of the events we wish to show (modules)
+            var currentEvents = new List<object>();
+
+            List<object> calenderList = new List<object>();
+            foreach (var e in currentEvents)
+            {
+                //dynamic newEvent = new { Description = e.Description, calendar = e.Title, date = e.Date.ToString("yyyy-MM-dd"), color = "orange", route = e.Id.ToString() };
+               // calenderList.Add(newEvent);
+            }
+            //static test variable
+            calenderList.Add(new { Description = "Test", calendar = "Test", date = DateTime.Now.ToString("yyyy-MM-dd"), color = "orange", route = "1" });
+            ViewBag.CalenderEvents = calenderList.ToArray();
+
             return View();
         }
 
