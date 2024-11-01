@@ -8,32 +8,47 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
-        <div class="container">
-            @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
+    <div class="page-wrapper">
+        <div class="column"></div> <!-- Empty left column -->
+        <!-- Main Content Container -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm" style="background-color: #FFFFF0;">
+                <div class="container d-flex">
+                    <a href="/" class="navbar-brand">
+                        <img src="~/Resources/Images/Kompetencehuset_Logo.png" width="150" height="50" />
+                    </a>
+                    <!-- Collapsible navbar links -->
+                    <div class="collapse navbar-collapse justify-content-end">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">@Html.ActionLink("Hold", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li class="nav-item">@Html.ActionLink("Information", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li class="nav-item">@Html.ActionLink("Kontakt", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+            <!-- Body content -->
+            <div class="container body-content">
+                @RenderBody() <!-- This will render the main content of your pages -->
+                <!--<hr /> fjernet denne for at efterligne originalside så meget som muligt-->
+            </div>
+
+            <!-- Footer -->
+            <footer>
+                <p>&copy; 2024</p>
+
+                <h5>Kompetencehuset</h5>
+                <p>Søren Frichs Vej 40 D, 8230 Åbyhøj</p>
+                <p>E-mail: info@kompetencehuset.com</p>
+                <p>Telefon 86 15 96 99</p>
+            </footer>
+            <div class="column"></div> <!-- Empty right column -->
+        </div>
+
+            @Scripts.Render("~/bundles/jquery")
+            @Scripts.Render("~/bundles/bootstrap")
+            @RenderSection("scripts", required: false)
 </body>
 </html>
