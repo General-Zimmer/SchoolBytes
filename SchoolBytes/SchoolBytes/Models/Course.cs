@@ -14,7 +14,17 @@ public class Course
     public int MaxCapacity { get; set; }
     public int Id { get; set; }
 
-    public Course(string name, string description, DateTime startDate, DateTime endDate, int maxCapacity)
+    public Course(string name, string description, DateTime startDate, DateTime endDate, int maxCapacity, int id)
+    {
+        Name = name;
+        Description = description;
+        StartDate = startDate;
+        EndDate = endDate;
+        MaxCapacity = maxCapacity;
+        Id = id;
+    }
+     // +Teacher
+    public Course(string name, string description, Teacher teacher, DateTime startDate, DateTime endDate, int maxCapacity)
     {
         Name = name;
         Description = description;

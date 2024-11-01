@@ -22,7 +22,9 @@ namespace SchoolBytes
                 "An introductory course to basic math concepts",
                 DateTime.Now,
                 DateTime.Now.AddMonths(1),
-                30
+                30,
+				Teacher2,
+				1
             );
             course1.Participants.Add(participant1);
             course1.Participants.Add(participant2);
@@ -32,7 +34,9 @@ namespace SchoolBytes
                 "A foundational course in basic scientific principles",
                 DateTime.Now.AddDays(1),
                 DateTime.Now.AddMonths(1).AddDays(1),
-                25
+                25,
+				Teacher1,
+				2
             );
             courses.Add(course1);
             courses.Add(course2);
