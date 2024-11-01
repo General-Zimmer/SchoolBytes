@@ -12,4 +12,7 @@ public class Course
     public DateTime EndDate { get; set; }
     public int MaxCapacity { get; set; }
 
+
+    
+
 }
