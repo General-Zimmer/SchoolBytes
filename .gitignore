@@ -9,7 +9,9 @@
 *.suo
 *.user
 *.sln.docstates
-
+*.csproj
+/obj/*
+/bin/*
 # Build results
 
 [Dd]ebug/
