@@ -3,16 +3,20 @@
     var selectedCourseId = ViewBag.SelectedCourseId as int?;
 }
 
+<link rel="stylesheet" href="/Content/CourseOverviewStyles.css" />
+
 <h1>Hold oversigt</h1>
 
+<!-- Get all courses -->
 <ul id="courseList">
     @foreach (var course in Model)
     {
         <li>
             <div>
-                <form asp-action="CourseOverview" method="get">
+                <form id="detail-form" asp-action="CourseOverview" method="get">
                     <input type="hidden" name="selectedCourseId" value="@course.Id"/>
-                    @course.Name <button type="submit">&#9660;</button> <!-- down arrow -->
+                    @course.Name 
+                    <button type="submit" class="detail-button">&#9660;</button> <!-- down arrow -->
                 </form>
             </div>
 
@@ -40,7 +44,7 @@
                     @using (Html.BeginForm("UpdateCourse", "Course", FormMethod.Post))
                     {
                         <input type="hidden" name="Id" value="@course.Id"/>
-                        <button type="submit">Rediger hold</button>
+                        <button type="submit" class="toggle-button">Rediger hold</button>
                     }
                     <!-- måske dette kunne være en idé?? -->
 
@@ -48,7 +52,7 @@
                     @using (Html.BeginForm("DeleteCourse", "Course", FormMethod.Post))
                     {
                     <input type="hidden" name="Id" value="@course.Id"/>
-                    <button type="submit">Slet hold</button>
+                    <button type="submit" class="toggle-button">Slet hold</button>
                     }
                 </div>
             }
@@ -56,38 +60,42 @@
     }
 </ul>
 
+
+<h1>Opret hold</h1>
 <!-- Create -->
-@using (Html.BeginForm("CreateCourse", "Course", FormMethod.Post))
+@using (Html.BeginForm("CreateCourse", "Course", FormMethod.Post, new { @class = "create-form" }))
 {
-<div>
-    <label for="Name">Kursusnavn:</label>
-    <input type="text" id="Name" name="Name" required/>
-</div>
+    <div class="create-group">
+        <label class="create-label" for="Name">Kursusnavn:</label>
+        <input class="create-input" type="text" id="Name" name="Name" required/>
+    </div>
 
-<div>
-    <label for="Description">Beskrivelse:</label>
-    <textarea id="Description" name="Description" required></textarea>
-</div>
+    <div class="create-group">
+        <label class="create-label" for="Description">Beskrivelse:</label>
+        <textarea class="create-input" id="Description" name="Description" required></textarea>
+    </div>
 
-<div>
-    <label for="Teacher">Lærer:</label>
-    <input type="text" id="Teacher" name="Teacher.Name" required/>
-</div>
+    <div class="create-group">
+        <label class="create-label" for="Teacher">Lærer:</label>
+        <input class="create-input" type="text" id="Teacher" name="Teacher.Name" required/>
+    </div>
 
-<div>
-    <label for="StartDate">Startdato:</label>
-    <input type="date" id="StartDate" name="StartDate" required/>
-</div>
+    <div class="create-group">
+        <label class="create-label" for="StartDate">Startdato:</label>
+        <input class="create-input" type="date" id="StartDate" name="StartDate" required/>
+    </div>
 
-<div>
-    <label for="EndDate">Slutdato:</label>
-    <input type="date" id="EndDate" name="EndDate" required/>
-</div>
+    <div class="create-group">
+        <label class="create-label" for="EndDate">Slutdato:</label>
+        <input class="create-input" type="date" id="EndDate" name="EndDate" required/>
+    </div>
 
-<div>
-    <label for="MaxCapacity">Maksimal kapacitet:</label>
-    <input type="number" id="MaxCapacity" name="MaxCapacity" min="1" required/>
-</div>
+    <div class="create-group">
+        <label class="create-label" for="MaxCapacity">Maksimal kapacitet:</label>
+        <input class="create-input" type="number" id="MaxCapacity" name="MaxCapacity" min="1" required/>
+    </div>
 
-<button type="submit">Opret nyt hold</button>
+    <div class="create-group">
+        <button class="create-button" type="submit">Opret nyt hold</button>
+    </div>
 }

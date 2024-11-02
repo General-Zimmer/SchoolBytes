@@ -41,19 +41,19 @@ namespace SchoolBytes.Controllers
             courses.Add(course1);
             courses.Add(course2);
         }
-
-        // POST: api/Course (Add new course)
-        [HttpPost]
-        public ActionResult AddCourse(Course course)
-        {
-            courses.Add(course);
-            return View(course);
-        }
-
+        
         // GET: Course
         public ActionResult Index()
         {
-            return View(CourseOverview());
+            return View();
+        }
+
+        // POST: api/Course (Add new course)
+        [HttpPost]
+        public ActionResult CreateCourse(Course course)
+        {
+            courses.Add(course);
+            return View(course);
         }
 
         // GET: api/Course/{id} (Get course by ID)
