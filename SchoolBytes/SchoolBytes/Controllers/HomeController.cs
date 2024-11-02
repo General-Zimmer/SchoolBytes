@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 
-namespace SchoolBytes
+namespace SchoolBytes.Controllers
 {
     public class CourseController : Controller
     {
         private List<Course> courses = new List<Course>();
 
         //Initial test data
-        public void testData()
+        public void TestData()
         {
             var teacher1 = new Teacher { Name = "John Doe" };
             var participant1 = new Participant { Name = "Alice" };
@@ -53,7 +53,7 @@ namespace SchoolBytes
         // GET: Course
         public ActionResult Index()
         {
-            return View(courses);
+            return View(CourseOverview());
         }
 
         // GET: api/Course/{id} (Get course by ID)
@@ -73,33 +73,40 @@ namespace SchoolBytes
         [HttpPost]
         public ActionResult UpdateCourse(int id, Course updatedCourse)
         {
-            var course = courses.SingleOrDefault(c => c.Id == updatedCourse.Id);
+            var course = courses.SingleOrDefault(c => c.Id == id);
+            if (course == null)
+            {
+                return HttpNotFound("Course not found");
+            }
 
             if (ModelState.IsValid)
             {
-                course.Name = updatedCourse.Name;
-                course.Description = updatedCourse.Description;
-                course.StartDate = updatedCourse.StartDate;
-                course.EndDate = updatedCourse.EndDate;
-                course.MaxCapacity = updatedCourse.MaxCapacity;
-
+                    course.Name = updatedCourse.Name;
+                    course.Description = updatedCourse.Description;
+                    course.StartDate = updatedCourse.StartDate;
+                    course.EndDate = updatedCourse.EndDate;
+                    course.MaxCapacity = updatedCourse.MaxCapacity;
                 return RedirectToAction("Index");
             }
-
             return View(course);
         }
 
         // DELETE: api/Course/{id} (Remove course)
         [HttpDelete]
-        public ActionResult DeleteCourse(Course course)
+        public ActionResult DeleteCourse(int id)
         {
+            var course = courses.SingleOrDefault(c => c.Id == id);
+            if (course == null)
+            {
+                return HttpNotFound("Course not found");
+            }
             courses.Remove(course);
-            return View();
+            return RedirectToAction("Index");
         }
 
         public ActionResult CourseOverview(int? selectedCourseId = null)
         {
-            testData();
+            TestData();
             ViewBag.SelectedCourseId = selectedCourseId;
             return View(courses);
         }
