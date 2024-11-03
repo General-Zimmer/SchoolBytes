@@ -68,19 +68,14 @@ namespace SchoolBytes.Controllers
         }
 
         [HttpGet]
-        public HttpResponseMessage ModalWindow() {
+        public ActionResult ModalWindow() {
 
             FoodModule fm = new FoodModule();
             fm.Course = ViewBag.theCourse;
 
-            var content = new StringContent(RenderRazorViewToString("Index", fm), Encoding.UTF8, "application/json");
+            var htmlContent = RenderRazorViewToString("Index", fm);
 
-            return new HttpResponseMessage
-            {
-                Content = content,
-                StatusCode = HttpStatusCode.OK
-            };
-           
+            return Content(htmlContent, "text/html", Encoding.UTF8);
         }
 
         public string RenderRazorViewToString(string viewName, object model)

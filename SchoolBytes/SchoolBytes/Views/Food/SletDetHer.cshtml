@@ -13,7 +13,7 @@
 <body>
     <div>
         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeBtn">×</button>
             <h4 class="modal-title" id="myModalLabel">Opret madhold</h4>
         </div>
 
@@ -25,8 +25,6 @@
             </div>
         </div>
 
-
-        <a href="javascript:void(0);" class="anchorDetail" course="@Model">Opret madhold</a>
         <input type="button" onclick="test(this)" value="Opret madhold" id="testBtn" />
     </div>
 
@@ -38,43 +36,26 @@
     <script src="~/Scripts/bootstrap.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script>
-        var TeamDetailPostBackURL = '/Food/ModalWindow';
-
-
-
+    
         function test(element) {
-
-            console.log(element);
-
-         
-            
             var options = { "backdrop": "static", keyboard: true };
 
             $.ajax({
                 type: "GET",
-                url: TeamDetailPostBackURL,
-                contentType: "application/json; charset=utf-8",
-                data: {},
-                datatype: "json",
+                url: '/Food/ModalWindow',
                 success: function (data) {
-                    debugger;
-                    $('#myModalContent').html(data.Content);
+                    $('#myModalContent').html(data);
                     $('#myModal').modal(options);
                     $('#myModal').modal('show');
-                    console.log("deeeeez" + data);
                 },
                 error: function () {
                     alert("Dynamic content load failed.");
                 }
             });
 
-            //$("#closebtn").on('click',function(){
-            //    $('#myModal').modal('hide');
-
-            $("#closbtn").click(function () {
+            $("#closeBtn").click(function () {
                 $('#myModal').modal('hide');
             });
-
         }
 
     </script>
