@@ -13,10 +13,20 @@
     {
         <li>
             <div>
-                <form id="detail-form" asp-action="CourseOverview" method="get">
-                    <input type="hidden" name="selectedCourseId" value="@course.Id"/>
-                    @course.Name 
-                    <button type="submit" class="detail-button">&#9660;</button> <!-- down arrow -->
+                <!-- Form to toggle course details -->
+                <form id="detail-form-@course.Id" asp-action="CourseOverview" method="get">
+                    <input type="hidden" name="selectedCourseId" value="@(selectedCourseId == course.Id ? string.Empty : course.Id.ToString())" />
+                    @course.Name
+                    <button type="submit" class="detail-button">
+                        @if (selectedCourseId == course.Id)
+                        {
+                            @Html.Raw("&#9650;") <!-- Up arrow when expanded -->
+                        }
+                        else
+                        {
+                            @Html.Raw("&#9660;") <!-- Down arrow when collapsed -->
+                        }
+                    </button>
                 </form>
             </div>
 
@@ -25,34 +35,23 @@
                 <div class="course-details">
                     <h4>@course.Name</h4>
 
-                    <!-- <p><b>Underviser:</b> @course.Teacher.Name</p>  fix this -->
-
-                    <p>
-                        <b>Start:</b> @course.StartDate.ToString("dd-MM-yyyy")
-                    </p>
-                    <p>
-                        <b>Slut:</b> @course.EndDate.ToString("dd-MM-yyyy")
-                    </p>
-                    <p>
-                        <b>Beskrivelse:</b> @course.Description
-                    </p>
-                    <p>
-                        <b>Maksimum antal deltagere:</b> @course.MaxCapacity
-                    </p>
+                    <p><b>Start:</b> @course.StartDate.ToString("dd-MM-yyyy")</p>
+                    <p><b>Slut:</b> @course.EndDate.ToString("dd-MM-yyyy")</p>
+                    <p><b>Beskrivelse:</b> @course.Description</p>
+                    <p><b>Maksimum antal deltagere:</b> @course.MaxCapacity</p>
 
                     <!-- Update -->
                     @using (Html.BeginForm("UpdateCourse", "Course", FormMethod.Post))
                     {
-                        <input type="hidden" name="Id" value="@course.Id"/>
+                        <input type="hidden" name="Id" value="@course.Id" />
                         <button type="submit" class="toggle-button">Rediger hold</button>
                     }
-                    <!-- måske dette kunne være en idé?? -->
 
                     <!-- Delete -->
                     @using (Html.BeginForm("DeleteCourse", "Course", FormMethod.Post))
                     {
-                    <input type="hidden" name="Id" value="@course.Id"/>
-                    <button type="submit" class="toggle-button">Slet hold</button>
+                        <input type="hidden" name="Id" value="@course.Id" />
+                        <button type="submit" class="toggle-button">Slet hold</button>
                     }
                 </div>
             }
@@ -60,14 +59,13 @@
     }
 </ul>
 
-
 <h1>Opret hold</h1>
-<!-- Create -->
+<!-- Create new course -->
 @using (Html.BeginForm("CreateCourse", "Course", FormMethod.Post, new { @class = "create-form" }))
 {
     <div class="create-group">
         <label class="create-label" for="Name">Kursusnavn:</label>
-        <input class="create-input" type="text" id="Name" name="Name" required/>
+        <input class="create-input" type="text" id="Name" name="Name" required />
     </div>
 
     <div class="create-group">
@@ -77,22 +75,22 @@
 
     <div class="create-group">
         <label class="create-label" for="Teacher">Lærer:</label>
-        <input class="create-input" type="text" id="Teacher" name="Teacher.Name" required/>
+        <input class="create-input" type="text" id="Teacher" name="Teacher.Name" required />
     </div>
 
     <div class="create-group">
         <label class="create-label" for="StartDate">Startdato:</label>
-        <input class="create-input" type="date" id="StartDate" name="StartDate" required/>
+        <input class="create-input" type="date" id="StartDate" name="StartDate" required />
     </div>
 
     <div class="create-group">
         <label class="create-label" for="EndDate">Slutdato:</label>
-        <input class="create-input" type="date" id="EndDate" name="EndDate" required/>
+        <input class="create-input" type="date" id="EndDate" name="EndDate" required />
     </div>
 
     <div class="create-group">
         <label class="create-label" for="MaxCapacity">Maksimal kapacitet:</label>
-        <input class="create-input" type="number" id="MaxCapacity" name="MaxCapacity" min="1" required/>
+        <input class="create-input" type="number" id="MaxCapacity" name="MaxCapacity" min="1" required />
     </div>
 
     <div class="create-group">
