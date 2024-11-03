@@ -11,6 +11,7 @@
     <title>SletDetHer</title>
 </head>
 <body>
+
     <div>
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeBtn">×</button>
@@ -27,6 +28,11 @@
 
         <input type="button" onclick="test(this)" value="Opret madhold" id="testBtn" />
     </div>
+    @if (ViewBag.created != null)
+    {
+        <br />
+        <p>You just created a madhold! Congratulations</p>
+    }
 
 
 
@@ -36,7 +42,7 @@
     <script src="~/Scripts/bootstrap.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script>
-    
+
         function test(element) {
             var options = { "backdrop": "static", keyboard: true };
 

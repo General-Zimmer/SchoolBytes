@@ -15,18 +15,20 @@
 <body>
     <h1>Opret et madhold</h1>
     <div>
-        @using (Html.BeginForm("CreateFoodModule", "Food", new { fm = @Model }))
+        @using (Html.BeginForm("CreateFoodModule", "Food"))
         {
             @Html.EditorForModel()
 
             <br />
             @Html.LabelFor(fm => fm.Course)
-            @Html.DisplayFor(fm => fm.Course)
-            //@Html.DropDownList("course")
+            @(": ")
+            @Html.DisplayFor(fm => fm.Course.Name)
+
 
             <br />
-            //@Html.LabelFor(fm => fm.Teacher)
-            //@Html.DropDownList("teacher")
+            @Html.LabelFor(fm => fm.Teacher)
+            @(": ")
+            @Html.DisplayFor(fm => fm.Teacher.Name)
 
             <br />
             <input type="submit" value="Opret" />
