@@ -94,7 +94,7 @@ namespace SchoolBytes.Controllers
                     course.EndDate = updatedCourse.EndDate;
                     course.MaxCapacity = updatedCourse.MaxCapacity;
                     
-                return RedirectToAction("Index");
+                return RedirectToAction("CourseOverview");
             }
             return View(course);
         }
