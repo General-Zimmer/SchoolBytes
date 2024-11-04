@@ -34,41 +34,40 @@
 
             @if (selectedCourseId == course.Id)
             {
-                <div class="course-details">
-                    <h4>@course.Name</h4>
+                <form id="update-form-@course.Id" action="/course/update/@course.Id" method="post">
+                    <div class="course-details">
+                        <input type="hidden" name="Id" value="@course.Id"/>
+            
+                        <h4>
+                            <b>Navn:</b>
+                            <input type="text" name="Name" value="@course.Name" disabled />
+                        </h4>
 
-                    <p>
-                        <b>Start:</b>
-                        <input type="date" name="StartDate" value="@course.StartDate.ToString("yyyy-MM-dd")" disabled/>
-                    </p>
-                    <p>
-                        <b>Slut:</b>
-                        <input type="date" name="EndDate" value="@course.EndDate.ToString("yyyy-MM-dd")" disabled/>
-                    </p>
-                    <p>
-                        <b>Beskrivelse:</b>
-                        <textarea name="Description" disabled>@course.Description</textarea>
-                    </p>
-                    <p>
-                        <b>Maksimum antal deltagere:</b>
-                        <input type="number" name="MaxCapacity" value="@course.MaxCapacity" disabled/>
-                    </p>
-
-                    <!-- Update -->
-                    <form id="detail-form-@course.Id" asp-action="Update" method="post">
-                        <input type="hidden" name="Id" value="@course.Id"/> 
+                        <p>
+                            <b>Start:</b>
+                            <input type="date" name="StartDate" value="@course.StartDate.ToString("yyyy-MM-dd")" disabled />
+                        </p>
+                        <p>
+                            <b>Slut:</b>
+                            <input type="date" name="EndDate" value="@course.EndDate.ToString("yyyy-MM-dd")" disabled />
+                        </p>
+                        <p>
+                            <b>Beskrivelse:</b>
+                            <textarea name="Description" disabled>@course.Description</textarea>
+                        </p>
+                        <p>
+                            <b>Maksimum antal deltagere:</b>
+                            <input type="number" name="MaxCapacity" value="@course.MaxCapacity" disabled />
+                        </p>
 
                         <!-- Rediger Button -->
                         <button type="button" class="toggle-button" onclick="enableEditing()">Rediger hold</button>
 
                         <!-- Gem ændringer Button -->
                         <button type="submit" class="save-button" onclick="enableDisabled()" style="display: none;">Gem ændringer</button>
-                    </form>
-
-                    <!-- Delete -->
-                    <button type="submit" class="toggle-button" onclick="return confirmDelete(@course.Id)">Slet hold</button>
-                </div>
-
+                    </div>
+                </form>
+                
                 <script>
                 function confirmDelete(obj) {
                 if (confirm(("Er du sikker på, at du vil slette dette hold?") === true)) {
