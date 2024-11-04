@@ -3,7 +3,7 @@
     var selectedCourseId = ViewBag.SelectedCourseId as int?;
 }
 
-<link rel="stylesheet" href="/Content/CourseOverviewStyles.css" />
+<link rel="stylesheet" href="/Content/CourseOverviewStyles.css"/>
 
 <h1>Hold oversigt</h1>
 
@@ -15,16 +15,18 @@
             <div>
                 <!-- Form to toggle course details -->
                 <form id="detail-form-@course.Id" asp-action="CourseOverview" method="get">
-                    <input type="hidden" name="selectedCourseId" value="@(selectedCourseId == course.Id ? string.Empty : course.Id.ToString())" />
+                    <input type="hidden" name="selectedCourseId" value="@(selectedCourseId == course.Id ? string.Empty : course.Id.ToString())"/>
                     @course.Name
                     <button type="submit" class="detail-button">
                         @if (selectedCourseId == course.Id)
                         {
-                            @Html.Raw("&#9650;") <!-- Up arrow when expanded -->
+                            @Html.Raw("&#9650;")
+                            <!-- Up arrow when expanded -->
                         }
                         else
                         {
-                            @Html.Raw("&#9660;") <!-- Down arrow when collapsed -->
+                            @Html.Raw("&#9660;")
+                            <!-- Down arrow when collapsed -->
                         }
                     </button>
                 </form>
@@ -35,25 +37,67 @@
                 <div class="course-details">
                     <h4>@course.Name</h4>
 
-                    <p><b>Start:</b> @course.StartDate.ToString("dd-MM-yyyy")</p>
-                    <p><b>Slut:</b> @course.EndDate.ToString("dd-MM-yyyy")</p>
-                    <p><b>Beskrivelse:</b> @course.Description</p>
-                    <p><b>Maksimum antal deltagere:</b> @course.MaxCapacity</p>
+                    <p>
+                        <b>Start:</b>
+                        <input type="date" name="StartDate" value="@course.StartDate.ToString("yyyy-MM-dd")" disabled/>
+                    </p>
+                    <p>
+                        <b>Slut:</b>
+                        <input type="date" name="EndDate" value="@course.EndDate.ToString("yyyy-MM-dd")" disabled/>
+                    </p>
+                    <p>
+                        <b>Beskrivelse:</b>
+                        <textarea name="Description" disabled>@course.Description</textarea>
+                    </p>
+                    <p>
+                        <b>Maksimum antal deltagere:</b>
+                        <input type="number" name="MaxCapacity" value="@course.MaxCapacity" disabled/>
+                    </p>
 
                     <!-- Update -->
                     @using (Html.BeginForm("UpdateCourse", "Course", FormMethod.Post))
                     {
-                        <input type="hidden" name="Id" value="@course.Id" />
-                        <button type="submit" class="toggle-button">Rediger hold</button>
+                        <input type="hidden" name="Id" value="@course.Id"/> 
+
+                        <!-- Rediger Button -->
+                        <button type="button" class="toggle-button" onclick="enableEditing()">Rediger hold</button>
+
+                        <!-- Gem ændringer Button -->
+                        <button type="submit" class="save-button" onclick="enableDisabled()" style="display: none;">Gem ændringer</button>
                     }
 
                     <!-- Delete -->
-                    @using (Html.BeginForm("DeleteCourse", "Course", FormMethod.Post))
-                    {
-                        <input type="hidden" name="Id" value="@course.Id" />
-                        <button type="submit" class="toggle-button">Slet hold</button>
-                    }
+                    <button type="submit" class="toggle-button" onclick="return confirmDelete(@course.Id)">Slet hold</button>
                 </div>
+
+                <script>
+                function confirmDelete(obj) {
+                if (confirm(("Er du sikker på, at du vil slette dette hold?") === true)) {
+                    $.ajax( '@Context.Request.Url.GetLeftPart(UriPartial.Authority)' + "/course/delete/" + obj ,{
+                    method: 'POST',
+                    data: ''})
+                
+                   // window.location.href = '@Url.Action("Delete", "Course")/' + obj
+                }
+                }
+                </script>
+
+                <script>
+                function enableEditing() {
+                    document.querySelectorAll('.course-details input, .course-details textarea').forEach(field => {
+                        field.removeAttribute('disabled');
+                    });
+   
+                    document.querySelector('.toggle-button').style.display = 'none';
+                    document.querySelector('.save-button').style.display = 'inline-block';
+                }
+
+                function enableDisabled() {
+                    document.querySelectorAll('.course-details input, .course-details textarea').forEach(field => {
+                        field.setAttribute("disabled", 'disabled');
+                    });
+                }
+            </script>
             }
         </li>
     }
@@ -65,7 +109,7 @@
 {
     <div class="create-group">
         <label class="create-label" for="Name">Kursusnavn:</label>
-        <input class="create-input" type="text" id="Name" name="Name" required />
+        <input class="create-input" type="text" id="Name" name="Name" required/>
     </div>
 
     <div class="create-group">
@@ -75,22 +119,22 @@
 
     <div class="create-group">
         <label class="create-label" for="Teacher">Lærer:</label>
-        <input class="create-input" type="text" id="Teacher" name="Teacher.Name" required />
+        <input class="create-input" type="text" id="Teacher" name="Teacher.Name" required/>
     </div>
 
     <div class="create-group">
         <label class="create-label" for="StartDate">Startdato:</label>
-        <input class="create-input" type="date" id="StartDate" name="StartDate" required />
+        <input class="create-input" type="date" id="StartDate" name="StartDate" required/>
     </div>
 
     <div class="create-group">
         <label class="create-label" for="EndDate">Slutdato:</label>
-        <input class="create-input" type="date" id="EndDate" name="EndDate" required />
+        <input class="create-input" type="date" id="EndDate" name="EndDate" required/>
     </div>
 
     <div class="create-group">
         <label class="create-label" for="MaxCapacity">Maksimal kapacitet:</label>
-        <input class="create-input" type="number" id="MaxCapacity" name="MaxCapacity" min="1" required />
+        <input class="create-input" type="number" id="MaxCapacity" name="MaxCapacity" min="1" required/>
     </div>
 
     <div class="create-group">

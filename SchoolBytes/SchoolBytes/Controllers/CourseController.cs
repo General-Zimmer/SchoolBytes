@@ -60,7 +60,8 @@ namespace SchoolBytes.Controllers
         [Route("course/{id}")]
         public ActionResult GetCourse(int id)
         {
-            var course = courses.SingleOrDefault(c => c.Id == id);
+           // var course = courses.SingleOrDefault(c => c.Id == id);
+            var course = courses.Where(x => x.Id == id).FirstOrDefault();
             if (course == null)
             {
                 return HttpNotFound("Course not found");
@@ -92,8 +93,9 @@ namespace SchoolBytes.Controllers
         }
 
         // DELETE: api/Course/{id} (Remove course)
-        [HttpDelete]
-        public ActionResult DeleteCourse(int id)
+        [HttpPost]
+        [Route("course/delete/{id}")]
+        public ActionResult Delete(int id)
         {
             var course = courses.SingleOrDefault(c => c.Id == id);
             if (course == null)
@@ -101,7 +103,7 @@ namespace SchoolBytes.Controllers
                 return HttpNotFound("Course not found");
             }
             courses.Remove(course);
-            return RedirectToAction("Index");
+            return RedirectToAction("CourseOverview");
         }
 
         public ActionResult CourseOverview(int? selectedCourseId = null)
