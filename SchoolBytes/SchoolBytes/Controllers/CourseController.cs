@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -52,6 +53,7 @@ namespace SchoolBytes.Controllers
         [HttpPost]
         public ActionResult CreateCourse(Course course)
         {
+            Debug.Print("TEEEEEEEEEEEEEEEST" +  ((FoodModule)Session["fm"]).Name);
             courses.Add(course);
             return View(course);
         }
@@ -109,6 +111,19 @@ namespace SchoolBytes.Controllers
             TestData();
             ViewBag.SelectedCourseId = selectedCourseId;
             return View(courses);
+        }
+
+        [HttpPost]
+        public ActionResult CreateFoodModule()
+        {
+
+            Debug.Print("TEEEEEEEEEST");
+            Debug.Print(((FoodModule)Session["fm"]).Teacher.Name);
+
+            Session["created"] = "true";
+
+            //TODO: Gem modulet i session et sted
+            return View("Index");
         }
     }
 }

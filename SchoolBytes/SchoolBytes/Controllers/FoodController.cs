@@ -35,7 +35,7 @@ namespace SchoolBytes.Controllers
             Session["created"] = "true";
 
             //TODO: Gem modulet i session et sted
-            return View("SletDetHer");
+            return View("../Course/CourseOverView");
         }
 
         [HttpGet]
@@ -53,7 +53,7 @@ namespace SchoolBytes.Controllers
             fm.Teacher = new Teacher();
             fm.Teacher.Name = "HENNY TEACHER";
 
-            fm.Course = new Course();
+            fm.Course = new Course("alsjd", "liaksjdl", DateTime.Parse("01-01-2001"), DateTime.Parse("01-01-2001"), 5, 5 );
             fm.Course.Name = "HENNY COURSE";
 
             Session["fm"] = fm;

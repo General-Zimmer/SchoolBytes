@@ -13,8 +13,11 @@ public class FoodModule : IModule
     public DateTime StartTime { get; set; }
     [DataType(DataType.Time)]
     public DateTime EndTime { get; set; }
+    public CourseModule CourseModule { get; set; }
     public Course Course { get; set; }
     public string Location { get; set; }
     public string Name { get; set; }
     public Teacher Teacher { get; set; }
+
+    
 }

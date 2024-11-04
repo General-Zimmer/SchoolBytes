@@ -96,4 +96,53 @@
     <div class="create-group">
         <button class="create-button" type="submit">Opret nyt hold</button>
     </div>
+
+    
+
+        <input type="button" onclick="test(this)" value="Opret madhold" id="testBtn" />
 }
+
+<div>
+    <div class="modal-header">
+        
+        <h4 class="modal-title" id="myModalLabel">Opret madhold</h4>
+    </div>
+
+    <div id='myModal' class='modal'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeBtn">×</button>
+                <div id='myModalContent'></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+            crossorigin="anonymous"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script>
+
+        function test(element) {
+            var options = { "backdrop": "static", keyboard: true };
+
+            $.ajax({
+                type: "GET",
+                url: '/Food/ModalWindow',
+                success: function (data) {
+                    $('#myModalContent').html(data);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+
+            $("#closeBtn").click(function () {
+                $('#myModal').modal('hide');
+            });
+        }
+
+    </script>
