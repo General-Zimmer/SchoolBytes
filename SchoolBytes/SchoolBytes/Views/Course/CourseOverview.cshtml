@@ -55,8 +55,7 @@
                     </p>
 
                     <!-- Update -->
-                    @using (Html.BeginForm("UpdateCourse", "Course", FormMethod.Post))
-                    {
+                    <form id="detail-form-@course.Id" asp-action="Update" method="post">
                         <input type="hidden" name="Id" value="@course.Id"/> 
 
                         <!-- Rediger Button -->
@@ -64,7 +63,7 @@
 
                         <!-- Gem ændringer Button -->
                         <button type="submit" class="save-button" onclick="enableDisabled()" style="display: none;">Gem ændringer</button>
-                    }
+                    </form>
 
                     <!-- Delete -->
                     <button type="submit" class="toggle-button" onclick="return confirmDelete(@course.Id)">Slet hold</button>

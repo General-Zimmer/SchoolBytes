@@ -45,39 +45,6 @@ namespace SchoolBytes.Controllers
             {
 
             } }
-
-        //Initial test data
-        public void TestData()
-        {
-            var teacher1 = new Teacher { Name = "John Doe" };
-            var participant1 = new Participant { Name = "Alice" };
-            var participant2 = new Participant { Name = "Bob" };
-
-            var course1 = new Course(
-                "Science 101",
-                "A foundational course in basic scientific principles",
-                teacher1,
-                DateTime.Now,
-                DateTime.Now.AddMonths(1).AddDays(1),
-                25,
-                1
-            );
-            course1.Participants.Add(participant1);
-            course1.Participants.Add(participant2);
-
-            var course2 = new Course(
-                "Math 101",
-                "A foundational course in basic math principles",
-                teacher1,
-                DateTime.Now.AddDays(1),
-                DateTime.Now.AddMonths(1).AddDays(1),
-                25,
-                2
-
-            );
-            courses.Add(course1);
-            courses.Add(course2);
-        }
         
         // GET: Course
         public ActionResult Index()
@@ -98,7 +65,7 @@ namespace SchoolBytes.Controllers
         public ActionResult GetCourse(int id)
         {
            // var course = courses.SingleOrDefault(c => c.Id == id);
-            var course = courses.Where(x => x.Id == id).FirstOrDefault();
+            var course = courses.FirstOrDefault(x => x.Id == id);
             if (course == null)
             {
                 return HttpNotFound("Course not found");
@@ -109,9 +76,10 @@ namespace SchoolBytes.Controllers
 
         // POST: api/Course/{id} (Update course)
         [HttpPost]
-        public ActionResult UpdateCourse(int id, Course updatedCourse)
+        [Route("course/update/{id}")]
+        public ActionResult Update(int id, Course updatedCourse)
         {
-            var course = courses.SingleOrDefault(c => c.Id == id);
+            var course = courses.FirstOrDefault(x => x.Id == id);
             if (course == null)
             {
                 return HttpNotFound("Course not found");
@@ -121,9 +89,11 @@ namespace SchoolBytes.Controllers
             {
                     course.Name = updatedCourse.Name;
                     course.Description = updatedCourse.Description;
+                    Console.WriteLine(course.Description);
                     course.StartDate = updatedCourse.StartDate;
                     course.EndDate = updatedCourse.EndDate;
                     course.MaxCapacity = updatedCourse.MaxCapacity;
+                    
                 return RedirectToAction("Index");
             }
             return View(course);
@@ -145,7 +115,6 @@ namespace SchoolBytes.Controllers
 
         public ActionResult CourseOverview(int? selectedCourseId = null)
         {
-            TestData();
             ViewBag.SelectedCourseId = selectedCourseId;
             return View(courses);
         }
