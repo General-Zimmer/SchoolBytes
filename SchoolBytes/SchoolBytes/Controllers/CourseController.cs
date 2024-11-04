@@ -49,18 +49,19 @@ namespace SchoolBytes.Controllers
         // GET: Course
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("CourseOverview");
         }
 
-        // POST: api/Course (Add new course)
+        // POST: api/course (Add new course)
         [HttpPost]
-        public ActionResult CreateCourse(Course course)
+        [Route("course/create")]
+        public ActionResult Create(Course course)
         {
             courses.Add(course);
-            return View(course);
+            return RedirectToAction("CourseOverview");
         }
 
-        // GET: api/Course/{id} (Get course by ID)
+        // GET: api/course/{id} (Get course by ID)
         [Route("course/{id}")]
         public ActionResult GetCourse(int id)
         {
@@ -74,7 +75,7 @@ namespace SchoolBytes.Controllers
             return View(course);
         }
 
-        // POST: api/Course/{id} (Update course)
+        // POST: api/course/{id} (Update course)
         [HttpPost]
         [Route("course/update/{id}")]
         public ActionResult Update(int id, Course updatedCourse)
@@ -99,7 +100,7 @@ namespace SchoolBytes.Controllers
             return View(course);
         }
 
-        // DELETE: api/Course/{id} (Remove course)
+        // DELETE: api/course/{id} (Remove course)
         [HttpPost]
         [Route("course/delete/{id}")]
         public ActionResult Delete(int id)
