@@ -27,16 +27,31 @@ namespace SchoolBytes.Models
         private static DBConnection self = null;
 
     public string connectionString;
+        DbSet<Course> courses { get; set; }
+        DbSet<Teacher> teachers { get; set; }
+        DbSet<Participant> participants { get; set; }
+        DbSet<FoodModule> foodModules { get; set; }
+        DbSet<CourseModule> courseModules { get; set; }
+
+        
+
 
         public DBConnection(string connectionString) : base()
         {
             this.connectionString = connectionString;
         }
+
+        public DBConnection()
+        {
+            
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            StreamReader credJson = new StreamReader(HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json"));
+            var yeet = (string)JObject.Parse(credJson.ReadToEnd())["credentials"];
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySql(connectionString);
+                optionsBuilder.UseMySql(yeet);
             }
 
 

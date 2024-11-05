@@ -16,6 +16,7 @@ namespace SchoolBytes.Controllers
     {
         public ActionResult Index()
         {
+
             return View();
         }
 
