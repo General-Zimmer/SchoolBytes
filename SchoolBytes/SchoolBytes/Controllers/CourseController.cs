@@ -55,7 +55,7 @@ namespace SchoolBytes.Controllers
         {
             Debug.Print("TEEEEEEEEEEEEEEEST" +  ((FoodModule)Session["fm"]).Name);
             courses.Add(course);
-            return View(course);
+            return View("Index", course);
         }
 
         // GET: api/Course/{id} (Get course by ID)

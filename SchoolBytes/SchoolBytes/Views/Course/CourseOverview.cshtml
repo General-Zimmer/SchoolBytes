@@ -102,6 +102,9 @@
         <input type="button" onclick="test(this)" value="Opret madhold" id="testBtn" />
 }
 
+
+
+
 <div>
     <div class="modal-header">
         
@@ -113,6 +116,7 @@
             <div class="modal-content">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeBtn">×</button>
                 <div id='myModalContent'></div>
+                <button type="button" class="close" id="opretBtn">Opret</button>
             </div>
         </div>
     </div>
@@ -140,8 +144,14 @@
                 }
             });
 
-            $("#closeBtn").click(function () {
+            $(".close").click(function () {
                 $('#myModal').modal('hide');
+            });
+
+            $("#closeBtn").click(function () {
+                @{ //Trykker man på krydset oprettes en ny foodmodule, for at 'cleare' felterne
+                    Session["fm"] = new FoodModule();
+              }
             });
         }
 
