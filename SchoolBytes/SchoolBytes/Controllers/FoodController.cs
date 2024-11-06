@@ -48,7 +48,10 @@ namespace SchoolBytes.Controllers
         [HttpGet]
         public ActionResult ModalWindow() {
 
+            
             FoodModule fm = new FoodModule();
+
+            fm.Name = "trololoootest";
 
             fm.Teacher = new Teacher();
             fm.Teacher.Name = "HENNY TEACHER";
@@ -57,6 +60,7 @@ namespace SchoolBytes.Controllers
             fm.Course.Name = "HENNY COURSE";
 
             Session["fm"] = fm;
+            TempData["fm2"] = fm;
 
             var htmlContent = RenderRazorViewToString("Index", fm);
 

@@ -54,8 +54,14 @@ namespace SchoolBytes.Controllers
         public ActionResult CreateCourse(Course course)
         {
             Debug.Print("TEEEEEEEEEEEEEEEST" +  ((FoodModule)Session["fm"]).Name);
+            Debug.Print("Test tempdata" + ((FoodModule)TempData["fm2"]).Name);
+
+         
             courses.Add(course);
-            return View("Index", course);
+
+            TestData();
+            ViewBag.SelectedCourseId = 2;
+            return View("CourseOverview", courses);
         }
 
         // GET: api/Course/{id} (Get course by ID)
