@@ -1,0 +1,98 @@
+﻿@model List<SchoolBytes.Models.CourseModule>
+
+<link rel="stylesheet" href="/Content/CourseModuleStyles.css" /> <!-- TODO: add stylesheet -->
+
+<h1>Oversigt over moduler</h1>
+
+<!-- Display Course Modules -->
+<ul id="moduleList">
+    @foreach (var module in Model)
+    {
+        <li>
+            <div>
+                <!-- Toggle module details -->
+                <form id="module-detail-form-@module.Name" method="get">
+                    <input type="hidden" name="selectedModuleId" value="@module.Name" />
+                    @module.Name (@module.Course.Name)
+                    <button type="button" class="module-detail-button" onclick="toggleModuleDetails('@module.Name')">
+                        &#9660; <!-- Down arrow by default -->
+                    </button>
+                </form>
+            </div>
+
+            <!-- Module details -->
+            <div class="module-details" id="module-details-@module.Name" style="display: none;">
+                <form id="module-update-form-@module.Name" action="/course/updateModule/@module.Name" method="post">
+                    <input type="hidden" name="Name" value="@module.Name" />
+
+                    <p><strong>Underviser:</strong> <input type="text" name="TeacherName" value="@module.Teacher.Name" disabled /></p>
+                    <p><strong>Dato:</strong> <input type="date" name="Date" value="@module.Date.ToString("yyyy-MM-dd")" disabled /></p>
+                    <p><strong>Start:</strong> <input type="time" name="StartTime" value="@module.StartTime.ToString("HH:mm")" disabled /></p>
+                    <p><strong>Slut:</strong> <input type="time" name="EndTime" value="@module.EndTime.ToString("HH:mm")" disabled /></p>
+                    <p><strong>Lokale:</strong> <input type="text" name="Location" value="@module.Location" disabled /></p>
+
+                    <!-- Edit Button -->
+                    <button type="button" class="toggle-module-edit" onclick="enableModuleEditing('@module.Name')">Rediger modul</button>
+
+                    <!-- Save Changes Button -->
+                    <button type="submit" class="save-module-button" style="display: none;">Gem ændringer</button>
+
+                </form>
+
+                <!-- Delete Button -->
+                <button type="button" class="delete-module-button" onclick="confirmDeleteModule('@module.Name')">Slet modul</button>
+            </div>
+        </li>
+    }
+</ul>
+
+<script>
+    // Toggle module details display
+    function toggleModuleDetails(moduleName) {
+        const detailsElement = document.getElementById(`module-details-${moduleName}`);
+        const isHidden = detailsElement.style.display === 'none';
+
+        detailsElement.style.display = isHidden ? 'block' : 'none';
+    }
+
+    // Enable editing for the module
+    function enableModuleEditing(moduleName) {
+        document.querySelectorAll(`#module-details-${moduleName} input`).forEach(field => {
+            field.removeAttribute('disabled');
+        });
+
+        document.querySelector(`#module-details-${moduleName} .toggle-module-edit`).style.display = 'none';
+        document.querySelector(`#module-details-${moduleName} .save-module-button`).style.display = 'inline-block';
+    }
+
+    // Confirm delete action
+    function confirmDeleteModule(moduleName) {
+        if (confirm("Er du sikker på, at du vil slette dette modul?")) {
+            $.ajax({
+                url: `/course/deleteModule/${moduleName}`,
+                method: 'POST',
+                success: function () {
+                    alert("Modul slettet!");
+                    location.reload(); // Refresh page after deletion
+                },
+                error: function () {
+                    alert("Fejl ved sletning af modul.");
+                }
+            });
+        }
+    }
+</script>
+
+<style>
+    /* Optional styling adjustments */
+    #moduleList {
+        list-style: none;
+        padding: 0;
+    }
+
+    .module-details {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+    }
+</style>

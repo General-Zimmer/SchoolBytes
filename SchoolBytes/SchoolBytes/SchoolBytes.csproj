@@ -204,6 +204,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Food\Index.cshtml" />
     <Content Include="Views\Food\SletDetHer.cshtml" />
+    <Content Include="Views\Course\ModulesOverview.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
