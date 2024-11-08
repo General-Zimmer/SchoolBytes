@@ -16,6 +16,7 @@ namespace SchoolBytes.Models
         Course Course { get; set; }
         Teacher Teacher { get; set; }
         //Consider making location a class or enum so we can have static locations
+        // Nok en struct istedet for en class?
         string Location { get; set; }
     }
 }
