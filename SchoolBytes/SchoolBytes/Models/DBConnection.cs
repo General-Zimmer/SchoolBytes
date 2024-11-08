@@ -27,11 +27,11 @@ namespace SchoolBytes.Models
         private static DBConnection self = null;
 
     public string connectionString;
-        DbSet<Course> courses { get; set; }
-        DbSet<Teacher> teachers { get; set; }
-        DbSet<Participant> participants { get; set; }
-        DbSet<FoodModule> foodModules { get; set; }
-        DbSet<CourseModule> courseModules { get; set; }
+        public DbSet<Course> courses { get; set; }
+        public DbSet<Teacher> teachers { get; set; }
+        public DbSet<Participant> participants { get; set; }
+        public DbSet<FoodModule> foodModules { get; set; }
+        public DbSet<CourseModule> courseModules { get; set; }
 
         
 
