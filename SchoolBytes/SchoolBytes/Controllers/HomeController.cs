@@ -16,7 +16,10 @@ namespace SchoolBytes.Controllers
     {
         public ActionResult Index()
         {
-
+            DBConnection dBConnection = DBConnection.getDBContext();
+            dBConnection.Add(new Course());
+            dBConnection.SaveChanges();
+            Debug.Print("yeet");
             return View();
         }
 

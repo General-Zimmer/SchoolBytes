@@ -12,4 +12,5 @@ public class CourseModule : IModule
     public int Capacity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public Course Course { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public string Location { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public int Id { get; set; }
 }

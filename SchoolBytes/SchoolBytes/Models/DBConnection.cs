@@ -47,25 +47,27 @@ namespace SchoolBytes.Models
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            StreamReader credJson = new StreamReader(HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json"));
-            var yeet = (string)JObject.Parse(credJson.ReadToEnd())["credentials"];
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySql(yeet);
+                optionsBuilder.UseMySql(getCredentialsPath());
             }
 
 
         }
         public static DBConnection getDBContext()
         {
-            StreamReader credJson = new StreamReader(HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json"));
-            var yeet = (string)JObject.Parse(credJson.ReadToEnd())["credentials"];
+
             if (self == null)
             {
-                self = new DBConnection(yeet);
+                self = new DBConnection(getCredentialsPath());
             }
             return self;
         }
 
+        private static string getCredentialsPath()
+        {
+            StreamReader credJson = new StreamReader(HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json"));
+            return (string)JObject.Parse(credJson.ReadToEnd())["credentials"];
+        }
     }
 }
