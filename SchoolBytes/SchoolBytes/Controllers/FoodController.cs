@@ -10,6 +10,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.SessionState;
 using System.Web.UI.WebControls;
+using SchoolBytes.Models;
 
 namespace SchoolBytes.Controllers
 {

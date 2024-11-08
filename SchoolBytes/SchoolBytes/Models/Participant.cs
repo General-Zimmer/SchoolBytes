@@ -1,6 +1,9 @@
-﻿public class Participant
+﻿namespace SchoolBytes.Models
 {
-    public string Name { get; set; }
-    public string PhoneNumber { get; set; }
-    public string Email { get; set; }
+    public class Participant
+    {
+        public string Name { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+    }
 }
