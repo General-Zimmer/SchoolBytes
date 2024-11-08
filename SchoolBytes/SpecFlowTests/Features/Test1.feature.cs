@@ -103,7 +103,7 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 7
- testRunner.Given("the course name is deez", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("the course name is \'deez\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 8
  testRunner.When("the course is created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");

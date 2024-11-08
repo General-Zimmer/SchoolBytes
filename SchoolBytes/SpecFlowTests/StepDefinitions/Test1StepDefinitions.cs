@@ -9,10 +9,10 @@ namespace SpecFlowTests.StepDefinitions
         private readonly Course _course = new Course();
         private string _courseName;
 
-        [Given(@"the course name is deez")]
-        public void GivenTheCourseNameIsDeez()
+        [Given(@"the course name is '(.*)'")]
+        public void GivenTheCourseNameIsDeez(string name)
         {
-            _courseName = "deez";
+            _courseName = name;
         }
 
         [When(@"the course is created")]
