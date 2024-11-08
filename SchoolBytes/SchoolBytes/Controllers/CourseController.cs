@@ -134,8 +134,10 @@ namespace SchoolBytes.Controllers
 
         public ActionResult CourseOverview(int? selectedCourseId = null)
         {
+            DBConnection dbConnection = DBConnection.getDBContext();
+            
             ViewBag.SelectedCourseId = selectedCourseId;
-            return View(courses);
+            return View(dbConnection.courses.ToList());
         }
     }
 }

@@ -17,5 +17,7 @@ namespace SchoolBytes.Models
         public string Location { get; set; }
         public string Name { get; set; }
         public Teacher Teacher { get; set; }
+
+        public int Id { get; set; }
     }
 }

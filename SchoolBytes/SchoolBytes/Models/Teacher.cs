@@ -6,5 +6,7 @@ namespace SchoolBytes.Models
     {
         public string Name { get; set; }
         public List<Course> Courses { get; set; }
+
+        public int Id { get; set; }
     }
 }
