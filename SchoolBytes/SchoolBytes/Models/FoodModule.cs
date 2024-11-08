@@ -11,4 +11,5 @@ public class FoodModule : IModule
     public string Location { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public string Name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     public Teacher Teacher { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public int Id { get; set; }
 }
