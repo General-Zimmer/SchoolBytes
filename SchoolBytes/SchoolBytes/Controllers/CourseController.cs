@@ -14,7 +14,7 @@ namespace SchoolBytes.Controllers
 
         // GET: Course
         public ActionResult Index()
-        {
+        {   
             return RedirectToAction("CourseOverview");
         }
 
@@ -88,6 +88,13 @@ namespace SchoolBytes.Controllers
             
          /*   course.CoursesModules = modules;
             courses.Add(course);*/
+        public ActionResult Create(Course course)
+        {
+            DBConnection dbConnection = DBConnection.getDBContext();
+            dbConnection.Add(course);
+
+            dbConnection.SaveChanges();
+
             return RedirectToAction("CourseOverview");
         }
 
@@ -101,6 +108,10 @@ namespace SchoolBytes.Controllers
             {
                 return HttpNotFound("Course not found");
             }
+            DBConnection dbConnection = DBConnection.getDBContext();
+            Course course = dbConnection.courses.Find(id);
+
+            dbConnection.SaveChanges();
 
             return View(course);
         }
@@ -110,7 +121,11 @@ namespace SchoolBytes.Controllers
         [Route("course/update/{id}")]
         public ActionResult Update(int id, Course updatedCourse)
         {
-            var course = courses.FirstOrDefault(x => x.Id == id);
+
+            DBConnection dbConnection = DBConnection.getDBContext();
+            
+            Course course = dbConnection.courses.Find(id);
+           
             if (course == null)
             {
                 return HttpNotFound("Course not found");
@@ -125,6 +140,14 @@ namespace SchoolBytes.Controllers
                 course.EndDate = updatedCourse.EndDate;
                 course.MaxCapacity = updatedCourse.MaxCapacity;
 
+                    course.Name = updatedCourse.Name;
+                    course.Description = updatedCourse.Description;
+                    course.StartDate = updatedCourse.StartDate;
+                    course.EndDate = updatedCourse.EndDate;
+                    course.MaxCapacity = updatedCourse.MaxCapacity;
+                    
+                dbConnection.SaveChanges();
+
                 return RedirectToAction("CourseOverview");
             }
 
@@ -136,7 +159,10 @@ namespace SchoolBytes.Controllers
         [Route("course/delete/{id}")]
         public ActionResult Delete(int id)
         {
-            var course = courses.SingleOrDefault(c => c.Id == id);
+
+            DBConnection dbConnection = DBConnection.getDBContext();
+            Course course = dbConnection.courses.Find(id);
+   
             if (course == null)
             {
                 return HttpNotFound("Course not found");
@@ -145,11 +171,22 @@ namespace SchoolBytes.Controllers
             courses.Remove(course);
             return RedirectToAction("CourseOverview");
         }
+            else
+            {
+                 dbConnection.Remove(course);
+                 dbConnection.SaveChanges();
+
+                 return RedirectToAction("CourseOverview");
+            }
+
+        }
 
         public ActionResult CourseOverview(int? selectedCourseId = null)
         {
+            DBConnection dbConnection = DBConnection.getDBContext();
+            
             ViewBag.SelectedCourseId = selectedCourseId;
-            return View(courses);
+            return View(dbConnection.courses.ToList());
         }
         
         private static DateTime GetDayForWeekday(DateTime currentDate, DayOfWeek dayOfWeek)
