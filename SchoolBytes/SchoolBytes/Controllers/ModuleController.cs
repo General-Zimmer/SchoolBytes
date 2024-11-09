@@ -1,21 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using SchoolBytes.Models;
 
 namespace SchoolBytes.Controllers
 {
-    public class CourseController : Controller
+    public class ModuleController : Controller
     {
-        private List<Course> courses {
+        // dummy data for testing purposes
+        private List<Course> courses
+        {
             get
             {
                 var teacher1 = new Teacher { Name = "John Doe" };
                 var participant1 = new Participant { Name = "Alice" };
                 var participant2 = new Participant { Name = "Bob" };
 
-                
+
 
                 var course1 = new Course(
                     "Science 101",
@@ -95,41 +98,19 @@ namespace SchoolBytes.Controllers
             set
             {
 
-            } }
-        
-        // GET: Course
+            }
+        }
+
+        // GET: Module
         public ActionResult Index()
         {
-            return RedirectToAction("CourseOverview");
+            return View("ModuleOverview");
         }
 
-        // POST: api/course (Add new course)
-        [HttpPost]
-        [Route("course/create")]
-        public ActionResult Create(Course course)
-        {
-            courses.Add(course);
-            return RedirectToAction("CourseOverview");
-        }
-
-        // GET: api/course/{id} (Get course by ID)
-        [Route("course/{id}")]
-        public ActionResult GetCourse(int id)
-        {
-           // var course = courses.SingleOrDefault(c => c.Id == id);
-            var course = courses.FirstOrDefault(x => x.Id == id);
-            if (course == null)
-            {
-                return HttpNotFound("Course not found");
-            }
-
-            return View(course);
-        }
-
-        // POST: api/course/update/{id} (Update course)
-        [HttpPost]
-        [Route("course/update/{id}")]
-        public ActionResult Update(int id, Course updatedCourse)
+        // GET: course/{id}/modules (Get course modules by course ID)
+        [HttpGet]
+        [Route("course/{id}/ModuleOverview")]
+        public ActionResult ModuleOverview(int id)
         {
             var course = courses.FirstOrDefault(x => x.Id == id);
             if (course == null)
@@ -137,40 +118,7 @@ namespace SchoolBytes.Controllers
                 return HttpNotFound("Course not found");
             }
 
-            if (ModelState.IsValid)
-            {
-                    course.Name = updatedCourse.Name;
-                    course.Description = updatedCourse.Description;
-                    Console.WriteLine(course.Description);
-                    course.StartDate = updatedCourse.StartDate;
-                    course.EndDate = updatedCourse.EndDate;
-                    course.MaxCapacity = updatedCourse.MaxCapacity;
-                    
-                return RedirectToAction("CourseOverview");
-            }
-            return View(course);
-        }
-
-        // DELETE: api/course/{id} (Remove course)
-        [HttpPost]
-        [Route("course/delete/{id}")]
-        public ActionResult Delete(int id)
-        {
-            var course = courses.SingleOrDefault(c => c.Id == id);
-            if (course == null)
-            {
-                return HttpNotFound("Course not found");
-            }
-            courses.Remove(course);
-            return RedirectToAction("CourseOverview");
-        }
-
-        public ActionResult CourseOverview(int? selectedCourseId = null)
-        {
-            ViewBag.SelectedCourseId = selectedCourseId;
-            return View(courses);
+            return View(course.Courses); // Passes only the course modules to the view
         }
     }
 }
-        
- 
