@@ -31,7 +31,7 @@
                     <p><strong>Madklub:</strong> <input type="text" name="FoodModule" value="@(module.FoodModule == null ? "Ikke tilføjet" : module.FoodModule.ToString())" disabled /></p>
 
                     <button type="button" class="toggle-module-edit" onclick="enableModuleEditing('@module.Id')">Rediger modul</button>
-                    <button type="submit" class="save-module-button" style="display: none;">Gem ændringer</button>
+                    <button type="button" onclick="updateModule(@module.Course.Id, @module.Id)" class="save-module-button" style="display: none;">Gem ændringer</button>
                     <button type="button" class="delete-module-button" onclick="confirmDeleteModule(@module.Course.Id, @module.Id)">Slet modul</button>
                 </form>
             </div>
@@ -80,14 +80,14 @@
                 function updateModule(courseId, moduleId) {
                     console.log(`Attempting to update module with ID ${moduleId} in course ${courseId}`);
                     const data = $(`#module-update-form-${moduleId}`).serialize();
-
+                    console.log(data)
                     $.ajax({
                         url: `/course/${courseId}/update/${moduleId}`,
                         method: 'POST',
                         data: data,
                         success: function () {
                             alert("Modul opdateret!");
-                            location.reload(); // Reloads the page
+                            //location.reload(); // Reloads the page
                         },
                         error: function (xhr, status, error) {
                             console.error("Error details:", xhr.responseText); // This logs the response

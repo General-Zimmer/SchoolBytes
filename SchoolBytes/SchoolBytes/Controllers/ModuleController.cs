@@ -35,6 +35,7 @@ namespace SchoolBytes.Controllers
         [Route("course/{courseId}/update/{moduleId}")]
         public ActionResult Update(int courseId, int moduleId, CourseModule updatedCourseModule)
         {
+            //updatedCourse module already has all this info, do we really need course id and module id? It's in updatedCourseModule
             var course = dBConnection.courses.Find(courseId);
             if (course == null)
             {
@@ -46,23 +47,32 @@ namespace SchoolBytes.Controllers
             {
                 return HttpNotFound("Course module not found");
             }
+       
+            module.Name = updatedCourseModule.Name;
 
-            if (ModelState.IsValid)
+
+            //TODO: Make this use ModelState again, but need to fix frontend for that as it sends a string not a teacher obj so there can be no mapping
+            //Easy solution would be to queury for all teachers, then make dropdown where you can choose teacher's name. Then have the value for the select option be the teachers id
+            //and set it that way. Won't fix modelstate, but we can just avoid modelstate anyway as we're not posting a form here.
+            module.Teacher = updatedCourseModule.Teacher;
+            
+       
+            module.Date = updatedCourseModule.Date;
+            module.StartTime = updatedCourseModule.StartTime;
+            module.EndTime = updatedCourseModule.EndTime;
+            module.Capacity = updatedCourseModule.Capacity;
+            module.Location = updatedCourseModule.Location;
+            dBConnection.Update(module);
+            dBConnection.SaveChanges();
+
+           /* if (ModelState.IsValid)
             {
-                module.Name = updatedCourseModule.Name;
-                module.Teacher = updatedCourseModule.Teacher;
-                module.Date = updatedCourseModule.Date;
-                module.StartTime = updatedCourseModule.StartTime;
-                module.EndTime = updatedCourseModule.EndTime;
-                module.Capacity = updatedCourseModule.Capacity;
-                module.Location = updatedCourseModule.Location;
-                dBConnection.Update(course);
-                dBConnection.SaveChanges();
+               
 
-                return RedirectToAction("ModuleOverview");
-            }
+                return new HttpStatusCodeResult(HttpStatusCode.OK);
+            }*/
 
-            return View(course);
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
         // DELETE: api/course/{id}/delete/{moduleId} (Remove course module)
