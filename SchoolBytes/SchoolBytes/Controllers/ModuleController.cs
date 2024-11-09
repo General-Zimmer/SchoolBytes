@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SchoolBytes.Models;
 
 namespace SchoolBytes.Controllers
@@ -13,15 +14,9 @@ namespace SchoolBytes.Controllers
         DBConnection dBConnection = DBConnection.getDBContext();
                
 
-        // GET: Module
-        public ActionResult Index()
-        {
-            return View("ModuleOverview");
-        }
-
         // GET: course/{id}/modules (Get course modules by course ID)
         [HttpGet]
-        [Route("course/{id}/ModuleOverview")]
+        [Route("course/{id}/moduleOverview")]
         public ActionResult ModuleOverview(int id)
         {
             var course = dBConnection.courses.Find(id);
@@ -30,7 +25,7 @@ namespace SchoolBytes.Controllers
                 return HttpNotFound("Course not found");
             }
 
-            return View(course.CoursesModules); // Passes only the course modules to the view
+            return View(course.CoursesModules.ToList()); // Passes only the course modules to the view
         }
 
         // POST: api/course/{courseid}/update/{moduleid} (Update course module)

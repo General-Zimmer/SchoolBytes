@@ -16,10 +16,11 @@ namespace SchoolBytes
             // Enable attribute routing
             routes.MapMvcAttributeRoutes();
 
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Course", action = "CourseOverview", id = UrlParameter.Optional }
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

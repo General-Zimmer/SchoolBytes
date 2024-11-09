@@ -13,10 +13,19 @@ namespace SchoolBytes.Controllers
 
 
         // GET: Course
-        public ActionResult Index()
-        {   
-            return RedirectToAction("CourseOverview");
+        [HttpGet]
+        [Route("course")]
+
+        public ActionResult CourseOverview(int? selectedCourseId = null)
+        {
+            if(selectedCourseId != null)
+            {
+                ViewBag.SelectedCourseId = selectedCourseId;
+            }
+
+            return View(dbConnection.courses.ToList());
         }
+      
 
         // POST: api/course (Add new course)
         [HttpPost]
@@ -53,17 +62,20 @@ namespace SchoolBytes.Controllers
                 activeDays.Add(DayOfWeek.Saturday);
             if (courseDTO.Sunday)
                 activeDays.Add(DayOfWeek.Sunday);
-
+            //TODO: delete this line
+            activeDays.Add(DayOfWeek.Monday);
             var daysCount = activeDays.Count;
+            
             if (daysCount == 0)
             {
+                //yeh this is not a good way of doing it... smider en hen på en fejlside
                 throw new InvalidOperationException("Ingen dage valgt på kursus.");
             }
 
             var modulesPerDay = courseDTO.numberOfModules / daysCount;
             var remainingModules = courseDTO.numberOfModules % daysCount;
             var currentDate = DateTime.Now;
-
+            //Dunno about this?
             foreach (var activeDayDate in activeDays.Select(day => GetDayForWeekday(currentDate, day)))
             {
                 for (var i = 0; i < modulesPerDay; i++)
@@ -86,7 +98,7 @@ namespace SchoolBytes.Controllers
                 }
             }
 
-            
+            course.CoursesModules.AddRange(modules);
             dbConnection.Add(course);
 
             dbConnection.SaveChanges();
@@ -167,13 +179,6 @@ namespace SchoolBytes.Controllers
 
         }
 
-        public ActionResult CourseOverview(int? selectedCourseId = null)
-        {
-            DBConnection dbConnection = DBConnection.getDBContext();
-            
-            ViewBag.SelectedCourseId = selectedCourseId;
-            return View(dbConnection.courses.ToList());
-        }
         
         private static DateTime GetDayForWeekday(DateTime currentDate, DayOfWeek dayOfWeek)
         {
