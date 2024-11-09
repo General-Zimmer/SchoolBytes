@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using SchoolBytes.DTO;
 using SchoolBytes.Models;
 
 namespace SchoolBytes.Controllers
 {
     public class CourseController : Controller
     {
-        private List<Course> courses {
+        private List<Course> courses
+        {
             get
             {
                 var teacher1 = new Teacher { Name = "John Doe" };
@@ -92,11 +94,9 @@ namespace SchoolBytes.Controllers
                 courseTest.Add(course2);
                 return courseTest;
             }
-            set
-            {
+            set { }
+        }
 
-            } }
-        
         // GET: Course
         public ActionResult Index()
         {
@@ -106,8 +106,72 @@ namespace SchoolBytes.Controllers
         // POST: api/course (Add new course)
         [HttpPost]
         [Route("course/create")]
-        public ActionResult Create(Course course)
+        public ActionResult Create(CourseDTO courseDTO)
         {
+            var course = new Course
+            {
+                Name = courseDTO.Name,
+                Description = courseDTO.Description,
+                Teacher = courseDTO.Teacher,
+                Participants = courseDTO.Participants,
+                CoursesModules = courseDTO.CoursesModules,
+                StartDate = courseDTO.StartDate,
+                EndDate = courseDTO.EndDate,
+                MaxCapacity = courseDTO.MaxCapacity,
+                Id = courseDTO.Id
+            };
+            
+            var modules = new List<CourseModule>();
+            var activeDays = new List<DayOfWeek>();
+            
+            if (courseDTO.Monday)
+                activeDays.Add(DayOfWeek.Monday);
+            if (courseDTO.Tuesday)
+                activeDays.Add(DayOfWeek.Tuesday);
+            if (courseDTO.Wednesday)
+                activeDays.Add(DayOfWeek.Wednesday);
+            if (courseDTO.Thursday)
+                activeDays.Add(DayOfWeek.Thursday);
+            if (courseDTO.Friday)
+                activeDays.Add(DayOfWeek.Friday);
+            if (courseDTO.Saturday)
+                activeDays.Add(DayOfWeek.Saturday);
+            if (courseDTO.Sunday)
+                activeDays.Add(DayOfWeek.Sunday);
+            
+            var daysCount = activeDays.Count;
+            if (daysCount == 0)
+            {
+                throw new InvalidOperationException("Ingen dage valgt på kursus.");
+            }
+            
+            var modulesPerDay = courseDTO.numberOfModules / daysCount;
+            var remainingModules = courseDTO.numberOfModules % daysCount;
+            var currentDate = DateTime.Now;
+
+            foreach (var activeDayDate in activeDays.Select(day => GetDayForWeekday(currentDate, day)))
+            {
+                for (var i = 0; i < modulesPerDay; i++)
+                {
+                    modules.Add(new CourseModule()
+                    {
+                        Name = $"Module {modules.Count + 1}",
+                        Date = activeDayDate
+                    });
+                }
+                
+                if (remainingModules > 0)
+                {
+                    modules.Add(new CourseModule()
+                    {
+                        Name = $"Module {modules.Count + 1}",
+                        Date = activeDayDate
+                    });
+                    remainingModules--;
+                }
+            }
+            
+            course.CoursesModules = modules;
             courses.Add(course);
             return RedirectToAction("CourseOverview");
         }
@@ -116,7 +180,7 @@ namespace SchoolBytes.Controllers
         [Route("course/{id}")]
         public ActionResult GetCourse(int id)
         {
-           // var course = courses.SingleOrDefault(c => c.Id == id);
+            // var course = courses.SingleOrDefault(c => c.Id == id);
             var course = courses.FirstOrDefault(x => x.Id == id);
             if (course == null)
             {
@@ -139,15 +203,16 @@ namespace SchoolBytes.Controllers
 
             if (ModelState.IsValid)
             {
-                    course.Name = updatedCourse.Name;
-                    course.Description = updatedCourse.Description;
-                    Console.WriteLine(course.Description);
-                    course.StartDate = updatedCourse.StartDate;
-                    course.EndDate = updatedCourse.EndDate;
-                    course.MaxCapacity = updatedCourse.MaxCapacity;
-                    
+                course.Name = updatedCourse.Name;
+                course.Description = updatedCourse.Description;
+                Console.WriteLine(course.Description);
+                course.StartDate = updatedCourse.StartDate;
+                course.EndDate = updatedCourse.EndDate;
+                course.MaxCapacity = updatedCourse.MaxCapacity;
+
                 return RedirectToAction("CourseOverview");
             }
+
             return View(course);
         }
 
@@ -161,6 +226,7 @@ namespace SchoolBytes.Controllers
             {
                 return HttpNotFound("Course not found");
             }
+
             courses.Remove(course);
             return RedirectToAction("CourseOverview");
         }
@@ -169,6 +235,12 @@ namespace SchoolBytes.Controllers
         {
             ViewBag.SelectedCourseId = selectedCourseId;
             return View(courses);
+        }
+        
+        private static DateTime GetDayForWeekday(DateTime currentDate, DayOfWeek dayOfWeek)
+        {
+            var daysToAdd = ((int)dayOfWeek - (int)currentDate.DayOfWeek + 7) % 7;
+            return currentDate.AddDays(daysToAdd);
         }
     }
 }
