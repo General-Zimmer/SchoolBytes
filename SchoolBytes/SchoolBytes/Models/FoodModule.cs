@@ -13,10 +13,10 @@ namespace SchoolBytes.Models
         public DateTime StartTime { get; set; }
         [DataType(DataType.Time)]
         public DateTime EndTime { get; set; }
-        public Course Course { get; set; }
+        public virtual Course Course { get; set; }
         public string Location { get; set; }
         public string Name { get; set; }
-        public Teacher Teacher { get; set; }
+        public virtual Teacher Teacher { get; set; }
 
         public int Id { get; set; }
     }

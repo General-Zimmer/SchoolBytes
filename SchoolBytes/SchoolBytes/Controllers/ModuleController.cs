@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -83,7 +85,7 @@ namespace SchoolBytes.Controllers
             dBConnection.Remove(module);
             dBConnection.SaveChanges();
 
-            return RedirectToAction("CourseOverview");
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
     }
 }
