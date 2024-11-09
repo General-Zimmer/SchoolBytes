@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SchoolBytes.Models;
+using System.Collections.Generic;
 
 public class Teacher
 {

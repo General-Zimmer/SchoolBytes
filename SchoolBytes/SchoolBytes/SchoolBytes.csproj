@@ -139,11 +139,13 @@
     <Compile Include="Controllers\CourseController.cs" />
     <Compile Include="Controllers\FoodController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
+    <Compile Include="DTO\CourseDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\CourseModule.cs" />
+    <Compile Include="Models\DBConnection.cs" />
     <Compile Include="Models\FoodModule.cs" />
     <Compile Include="Models\IModule.cs" />
     <Compile Include="Models\Participant.cs" />
@@ -177,6 +179,7 @@
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="App_Data\ConnectionCredentials.json" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -207,9 +210,7 @@
     <Content Include="Views\Food\SletDetHer.cshtml" />
     <Content Include="Views\Module\ModuleOverview.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
     <Content Include="Content\bootstrap.rtl.css.map" />
