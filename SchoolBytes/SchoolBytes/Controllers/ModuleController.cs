@@ -10,6 +10,7 @@ namespace SchoolBytes.Controllers
 {
     public class ModuleController : Controller
     {
+        DBConnection dBConnection = DBConnection.getDBContext();
                
 
         // GET: Module
@@ -23,13 +24,13 @@ namespace SchoolBytes.Controllers
         [Route("course/{id}/ModuleOverview")]
         public ActionResult ModuleOverview(int id)
         {
-            var course = courses.FirstOrDefault(x => x.Id == id);
+            var course = dBConnection.courses.Find(id);
             if (course == null)
             {
                 return HttpNotFound("Course not found");
             }
 
-            return View(course.Courses); // Passes only the course modules to the view
+            return View(course.CoursesModules); // Passes only the course modules to the view
         }
 
         // POST: api/course/{courseid}/update/{moduleid} (Update course module)
@@ -37,13 +38,13 @@ namespace SchoolBytes.Controllers
         [Route("course/{courseId}/update/{moduleId}")]
         public ActionResult Update(int courseId, int moduleId, CourseModule updatedCourseModule)
         {
-            var course = courses.FirstOrDefault(x => x.Id == courseId);
+            var course = dBConnection.courses.Find(courseId);
             if (course == null)
             {
                 return HttpNotFound("Course not found");
             }
 
-            var module = course.Courses.FirstOrDefault(y => y.Id == moduleId);
+            var module = course.CoursesModules.Find(m => m.Id == moduleId);
             if (module == null) 
             {
                 return HttpNotFound("Course module not found");
@@ -58,13 +59,13 @@ namespace SchoolBytes.Controllers
                 module.EndTime = updatedCourseModule.EndTime;
                 module.Capacity = updatedCourseModule.Capacity;
                 module.Location = updatedCourseModule.Location;
+                dBConnection.Update(course);
+                dBConnection.SaveChanges();
 
                 return RedirectToAction("ModuleOverview");
             }
 
-            Debug.WriteLine($"CourseId: {courseId}, ModuleId: {moduleId}");
-
-            return View(course.Courses);
+            return View(course);
         }
 
         // DELETE: api/course/{id}/delete/{moduleId} (Remove course module)
@@ -72,21 +73,21 @@ namespace SchoolBytes.Controllers
         [Route("course/{courseId}/delete/{moduleId}")]
         public ActionResult Delete(int courseId, int moduleId)
         {
-            var course = courses.SingleOrDefault(c => c.Id == courseId);
+            var course = dBConnection.courses.Find(courseId);
             if (course == null)
             {
                 return HttpNotFound("Course not found");
             }
 
-            var module = course.Courses.FirstOrDefault(y => y.Id == moduleId);
+            var module = course.CoursesModules.Find(m => m.Id == moduleId);
             if (module == null)
             {
                 return HttpNotFound("Course module not found");
             }
+            //TODO: dobbelt tjek om den også sletter FK på course
+            dBConnection.Remove(module);
+            dBConnection.SaveChanges();
 
-            Debug.WriteLine($"CourseId: {courseId}, ModuleId: {moduleId}");
-
-            course.Courses.Remove(module);
             return RedirectToAction("CourseOverview");
         }
     }

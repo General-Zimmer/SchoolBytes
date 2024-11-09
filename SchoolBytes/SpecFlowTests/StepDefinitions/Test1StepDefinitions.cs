@@ -1,3 +1,4 @@
+using SchoolBytes.Models;
 using System;
 using TechTalk.SpecFlow;
 

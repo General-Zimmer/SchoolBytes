@@ -14,6 +14,5 @@ namespace SchoolBytes.Models
         public int Capacity { get; set; }
         public Course Course { get; set; }
         public string Location { get; set; }
-        public int Id { get; set; }
     }
 }

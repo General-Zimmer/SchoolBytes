@@ -9,8 +9,8 @@ namespace SchoolBytes.Controllers
 {
     public class CourseController : Controller
     {
-        
-       
+        DBConnection dbConnection = DBConnection.getDBContext();
+
 
         // GET: Course
         public ActionResult Index()
@@ -35,10 +35,10 @@ namespace SchoolBytes.Controllers
                 MaxCapacity = courseDTO.MaxCapacity,
                 Id = courseDTO.Id
             };
-            
+
             var modules = new List<CourseModule>();
             var activeDays = new List<DayOfWeek>();
-            
+
             if (courseDTO.Monday)
                 activeDays.Add(DayOfWeek.Monday);
             if (courseDTO.Tuesday)
@@ -53,13 +53,13 @@ namespace SchoolBytes.Controllers
                 activeDays.Add(DayOfWeek.Saturday);
             if (courseDTO.Sunday)
                 activeDays.Add(DayOfWeek.Sunday);
-            
+
             var daysCount = activeDays.Count;
             if (daysCount == 0)
             {
                 throw new InvalidOperationException("Ingen dage valgt på kursus.");
             }
-            
+
             var modulesPerDay = courseDTO.numberOfModules / daysCount;
             var remainingModules = courseDTO.numberOfModules % daysCount;
             var currentDate = DateTime.Now;
@@ -74,7 +74,7 @@ namespace SchoolBytes.Controllers
                         Date = activeDayDate
                     });
                 }
-                
+
                 if (remainingModules > 0)
                 {
                     modules.Add(new CourseModule()
@@ -85,33 +85,26 @@ namespace SchoolBytes.Controllers
                     remainingModules--;
                 }
             }
+
             
-         /*   course.CoursesModules = modules;
-            courses.Add(course);*/
-        public ActionResult Create(Course course)
-        {
-            DBConnection dbConnection = DBConnection.getDBContext();
             dbConnection.Add(course);
 
             dbConnection.SaveChanges();
 
             return RedirectToAction("CourseOverview");
-        }
 
+        }
+     
         // GET: api/course/{id} (Get course by ID)
         [Route("course/{id}")]
         public ActionResult GetCourse(int id)
         {
-            // var course = courses.SingleOrDefault(c => c.Id == id);
-            var course = courses.FirstOrDefault(x => x.Id == id);
+            Course course = dbConnection.courses.Find(id);
+
             if (course == null)
             {
                 return HttpNotFound("Course not found");
             }
-            DBConnection dbConnection = DBConnection.getDBContext();
-            Course course = dbConnection.courses.Find(id);
-
-            dbConnection.SaveChanges();
 
             return View(course);
         }
@@ -121,8 +114,6 @@ namespace SchoolBytes.Controllers
         [Route("course/update/{id}")]
         public ActionResult Update(int id, Course updatedCourse)
         {
-
-            DBConnection dbConnection = DBConnection.getDBContext();
             
             Course course = dbConnection.courses.Find(id);
            
@@ -160,17 +151,12 @@ namespace SchoolBytes.Controllers
         public ActionResult Delete(int id)
         {
 
-            DBConnection dbConnection = DBConnection.getDBContext();
             Course course = dbConnection.courses.Find(id);
    
             if (course == null)
             {
                 return HttpNotFound("Course not found");
-            }
-
-            courses.Remove(course);
-            return RedirectToAction("CourseOverview");
-        }
+            }        
             else
             {
                  dbConnection.Remove(course);
