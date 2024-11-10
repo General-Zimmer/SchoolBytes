@@ -55,6 +55,18 @@ namespace SchoolBytes.Models
 
 
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<CourseModule>()
+                .HasOne(cm => cm.Course)
+                .WithMany(c => c.CoursesModules)
+                .HasForeignKey(cm => cm.Id)
+                .OnDelete(DeleteBehavior.Cascade);  // Enable cascade delete
+        }
+
         public static DBConnection getDBContext()
         {
 
@@ -67,7 +79,7 @@ namespace SchoolBytes.Models
 
         private static string getCredentialsPath()
         {
-            StreamReader credJson = new StreamReader(HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json"));
+            StreamReader credJson = new StreamReader(HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json"));//File.ReadAllText("C:\\Users\\Duff\\Desktop\\SchoolBytes\\SchoolBytes\\SchoolBytes\\App_Data\\ConnectionCredentials.json"); 
             return (string)JObject.Parse(credJson.ReadToEnd())["credentials"];
         }
     }

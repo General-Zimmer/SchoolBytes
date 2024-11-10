@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 using SchoolBytes.DTO;
 using SchoolBytes.Models;
@@ -174,7 +175,7 @@ namespace SchoolBytes.Controllers
                  dbConnection.Remove(course);
                  dbConnection.SaveChanges();
 
-                 return RedirectToAction("CourseOverview");
+                return new HttpStatusCodeResult(HttpStatusCode.OK);
             }
 
         }

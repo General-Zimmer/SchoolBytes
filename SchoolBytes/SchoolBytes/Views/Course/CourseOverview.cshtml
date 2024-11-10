@@ -74,16 +74,27 @@
                         <button type="submit" class="save-button" onclick="enableDisabled()" style="display: none;">Gem ændringer</button>
 
                         <!-- Slet Button -->
-                        <form method="post" action="@Url.Action("Delete", "Course")" onsubmit="return confirmDelete()">
-                            <input type="hidden" name="id" value="@course.Id"/>
-                            <button type="submit" class="delete-button">Slet hold</button>
-                        </form>
+                        <input type="hidden" name="id" value="@course.Id"/>
+                        <button type="button" onclick="confirmDeleteCourse(@course.Id)" class="delete-button">Slet hold</button>                 
                     </div>
                 </form>
 
             <script>
-                function confirmDelete() {
-                    return confirm("Er du sikker på, at du vil slette dette hold?");
+                function confirmDeleteCourse(courseId) {
+                    if (confirm("Er du sikker på, at du vil slette dette hold?")) {
+                        $.ajax({
+                            url: `/course/delete/${courseId}`,
+                            method: 'POST',
+                            success: function () {
+                                alert("Hold slettet!");
+                                location.reload(); // Reloads the page
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Error details:", xhr.responseText); // This logs the response
+                                alert("Fejl ved sletning af hold.");
+                            }
+                        });
+                    }
                 }
             </script>
 
