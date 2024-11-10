@@ -1,0 +1,164 @@
+﻿@model List<SchoolBytes.Models.Course>
+@{
+    var selectedCourseId = ViewBag.SelectedCourseId as int?;
+}
+
+<link rel="stylesheet" href="/Content/CourseOverviewStyles.css"/>
+
+<h1>Hold oversigt</h1>
+
+<!-- Get all courses -->
+<ul id="courseList">
+    @foreach (var course in Model)
+    {
+        <li>
+            <div>
+                <!-- Toggle course details -->
+                <form id="detail-form-@course.Id" asp-action="CourseOverview" method="get">
+                    <input type="hidden" name="selectedCourseId" value="@(selectedCourseId == course.Id ? string.Empty : course.Id.ToString())"/>
+                    @course.Name
+                    <button type="submit" class="detail-button">
+                        @if (selectedCourseId == course.Id)
+                        {
+                            @Html.Raw("&#9650;")
+                            <!-- Up arrow when expanded -->
+                        }
+                        else
+                        {
+                            @Html.Raw("&#9660;")
+                            <!-- Down arrow when collapsed -->
+                        }
+                    </button>
+                </form>
+            </div>
+
+            @if (selectedCourseId == course.Id)
+            {
+                <!-- Update course -->
+                <form id="update-form-@course.Id" action="/course/update/@course.Id" method="post">
+                    <div class="course-details">
+                        <input type="hidden" name="Id" value="@course.Id" />
+
+                        <h4>
+                            <b>Navn:</b>
+                            <input type="text" name="Name" value="@course.Name" disabled />
+                        </h4>
+
+                        <p>
+                            <b>Start:</b>
+                            <input type="date" name="StartDate" value="@course.StartDate.ToString("yyyy-MM-dd")" disabled />
+                        </p>
+                        <p>
+                            <b>Slut:</b>
+                            <input type="date" name="EndDate" value="@course.EndDate.ToString("yyyy-MM-dd")" disabled />
+                        </p>
+                        <p>
+                            <b>Beskrivelse:</b>
+                            <textarea name="Description" disabled>@course.Description</textarea>
+                        </p>
+                        <p>
+                            <b>Maksimum antal deltagere:</b>
+                            <input type="number" name="MaxCapacity" value="@course.MaxCapacity" disabled />
+                        </p>
+
+                        <!--Se holddage button-->
+                        <button type="button" class="allehold-button" onclick="window.location.href='/course/@course.Id/moduleOverview'">Se hold dage</button>
+
+
+
+
+                        <!-- Rediger Button -->
+                        <button type="button" class="toggle-button" onclick="enableEditing()">Rediger hold</button>
+
+                        <!-- Gem ændringer Button -->
+                        <button type="submit" class="save-button" onclick="enableDisabled()" style="display: none;">Gem ændringer</button>
+
+                        <!-- Slet Button -->
+                        <form method="post" action="@Url.Action("Delete", "Course")" onsubmit="return confirmDelete()">
+                            <input type="hidden" name="id" value="@course.Id"/>
+                            <button type="submit" class="delete-button">Slet hold</button>
+                        </form>
+                    </div>
+                </form>
+
+            <script>
+                function confirmDelete() {
+                    return confirm("Er du sikker på, at du vil slette dette hold?");
+                }
+            </script>
+
+                <script>
+                function enableEditing() {
+                    document.querySelectorAll('.course-details input, .course-details textarea').forEach(field => {
+                        field.removeAttribute('disabled');
+                    });
+   
+                    document.querySelector('.toggle-button').style.display = 'none';
+                    document.querySelector('.save-button').style.display = 'inline-block';
+                }
+
+                function enableDisabled() {
+                    document.querySelectorAll('.course-details input, .course-details textarea').forEach(field => {
+                        field.setAttribute("disabled", 'disabled');
+                    });
+                }
+            </script>
+            }
+        </li>
+    }
+</ul>
+
+<!-- Create course -->
+<h1>Opret hold</h1>
+<form id="create-form" action="/course/create" method="post">
+    <div class="create-group">
+        <label class="create-label" for="Name">Kursusnavn:</label>
+        <input class="create-input" type="text" id="Name" name="Name" required/>
+    </div>
+
+    <div class="create-group">
+        <label class="create-label" for="Description">Beskrivelse:</label>
+        <textarea class="create-input" id="Description" name="Description" required></textarea>
+    </div>
+
+    <div class="create-group">
+        <label class="create-label" for="Teacher">Lærer:</label>  Måske lave om til en liste? 
+        <input class="create-input" type="text" id="Teacher" name="Teacher.Name" required/>
+    </div>
+
+    <div class="create-group">
+        <label class="create-label" for="StartDate">Startdato:</label>
+        <input class="create-input" type="date" id="StartDate" name="StartDate" required/>
+    </div>
+
+    <div class="create-group">
+        <label class="create-label" for="EndDate">Slutdato:</label>
+        <input class="create-input" type="date" id="EndDate" name="EndDate" required/>
+    </div>
+
+    <div class="create-group">
+        <label class="create-label" for="MaxCapacity">Maksimal kapacitet:</label>
+        <input class="create-input" type="number" id="MaxCapacity" name="MaxCapacity" min="1" required/>
+    </div>
+
+    <h2>Vælg kursus dage</h2>
+
+    <label><input asp-for="Monday" type="checkbox"> Mandag</label><br>
+    <label><input asp-for="Tuesday" type="checkbox"> Tirsdag</label><br>
+    <label><input asp-for="Wednesday" type="checkbox"> Onsdag</label><br>
+    <label><input asp-for="Thursday" type="checkbox"> Torsdag</label><br>
+    <label><input asp-for="Friday" type="checkbox"> Fredag</label><br>
+    <label><input asp-for="Saturday" type="checkbox"> Lørdag</label><br>
+    <label><input asp-for="Sunday" type="checkbox"> Søndag</label><br>
+
+    <div class="create-group">
+        <label class="create-label" for="NumberOfModules">Antal Kursus dage:</label>
+        <input class="create-input" type="number" id="NumberOfModules" name="NumberOfModules" min="1" required/>
+    </div>
+
+    <div class="create-group">
+        <button class="create-button" type="submit">Opret nyt hold</button>
+    </div>
+
+</form>
+
