@@ -3,19 +3,20 @@ using System.Drawing;
 using System.IO;
 using QRCoder;
 
-/// <summary>
-/// Class <c>QRGeneratorService</c> is a service class that implements the package QRCoder
-/// to generate QR Codes for redirection to specific webpages
-/// </summary>
+
 namespace QRService
 {
+    /// <summary>
+    /// Class <c>QRGeneratorService</c> is a service class that implements the package QRCoder
+    /// to generate QR Codes for redirection to specific webpages
+    /// </summary>
     public class QRGeneratorService
     {
         private readonly QRCodeGenerator qrGenerator = new QRCodeGenerator(); // field responsible for generating QR codes
 
         /// <summary>
-        /// This method will generate a Bitmap from the given string, typically a URL. This Bitmap
-        /// can be used to generate an Image with a readable QRCode.
+        /// This method will generate a Bitmap from the given string, typically a URL.
+        /// This Bitmap can be used directly in the application or saved seperately as a PNG, JPEG, etc...
         /// </summary>
         /// <returns>A Bitmap object</returns>
         public Bitmap GenerateBitmap(string content)
