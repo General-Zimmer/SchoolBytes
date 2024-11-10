@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using QRService;
 
 namespace SchoolBytes.Controllers
 {
@@ -10,6 +11,27 @@ namespace SchoolBytes.Controllers
     {
         public ActionResult Index()
         {
+            // Step 1: Create an instance of the QRCodeGeneratorService
+            var qrCodeService = new QRGeneratorService();
+
+            // Step 2: Define the content to encode in the QR code
+            string content = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley";
+
+            // Step 3: Specify the file path where the QR code image will be saved
+            string filePath = "\"C:\\Users\\jakob\\Downloads\"";
+
+            try
+            {
+                // Step 4: Generate and save the QR code as a PNG file
+                qrCodeService.SaveQRCodeAsPng(content, filePath);
+                Console.WriteLine($"QR code successfully saved at: {filePath}");
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that may occur
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+
             //Replace this with an actual list of the events we wish to show (modules)
             var currentEvents = new List<object>();
 
