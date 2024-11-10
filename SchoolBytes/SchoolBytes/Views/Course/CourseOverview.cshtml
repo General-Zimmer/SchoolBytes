@@ -1,6 +1,7 @@
 ﻿@model List<SchoolBytes.Models.Course>
 @{
     var selectedCourseId = ViewBag.SelectedCourseId as int?;
+    var courseDTO = ViewBag.CourseDTO as SchoolBytes.DTO.CourseDTO;
 }
 
 <link rel="stylesheet" href="/Content/CourseOverviewStyles.css"/>
@@ -74,29 +75,6 @@
                         </form>
                     </div>
                 </form>
-
-            <script>
-                function confirmDelete() {
-                    return confirm("Er du sikker på, at du vil slette dette hold?");
-                }
-            </script>
-
-                <script>
-                function enableEditing() {
-                    document.querySelectorAll('.course-details input, .course-details textarea').forEach(field => {
-                        field.removeAttribute('disabled');
-                    });
-   
-                    document.querySelector('.toggle-button').style.display = 'none';
-                    document.querySelector('.save-button').style.display = 'inline-block';
-                }
-
-                function enableDisabled() {
-                    document.querySelectorAll('.course-details input, .course-details textarea').forEach(field => {
-                        field.setAttribute("disabled", 'disabled');
-                    });
-                }
-            </script>
             }
         </li>
     }
@@ -104,7 +82,7 @@
 
 <!-- Create course -->
 <h1>Opret hold</h1>
-<form id="create-form" action="/course/create" method="post">
+<form id="create-form" action="/course/create" method="post" onsubmit="return AtleastOneDay()">
     <div class="create-group">
         <label class="create-label" for="Name">Kursusnavn:</label>
         <input class="create-input" type="text" id="Name" name="Name" required/>
@@ -135,24 +113,91 @@
         <input class="create-input" type="number" id="MaxCapacity" name="MaxCapacity" min="1" required/>
     </div>
 
-    <h2>Vælg kursus dage</h2>
+    <h2>Vælg kursusdage</h2>
+    <label>
+        @Html.CheckBoxFor(m => courseDTO.Monday) Mandag
+    </label>
+    <br>
 
-    <label><input asp-for="Monday" type="checkbox"> Mandag</label><br>
-    <label><input asp-for="Tuesday" type="checkbox"> Tirsdag</label><br>
-    <label><input asp-for="Wednesday" type="checkbox"> Onsdag</label><br>
-    <label><input asp-for="Thursday" type="checkbox"> Torsdag</label><br>
-    <label><input asp-for="Friday" type="checkbox"> Fredag</label><br>
-    <label><input asp-for="Saturday" type="checkbox"> Lørdag</label><br>
-    <label><input asp-for="Sunday" type="checkbox"> Søndag</label><br>
+    <label>
+        @Html.CheckBoxFor(m => courseDTO.Tuesday) Tirsdag
+    </label>
+    <br>
 
-    <div class="create-group">
-        <label class="create-label" for="NumberOfModules">Antal Kursus dage:</label>
-        <input class="create-input" type="number" id="NumberOfModules" name="NumberOfModules" min="1" required/>
+    <label>
+        @Html.CheckBoxFor(m => courseDTO.Wednesday) Onsdag
+    </label>
+    <br>
+
+    <label>
+        @Html.CheckBoxFor(m => courseDTO.Thursday) Torsdag
+    </label>
+    <br>
+
+    <label>
+        @Html.CheckBoxFor(m => courseDTO.Friday) Fredag
+    </label>
+    <br>
+
+    <label>
+        @Html.CheckBoxFor(m => courseDTO.Saturday) Lørdag
+    </label>
+    <br>
+
+    <label>
+        @Html.CheckBoxFor(m => courseDTO.Sunday) Søndag
+    </label>
+
+    <div id="error-message" style="display: none; color: red;">
+        Vælg mindst én dag
     </div>
-
+    
     <div class="create-group">
         <button class="create-button" type="submit">Opret nyt hold</button>
     </div>
-
 </form>
+
+<script>
+    function confirmDelete() {
+        return confirm("Er du sikker på, at du vil slette dette hold?");
+    }
+</script>
+
+<script>
+    function enableEditing() {
+        document.querySelectorAll('.course-details input, .course-details textarea').forEach(field => {
+            field.removeAttribute('disabled');
+        });
+
+        document.querySelector('.toggle-button').style.display = 'none';
+        document.querySelector('.save-button').style.display = 'inline-block';
+    }
+
+    function enableDisabled() {
+        document.querySelectorAll('.course-details input, .course-details textarea').forEach(field => {
+            field.setAttribute("disabled", 'disabled');
+        });
+    }
+</script>
+
+<script>
+    function AtleastOneDay() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="courseDTO."]');
+        let atLeastOneChecked = false;
+
+        checkboxes.forEach((checkbox) => {
+            if (checkbox.checked) {
+                atLeastOneChecked = true;
+            }
+        });
+
+        if (!atLeastOneChecked) {
+            document.getElementById('error-message').style.display = 'block';
+            return false;
+        }
+
+        document.getElementById('error-message').style.display = 'none';
+        return true;
+    }
+</script>
 

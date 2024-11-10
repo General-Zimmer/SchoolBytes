@@ -24,7 +24,7 @@ namespace SchoolBytes.DTO
         public bool Friday { get; set; }
         public bool Saturday { get; set; }
         public bool Sunday { get; set; }
-        public int numberOfModules { get; set; }
+        //public int numberOfModules { get; set; }
 
         public CourseDTO()
         {

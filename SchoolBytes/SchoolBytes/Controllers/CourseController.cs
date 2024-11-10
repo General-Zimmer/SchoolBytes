@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web.Mvc;
 using SchoolBytes.DTO;
@@ -71,9 +72,10 @@ namespace SchoolBytes.Controllers
                 Id = courseDTO.Id
             };
             
-            var modules = new List<CourseModule>();
-            var activeDays = new List<DayOfWeek>();
+            var modules = new List<CourseModule>(); // Liste over alle moduller
+            var activeDays = new List<DayOfWeek>(); // Liste over dage som er valgt
             
+            //Checkbox data
             if (courseDTO.Monday)
                 activeDays.Add(DayOfWeek.Monday);
             if (courseDTO.Tuesday)
@@ -89,36 +91,37 @@ namespace SchoolBytes.Controllers
             if (courseDTO.Sunday)
                 activeDays.Add(DayOfWeek.Sunday);
             
-            var daysCount = activeDays.Count;
-            if (daysCount == 0)
-            {
-                throw new InvalidOperationException("Ingen dage valgt på kursus.");
-            }
+            // Dage som er valgt ud fra checkbox
+            var daysSelected = activeDays.Count;
             
-            var modulesPerDay = courseDTO.numberOfModules / daysCount;
-            var remainingModules = courseDTO.numberOfModules % daysCount;
+            //Udregning for antal moduler i alt
+            var moduleCount = (int)(courseDTO.EndDate - courseDTO.StartDate).TotalDays;
+            
+            //Uddeling af moduler pr dage
+            var modulesPerDay = moduleCount / daysSelected;
+            var remainingModules = moduleCount % daysSelected;
+            
             var currentDate = DateTime.Now;
 
+            //Skiftevis vælge dag 
             foreach (var activeDayDate in activeDays.Select(day => GetDayForWeekday(currentDate, day)))
             {
                 for (var i = 0; i < modulesPerDay; i++)
                 {
-                    modules.Add(new CourseModule()
+                    modules.Add(new CourseModule
                     {
-                        Name = $"Module {modules.Count + 1}",
+                        Name = $"Modul {modules.Count + 1}",
                         Date = activeDayDate
                     });
                 }
-                
-                if (remainingModules > 0)
+
+                if (remainingModules <= 0) continue;
+                modules.Add(new CourseModule
                 {
-                    modules.Add(new CourseModule()
-                    {
-                        Name = $"Module {modules.Count + 1}",
-                        Date = activeDayDate
-                    });
-                    remainingModules--;
-                }
+                    Name = $"Modul {modules.Count + 1}",
+                    Date = activeDayDate
+                });
+                remainingModules--;
             }
             
             course.CoursesModules = modules;
@@ -184,6 +187,7 @@ namespace SchoolBytes.Controllers
         public ActionResult CourseOverview(int? selectedCourseId = null)
         {
             ViewBag.SelectedCourseId = selectedCourseId;
+            //ViewBag.CourseDTO = new CourseDTO(); //ved ikke
             return View(courses);
         }
         
