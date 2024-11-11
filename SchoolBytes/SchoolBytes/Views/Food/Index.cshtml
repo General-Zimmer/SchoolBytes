@@ -1,4 +1,4 @@
-﻿@model SchoolBytes.Models.FoodModule
+﻿﻿@model SchoolBytes.Models.FoodModule
 
 
 @{
@@ -15,24 +15,43 @@
 <body>
     <h1>Opret et madhold</h1>
     <div>
-        @using (Html.BeginForm("CreateFoodModule", "Food"))
-        {
-            @Html.EditorForModel()
 
-            <br />
-            @Html.LabelFor(fm => fm.Course)
-            @(": ")
-            @Html.DisplayFor(fm => fm.Course.Name)
+        @Html.LabelFor(fm => fm.Name)
+        @Html.EditorFor(fm => fm.Name)
+        <br />
+        @Html.LabelFor(fm => fm.Location)
+        @Html.EditorFor(fm => fm.Location)
+        <br />
+        @Html.LabelFor(fm => fm.Capacity)
+        @Html.EditorFor(fm => fm.Capacity)
+        <br />
+        @Html.LabelFor(fm => fm.StartTime)
+        @Html.EditorFor(fm => fm.StartTime)
+        <br />
+        @Html.LabelFor(fm => fm.EndTime)
+        @Html.EditorFor(fm => fm.EndTime)
 
 
-            <br />
-            @Html.LabelFor(fm => fm.Teacher)
-            @(": ")
-            @Html.DisplayFor(fm => fm.Teacher.Name)
 
-            <br />
-            <input type="submit" value="Opret" />
-        }
+        @*
+             <br />
+            @Html.LabelFor(fm => fm.Date)
+             @Html.DisplayFor(fm => fm.Date)
+
+                        //<br />
+                        //@Html.LabelFor(fm => fm.CourseModule)
+                       // @(": ")
+                        //@Html.DisplayFor(fm => fm.CourseModule.Name)
+
+
+                        <br />
+                        //@Html.LabelFor(fm => fm.Teacher)
+                        //@(": ")
+                        //@Html.DisplayFor(fm => fm.Teacher.Name)
+
+                        <br />
+                        //<input type="submit" value="Opret" />
+        *@
 
     </div>
 </body>

@@ -50,6 +50,18 @@ namespace SchoolBytes.Controllers
        
             module.Name = updatedCourseModule.Name;
 
+            //FoodModule code
+            if (((FoodModule)Session["fm"]).Name != "")
+            {
+                FoodModule fm = (FoodModule)Session["fm"];
+                fm.Course = course;
+                fm.Date = updatedCourseModule.Date;
+                fm.Capacity = updatedCourseModule.Capacity;
+                module.FoodModule = fm;
+                dBConnection.Add(fm);
+                Session["fm"] = new FoodModule();
+            }
+
 
             //TODO: Make this use ModelState again, but need to fix frontend for that as it sends a string not a teacher obj so there can be no mapping
             //Easy solution would be to queury for all teachers, then make dropdown where you can choose teacher's name. Then have the value for the select option be the teachers id
