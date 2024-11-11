@@ -28,9 +28,16 @@
                         <strong>Underviser:</strong>
                         <select id="Teacher" name="Teacher" disabled>
                             @foreach (var teacher in teachers)
+                            {
+                                if (teacher.Id == module.Teacher.Id)
+                                {
+                                    <option value="@teacher.Id" selected>@teacher.Name</option>
+                                }
+                                else
                                 {
                                     <option value="@teacher.Id">@teacher.Name</option>
                                 }
+                            }
                         </select>
                         <p><strong>Dato:</strong> <input type="date" name="Date" value="@module.Date.ToString("yyyy-MM-dd")" disabled /></p>
                         <p><strong>Start:</strong> <input type="time" name="StartTime" value="@module.StartTime.ToString("HH:mm")" disabled /></p>
@@ -89,10 +96,18 @@
 
                     function updateModule(courseId, moduleId) {
                         console.log(`Attempting to update module with ID ${moduleId} in course ${courseId}`);
+
+                        // Enable the Teacher dropdown temporarily for serialization
+                        // const teacherDropdown = document.querySelector(`#module-details-${moduleId} #Teacher`);
+                        // teacherDropdown.removeAttribute('disabled');
+                        // TODO: Remember to remove this ^^^^^^ if it doesn't get used!!!
+
                         const data = $(`#module-update-form-${moduleId}`).serialize();
+                        let teacherId = $('#Teacher').find(":selected").val();
                         console.log(data)
+
                         $.ajax({
-                            url: `/course/${courseId}/update/${moduleId}`,
+                            url: `/course/${courseId}/update/${moduleId}/${teacherId}`,
                             method: 'POST',
                             data: data,
                             success: function () {
@@ -101,7 +116,7 @@
                             },
                             error: function (xhr, status, error) {
                                 console.error("Error details:", xhr.responseText); // This logs the response
-                                alert("Fejl ved sletning af modul.");
+                                alert("Fejl ved opdatering af modul.");
                             }
                         });
                     }
