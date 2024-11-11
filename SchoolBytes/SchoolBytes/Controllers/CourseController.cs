@@ -139,9 +139,9 @@ namespace SchoolBytes.Controllers
             {
                 return HttpNotFound("Course not found");
             }
-
+            
             return View(course);
-        }
+        } 
 
         // POST: api/course/{id} (Update course)
         [HttpPost]
@@ -166,6 +166,7 @@ namespace SchoolBytes.Controllers
                 return RedirectToAction("CourseOverview");
             }
 
+            ViewBag.Teacker
             return View(course);
         }
 

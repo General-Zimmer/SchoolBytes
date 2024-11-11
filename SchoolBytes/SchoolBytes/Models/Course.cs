@@ -19,6 +19,7 @@ namespace SchoolBytes.Models
         public int Id { get; set; }
 
         public CourseDTO courseDTO { get; set; }
+        //public DBConnection DBConnection { get; set; }
 
         public Course()
         {
