@@ -51,6 +51,9 @@ namespace SchoolBytes.Controllers
             module.Name = updatedCourseModule.Name;
 
             FoodModule fm = updatedCourseModule.FoodModule;
+
+            Debug.Print("TEEEEEEEEEEEEEEEEEEST: " + fm.Name);
+
             //FoodModule code
             if (fm!= null && fm.Name != "")
             {

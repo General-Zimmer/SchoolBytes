@@ -30,7 +30,7 @@
                     <p><strong>Slut:</strong> <input type="time" name="EndTime" value="@module.EndTime.ToString("HH:mm")" disabled /></p>
                     <p><strong>Lokale:</strong> <input type="text" name="Location" value="@module.Location" disabled /></p>
                     <p><strong>Maksimum antal deltagere:</strong> <input type="text" name="Capacity" value="@module.Capacity" disabled /></p>
-                    <p><strong>Madklub:</strong> <input type="text" name="FoodModule" value="@(module.FoodModule == null ? "Ikke tilføjet" : module.FoodModule.ToString())" disabled /></p>
+                    @*<p><strong>Madklub:</strong> <input type="text" name="FoodModule" value="@(module.FoodModule == null ? "Ikke tilføjet" : module.FoodModule.ToString())" disabled /></p>*@
                     <p><strong>Ny madklub:</strong> <input type="button" onclick="test(this)" value="Opret madhold" id="testBtn" disabled /></p>
 
                     <button type="button" class="toggle-module-edit" onclick="enableModuleEditing('@module.Id')">Rediger modul</button>
@@ -85,7 +85,7 @@
                     
 
                     if (document.querySelector("#fmFormName").value != "") { 
-                       querySelector("#fm").value = $(`#da-form`).serialize();
+                       document.querySelector("#fm").value = $(`#da-form`).serialize();
                     }
                     const data = $(`#module-update-form-${moduleId}`).serialize();
                     console.log(data)
@@ -149,12 +149,6 @@
 
             $(".close").click(function () {
                 $('#myModal').modal('hide');
-            });
-
-            $("#closeBtn").click(function () {
-                @{ //Trykker man på krydset oprettes en ny foodmodule, for at 'cleare' felterne
-                    //Session["fm"] = new FoodModule();
-              }
             });
         }
 

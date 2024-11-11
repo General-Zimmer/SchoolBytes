@@ -15,7 +15,7 @@
 <body>
     <h1>Opret et madhold</h1>
     <div id="fmForm">
-        <form id="da-form" onsubmit="setFoodModule(); return false;">
+        <form id="da-form">
             <input type="hidden" name="Capacity" value="" />
             <input type="hidden" name="Date" value="" />
             <input type="hidden" name="Course" value="" />
@@ -28,30 +28,9 @@
             <p><strong>Slut:</strong> <input type="time" name="EndTime" /></p>
 
 
-            @*<button type="button" onclick="setFoodModule()" style="display: block;">Gem madklub</button>*@
+            
 
         </form>
     </div>
 </body>
-
-<script>
-    function setFoodModule() {
-        console.log(`Setting new FoodModule`);
-        const data = $(`#da-form`).serialize();
-        console.log(data)
-        $.ajax({
-            url: `/module/setFoodModule`,
-            method: 'POST',
-            data: data,
-            success: function () {
-                alert("Food sat!!");
-                //location.reload(); // Reloads the page
-            },
-            error: function (xhr, status, error) {
-                console.error("Error details:", xhr.responseText); // This logs the response
-                alert("Fejl.");
-            }
-        });
-    }
-</script>
 </html>
