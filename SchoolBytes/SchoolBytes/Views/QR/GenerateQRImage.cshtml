@@ -1,0 +1,15 @@
+@model QRService.QRGeneratorService
+
+<main aria-labelledby="title">
+    <div style="display: flex; align-items: center;">
+        <div style="display: inline-block; margin-right: 300px;">
+            <h2 id="title">@ViewBag.Title.</h2>
+            <p>@ViewBag.Message</p>
+
+            <p>This is where i would put my QR Code</p>
+            <h4>IF I HAD ANY</h4>
+        </div>
+        
+        <img src="data:image/png;base64,@ViewBag.ImageData" alt="Generated Image" style="width: 300px; height: auto;">
+    </div>
+</main>

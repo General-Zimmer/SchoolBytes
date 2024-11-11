@@ -313,6 +313,7 @@
     <Content Include="Views\Food\Index.cshtml" />
     <Content Include="Views\Food\SletDetHer.cshtml" />
     <Content Include="Views\Module\ModuleOverview.cshtml" />
+    <Content Include="Views\QR\GenerateQRImage.cshtml" />
     <Content Include="Views\QR\Index.cshtml" />
   </ItemGroup>
   <ItemGroup />

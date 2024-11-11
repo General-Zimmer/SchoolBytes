@@ -15,7 +15,7 @@ namespace SchoolBytes.Controllers
     {
         readonly QRGeneratorService generatorService = new QRGeneratorService();
         [HttpGet]
-        public ActionResult Index()
+        public ActionResult GetQRImage()
         {
             string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority;
             string fullUrl = baseUrl + "/QR/Index";
@@ -28,8 +28,15 @@ namespace SchoolBytes.Controllers
                 base64String = Convert.ToBase64String(imageBytes);
             }
             ViewBag.Message = "The QR brought you here but i will bring you salvation.";
-            ViewBag.Title = "Tjek ind";
+            ViewBag.Title = "QR Generator";
             ViewBag.ImageData = base64String;
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Index()
+        {
+
             return View();
         }
     }
