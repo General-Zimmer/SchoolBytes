@@ -1,0 +1,114 @@
+﻿@model List<SchoolBytes.Models.CourseModule>
+
+<link rel="stylesheet" href="/Content/CourseModuleStyles.css" />
+
+<h1>Oversigt over moduler</h1>
+
+<ul id="moduleList">
+    @foreach (var module in Model)
+    {
+        <li>
+            <div>
+                <form id="module-detail-form-@module.Id" method="get">
+                    <input type="hidden" name="selectedModuleId" value="@module.Id" />
+                    @module.Name (@module.Course.Name)
+                    <button type="button" class="module-detail-button" onclick="toggleModuleDetails('@module.Id')">
+                        &#9660;
+                    </button>
+                </form>
+            </div>
+
+            <div class="module-details" id="module-details-@module.Id" style="display: none;">
+                <form id="module-update-form-@module.Id" onsubmit="updateModule(@module.Course.Id, @module.Id); return false;">
+                    <input type="hidden" name="Name" value="@module.Name" />
+
+                    <p><strong>Underviser:</strong> <input type="text" name="TeacherName" value="@module.Teacher.Name" disabled /></p>
+                    <p><strong>Dato:</strong> <input type="date" name="Date" value="@module.Date.ToString("yyyy-MM-dd")" disabled /></p>
+                    <p><strong>Start:</strong> <input type="time" name="StartTime" value="@module.StartTime.ToString("HH:mm")" disabled /></p>
+                    <p><strong>Slut:</strong> <input type="time" name="EndTime" value="@module.EndTime.ToString("HH:mm")" disabled /></p>
+                    <p><strong>Lokale:</strong> <input type="text" name="Location" value="@module.Location" disabled /></p>
+                    <p><strong>Maksimum antal deltagere:</strong> <input type="text" name="Capacity" value="@module.Capacity" disabled /></p>
+                    <p><strong>Madklub:</strong> <input type="text" name="FoodModule" value="@(module.FoodModule == null ? "Ikke tilføjet" : module.FoodModule.ToString())" disabled /></p>
+
+                    <button type="button" class="toggle-module-edit" onclick="enableModuleEditing('@module.Id')">Rediger modul</button>
+                    <button type="button" onclick="updateModule(@module.Course.Id, @module.Id)" class="save-module-button" style="display: none;">Gem ændringer</button>
+                    <button type="button" class="delete-module-button" onclick="confirmDeleteModule(@module.Course.Id, @module.Id)">Slet modul</button>
+                </form>
+            </div>
+
+            <script>
+                function toggleModuleDetails(moduleId) {
+                    const detailsElement = document.getElementById(`module-details-${moduleId}`);
+                    const buttonElement = document.querySelector(`#module-detail-form-${moduleId} .module-detail-button`);
+
+                    if (detailsElement.style.display === 'none') {
+                        detailsElement.style.display = 'block';
+                        buttonElement.innerHTML = '&#9650;'; // Up arrow
+                    } else {
+                        detailsElement.style.display = 'none';
+                        buttonElement.innerHTML = '&#9660;'; // Down arrow
+                    }
+                }
+
+                function enableModuleEditing(moduleId) {
+                    document.querySelectorAll(`#module-details-${moduleId} input`).forEach(field => {
+                        field.removeAttribute('disabled');
+                    });
+
+                    document.querySelector(`#module-details-${moduleId} .toggle-module-edit`).style.display = 'none';
+                    document.querySelector(`#module-details-${moduleId} .save-module-button`).style.display = 'inline-block';
+                }
+
+                function confirmDeleteModule(courseId, moduleId) {
+                    if (confirm("Er du sikker på, at du vil slette dette modul?")) {
+                        console.log(`Attempting to delete module with ID ${moduleId} in course ${courseId}`);
+                        $.ajax({
+                            url: `/course/${courseId}/delete/${moduleId}`,
+                            method: 'POST',
+                            success: function () {
+                                alert("Modul slettet!");
+                                location.reload(); // Reloads the page
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Error details:", xhr.responseText); // This logs the response
+                                alert("Fejl ved sletning af modul.");
+                            }
+                        });
+                    }
+                }
+
+                function updateModule(courseId, moduleId) {
+                    console.log(`Attempting to update module with ID ${moduleId} in course ${courseId}`);
+                    const data = $(`#module-update-form-${moduleId}`).serialize();
+                    console.log(data)
+                    $.ajax({
+                        url: `/course/${courseId}/update/${moduleId}`,
+                        method: 'POST',
+                        data: data,
+                        success: function () {
+                            alert("Modul opdateret!");
+                            //location.reload(); // Reloads the page
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error details:", xhr.responseText); // This logs the response
+                            alert("Fejl ved sletning af modul.");
+                        }
+                    });
+                }
+            </script>
+        </li>
+    }
+</ul>
+
+<style>
+    #moduleList {
+        list-style: none;
+        padding: 0;
+    }
+
+    .module-details {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+    }
+</style>

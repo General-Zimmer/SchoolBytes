@@ -10,9 +10,9 @@ namespace SchoolBytes.Models
 
         public string Name { get; set; }
         public string Description { get; set; }
-        public Teacher Teacher { get; set; }
-        public List<Participant> Participants { get; set; } = new List<Participant>();
-        public List<CourseModule> CoursesModules { get; set; } = new List<CourseModule>();
+        public virtual Teacher Teacher { get; set; }
+        public virtual List<Participant> Participants { get; set; } = new List<Participant>();
+        public virtual List<CourseModule> CoursesModules { get; set; } = new List<CourseModule>();
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int MaxCapacity { get; set; }
