@@ -1,0 +1,39 @@
+@model List<SchoolBytes.Models.Course>
+
+<h1>@ViewBag.Title</h1>
+<br />
+<ul id="courseList">
+    @foreach (var course in Model)
+    {
+        <li>
+            <div>
+                @{
+                    var selectedCourseId = ViewBag.SelectedCourseId as int?;
+                }
+                <!-- Toggle course details -->
+                <form id="detail-form-@course.Id" asp-action="CourseOverview" method="get">
+                    <input type="hidden" name="selectedCourseId" value="@(selectedCourseId == course.Id ? string.Empty : course.Id.ToString())" />
+                    @course.Name
+                    <button type="submit" class="detail-button">
+                        @if (selectedCourseId == course.Id)
+                        {
+                            @Html.Raw("&#9650;")
+                            <!-- Up arrow when expanded -->
+                        }
+                        else
+                        {
+                            @Html.Raw("&#9660;")
+                            <!-- Down arrow when collapsed -->
+                        }
+                    </button>
+                </form>
+            </div>
+        </li>
+    }
+</ul>
+<form method="post" action="/YourController/YourAction">
+    <label for="inputField">Enter tlf. nr:</label>
+    <input type="text" id="inputField" name="inputField" placeholder="88888888">
+
+    <button type="submit">Tjek Ind</button>
+</form>
