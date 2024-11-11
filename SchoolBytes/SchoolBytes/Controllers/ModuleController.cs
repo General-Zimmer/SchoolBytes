@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -21,12 +22,13 @@ namespace SchoolBytes.Controllers
         [Route("course/{id}/moduleOverview")]
         public ActionResult ModuleOverview(int id)
         {
-            var course = dBConnection.courses.Find(id);
+            var course = dBConnection.courses.Include(c => c.CoursesModules).ToList().Where(c  => c.Id == id).First();
             if (course == null)
             {
                 return HttpNotFound("Course not found");
             }
 
+            ViewBag.teachers = dBConnection.teachers.ToList();
             return View(course.CoursesModules.ToList()); // Passes only the course modules to the view
         }
 
