@@ -84,8 +84,15 @@
                     console.log(`Attempting to update module with ID ${moduleId} in course ${courseId}`);
                     
 
-                    if (document.querySelector("#fmFormName").value != "") { 
-                       document.querySelector("#fm").value = $(`#da-form`).serialize();
+                    if (document.querySelector(`#fmFormName`).value != "") { 
+                        var object = {};
+                        var formData = new FormData(document.querySelector(`#da-form`));
+                        formData.forEach(function (value, key) {
+                            object[key] = value;
+                        });
+
+
+                        document.querySelector(`#module-update-form-${moduleId} #fm`).value = object;//$(`#da-form`).serialize();
                     }
                     const data = $(`#module-update-form-${moduleId}`).serialize();
                     console.log(data)
