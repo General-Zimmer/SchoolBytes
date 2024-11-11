@@ -14,45 +14,44 @@
 </head>
 <body>
     <h1>Opret et madhold</h1>
-    <div>
-
-        @Html.LabelFor(fm => fm.Name)
-        @Html.EditorFor(fm => fm.Name)
-        <br />
-        @Html.LabelFor(fm => fm.Location)
-        @Html.EditorFor(fm => fm.Location)
-        <br />
-        @Html.LabelFor(fm => fm.Capacity)
-        @Html.EditorFor(fm => fm.Capacity)
-        <br />
-        @Html.LabelFor(fm => fm.StartTime)
-        @Html.EditorFor(fm => fm.StartTime)
-        <br />
-        @Html.LabelFor(fm => fm.EndTime)
-        @Html.EditorFor(fm => fm.EndTime)
+    <div id="fmForm">
+        <form id="da-form" onsubmit="setFoodModule(); return false;">
+            <input type="hidden" name="Capacity" value="" />
+            <input type="hidden" name="Date" value="" />
+            <input type="hidden" name="Course" value="" />
+            <input type="hidden" name="Teacher" value="" />
 
 
-
-        @*
-             <br />
-            @Html.LabelFor(fm => fm.Date)
-             @Html.DisplayFor(fm => fm.Date)
-
-                        //<br />
-                        //@Html.LabelFor(fm => fm.CourseModule)
-                       // @(": ")
-                        //@Html.DisplayFor(fm => fm.CourseModule.Name)
+            <p><strong>Navn:</strong> <input type="text" name="Name" id="fmFormName" /></p>
+            <p><strong>Lokation:</strong> <input type="text" name="Location" /></p>
+            <p><strong>Start:</strong> <input type="time" name="StartTime" /></p>
+            <p><strong>Slut:</strong> <input type="time" name="EndTime" /></p>
 
 
-                        <br />
-                        //@Html.LabelFor(fm => fm.Teacher)
-                        //@(": ")
-                        //@Html.DisplayFor(fm => fm.Teacher.Name)
+            @*<button type="button" onclick="setFoodModule()" style="display: block;">Gem madklub</button>*@
 
-                        <br />
-                        //<input type="submit" value="Opret" />
-        *@
-
+        </form>
     </div>
 </body>
+
+<script>
+    function setFoodModule() {
+        console.log(`Setting new FoodModule`);
+        const data = $(`#da-form`).serialize();
+        console.log(data)
+        $.ajax({
+            url: `/module/setFoodModule`,
+            method: 'POST',
+            data: data,
+            success: function () {
+                alert("Food sat!!");
+                //location.reload(); // Reloads the page
+            },
+            error: function (xhr, status, error) {
+                console.error("Error details:", xhr.responseText); // This logs the response
+                alert("Fejl.");
+            }
+        });
+    }
+</script>
 </html>

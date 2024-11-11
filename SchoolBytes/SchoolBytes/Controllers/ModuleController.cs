@@ -50,16 +50,16 @@ namespace SchoolBytes.Controllers
        
             module.Name = updatedCourseModule.Name;
 
+            FoodModule fm = updatedCourseModule.FoodModule;
             //FoodModule code
-            if (((FoodModule)Session["fm"]).Name != "")
+            if (fm!= null && fm.Name != "")
             {
-                FoodModule fm = (FoodModule)Session["fm"];
                 fm.Course = course;
                 fm.Date = updatedCourseModule.Date;
                 fm.Capacity = updatedCourseModule.Capacity;
+                fm.Teacher = updatedCourseModule.Teacher;
                 module.FoodModule = fm;
                 dBConnection.Add(fm);
-                Session["fm"] = new FoodModule();
             }
 
 
@@ -106,6 +106,16 @@ namespace SchoolBytes.Controllers
             //TODO: dobbelt tjek om den også sletter FK på course
             dBConnection.Remove(module);
             dBConnection.SaveChanges();
+
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
+        }
+
+        [HttpPost]
+        public ActionResult setFoodModule(FoodModule fm)
+        {
+      
+
+            Debug.Print("TEEEEEEEEEEEEEEEST  " + fm.Name);
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
