@@ -6,6 +6,10 @@
 
     
 
+    public Participant()
+    {
+
+    }
     public Participant(string name, string phoneNumber)
     {
         Name = name;

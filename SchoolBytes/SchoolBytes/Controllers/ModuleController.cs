@@ -105,7 +105,7 @@ namespace SchoolBytes.Controllers
         //TILMELDINGER
         
         [HttpPost]
-        [Route("course/{courseId}/{moduleId}/tilmeld")]
+        [Route("Module/course/{courseId}/{moduleId}/tilmeld")]
         public ActionResult Subscribe(int courseId, int moduleId, Participant participant)
         {
             CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
@@ -113,9 +113,12 @@ namespace SchoolBytes.Controllers
 
             Participant newParticipant = new Participant(participant.Name, participant.PhoneNumber);
 
-            if (courseModule.Participants.Count < courseModule.MaxCapacity)
+
+            Course course = dBConnection.courses.Find(courseId);
+
+            if (course.Participants.Count < 5)
             {
-                courseModule.Participants.Add(newParticipant);
+                course.Participants.Add(newParticipant);
 
                 dBConnection.Update(courseModule);
                 dBConnection.SaveChanges();
@@ -131,15 +134,17 @@ namespace SchoolBytes.Controllers
         }
 
         [HttpPost]
-        [Route("course/{courseId}/{moduleId}/afmeld")]
+        [Route("Module/course/{courseId}/{moduleId}/afmeld")]
         public ActionResult Cancel(int courseId, int moduleId, string tlfNr)
         {
-            CourseModule courseModule = dBConnection.courseModules.Find(courseId);
+            CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
 
-            Participant participant = courseModule.Participants.Find(p => p.PhoneNumber == tlfNr);
+            Course course = dBConnection.courses.Find(courseId);
+
+            Participant participant = course.Participants.Find(p => p.PhoneNumber == tlfNr);
             if (participant != null)
             {
-                courseModule.Participants.Remove(participant);
+                course.Participants.Remove(participant);
 
                 dBConnection.Update(courseModule);
                 dBConnection.SaveChanges();
@@ -153,6 +158,12 @@ namespace SchoolBytes.Controllers
 
 
             return View();
+        }
+
+        [HttpGet]
+        public ActionResult TheView()
+        {
+            return View("ParticipantView");
         }
     }
 }
