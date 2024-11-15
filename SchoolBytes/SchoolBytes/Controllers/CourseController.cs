@@ -185,7 +185,58 @@ namespace SchoolBytes.Controllers
             var daysToAdd = ((int)dayOfWeek - (int)currentDate.DayOfWeek + 7) % 7;
             return currentDate.AddDays(daysToAdd);
         }
+
+
+        //TILMELDINGER
+        [HttpPost]
+        [Route("course/{id}/tilmeld")]
+        public ActionResult Subscribe(int id, Participant participant)
+        {
+            Course course = dbConnection.courses.Find(id);
+
+            Participant newParticipant = new Participant(participant.Name, participant.PhoneNumber);
+
+            if (course.Participants.Count < course.MaxCapacity)
+            {
+                course.Participants.Add(newParticipant);
+
+                dbConnection.Update(course);
+                dbConnection.SaveChanges();
+            } else
+            {
+                //VENTELISTE LOGIK SKAL IND HER - PLACEHOLDER INDTIL VIDERE
+                return HttpNotFound("Hold fyldt");
+            }
+            
+
+            return RedirectToAction("CourseOverview");
+        }
+
+        [HttpPost]
+        [Route("course/{id}/afmeld")]
+        public ActionResult Cancel(int id, string tlfNr)
+        {
+            Course course = dbConnection.courses.Find(id);
+
+            Participant participant = course.Participants.Find(p => p.PhoneNumber == tlfNr);
+            if (participant != null)
+            {
+                course.Participants.Remove(participant);
+
+                dbConnection.Update(course);
+                dbConnection.SaveChanges();
+            } else
+            {
+                //placeholder
+                return HttpNotFound("Ingen tilmeldte med opgivne informationer fundet");
+            }
+            
+
+
+            return View();
+        }
+
+
     }
 }
-        
- 
+
