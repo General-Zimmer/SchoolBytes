@@ -305,7 +305,7 @@
     <Content Include="Views\Food\Index.cshtml" />
     <Content Include="Views\Food\SletDetHer.cshtml" />
     <Content Include="Views\Module\ModuleOverview.cshtml" />
-    <Content Include="Views\Participant\ParticipantView.cshtml" />
+    <Content Include="Views\Course\ParticipantView.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
