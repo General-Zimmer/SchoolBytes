@@ -310,6 +310,7 @@
     <Content Include="Views\Food\Index.cshtml" />
     <Content Include="Views\Food\SletDetHer.cshtml" />
     <Content Include="Views\Module\ModuleOverview.cshtml" />
+    <Content Include="Views\Module\WaitlistSignup.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

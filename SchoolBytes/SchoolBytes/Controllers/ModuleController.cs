@@ -100,5 +100,31 @@ namespace SchoolBytes.Controllers
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
+
+        // GET: api/course/{courseId}/{moduleId}/signup/waitlist (Sign up for the waitlist for a course module)
+        [HttpGet]
+        [Route("course/{courseId}/{moduleId}/signup/waitlist")]
+        public ActionResult WaitlistSignup(int courseId, int moduleId)
+        {
+            var course = dBConnection.courses.Find(courseId);
+            if (course == null)
+            {
+                return HttpNotFound("Course not found");
+            }
+
+            var module = course.CoursesModules.Find(m => m.Id == moduleId);
+            if (module == null)
+            {
+                return HttpNotFound("Course module not found");
+            }
+
+            var participants = dBConnection.participants;
+            foreach (var participant in participants) 
+            { 
+                module.Waitlist.Enqueue(participant);
+            }
+
+            return View(module);
+        }
     }
 }
