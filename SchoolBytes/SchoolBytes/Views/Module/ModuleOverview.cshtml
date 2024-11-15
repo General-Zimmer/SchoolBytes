@@ -1,5 +1,8 @@
 ﻿@model List<SchoolBytes.Models.CourseModule>
 @using SchoolBytes.Models;
+@{
+    var teachers = ViewBag.teachers as List<Teacher>;
+ }
 
 <link rel="stylesheet" href="/Content/CourseModuleStyles.css" />
 
@@ -17,68 +20,81 @@
                         &#9660;
                     </button>
                 </form>
-            </div>
+                </div>
 
-            <div class="module-details" id="module-details-@module.Id" style="display: none;">
-                <form id="module-update-form-@module.Id" onsubmit="updateModule(@module.Course.Id, @module.Id); return false;">
-                    <input type="hidden" name="Name" value="@module.Name" />
-                    @*<input type="hidden" name="FoodModule" id="fm"/>*@
+                <div class="module-details" id="module-details-@module.Id" style="display: none;">
+                    <form id="module-update-form-@module.Id" onsubmit="updateModule(@module.Course.Id, @module.Id); return false;">
+                        <input type="hidden" name="Name" value="@module.Name" />
 
-                    <p><strong>Underviser:</strong> <input type="text" name="TeacherName" value="@module.Teacher.Name" disabled /></p>
-                    <p><strong>Dato:</strong> <input type="date" name="Date" value="@module.Date.ToString("yyyy-MM-dd")" disabled /></p>
-                    <p><strong>Start:</strong> <input type="time" name="StartTime" value="@module.StartTime.ToString("HH:mm")" disabled /></p>
-                    <p><strong>Slut:</strong> <input type="time" name="EndTime" value="@module.EndTime.ToString("HH:mm")" disabled /></p>
-                    <p><strong>Lokale:</strong> <input type="text" name="Location" value="@module.Location" disabled /></p>
-                    <p><strong>Maksimum antal deltagere:</strong> <input type="text" name="Capacity" value="@module.Capacity" disabled /></p>
-                    @*<p><strong>Madklub:</strong> <input type="text" name="FoodModule" value="@(module.FoodModule == null ? "Ikke tilføjet" : module.FoodModule.ToString())" disabled /></p>*@
-                    <p><strong>Ny madklub:</strong> <input type="button" onclick="test(this)" value="Opret madhold" id="testBtn" disabled /></p>
-
-                    <button type="button" class="toggle-module-edit" onclick="enableModuleEditing('@module.Id')">Rediger modul</button>
-                    <button type="button" onclick="updateModule(@module.Course.Id, @module.Id)" class="save-module-button" style="display: none;">Gem ændringer</button>
-                    <button type="button" class="delete-module-button" onclick="confirmDeleteModule(@module.Course.Id, @module.Id)">Slet modul</button>
-                </form>
-            </div>
-
-            <script>
-                function toggleModuleDetails(moduleId) {
-                    const detailsElement = document.getElementById(`module-details-${moduleId}`);
-                    const buttonElement = document.querySelector(`#module-detail-form-${moduleId} .module-detail-button`);
-
-                    if (detailsElement.style.display === 'none') {
-                        detailsElement.style.display = 'block';
-                        buttonElement.innerHTML = '&#9650;'; // Up arrow
-                    } else {
-                        detailsElement.style.display = 'none';
-                        buttonElement.innerHTML = '&#9660;'; // Down arrow
-                    }
-                }
-
-                function enableModuleEditing(moduleId) {
-                    document.querySelectorAll(`#module-details-${moduleId} input`).forEach(field => {
-                        field.removeAttribute('disabled');
-                    });
-
-                    document.querySelector(`#module-details-${moduleId} .toggle-module-edit`).style.display = 'none';
-                    document.querySelector(`#module-details-${moduleId} .save-module-button`).style.display = 'inline-block';
-                }
-
-                function confirmDeleteModule(courseId, moduleId) {
-                    if (confirm("Er du sikker på, at du vil slette dette modul?")) {
-                        console.log(`Attempting to delete module with ID ${moduleId} in course ${courseId}`);
-                        $.ajax({
-                            url: `/course/${courseId}/delete/${moduleId}`,
-                            method: 'POST',
-                            success: function () {
-                                alert("Modul slettet!");
-                                location.reload(); // Reloads the page
-                            },
-                            error: function (xhr, status, error) {
-                                console.error("Error details:", xhr.responseText); // This logs the response
-                                alert("Fejl ved sletning af modul.");
+                        <strong>Underviser:</strong>
+                        <select id="Teacher" name="Teacher" disabled>
+                            @foreach (var teacher in teachers)
+                            {
+                                if (teacher.Id == module.Teacher.Id)
+                                {
+                                    <option value="@teacher.Id" selected>@teacher.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@teacher.Id">@teacher.Name</option>
+                                }
                             }
-                        });
+                        </select>
+                        <p><strong>Dato:</strong> <input type="date" name="Date" value="@module.Date.ToString("yyyy-MM-dd")" disabled /></p>
+                        <p><strong>Start:</strong> <input type="time" name="StartTime" value="@module.StartTime.ToString("HH:mm")" disabled /></p>
+                        <p><strong>Slut:</strong> <input type="time" name="EndTime" value="@module.EndTime.ToString("HH:mm")" disabled /></p>
+                        <p><strong>Lokale:</strong> <input type="text" name="Location" value="@module.Location" disabled /></p>
+                        <p><strong>Maksimum antal deltagere:</strong> <input type="text" name="Capacity" value="@module.Capacity" disabled /></p>
+                        <p><strong>Madklub:</strong> <input type="text" value="@(module.FoodModule == null ? "Ikke tilføjet" : module.FoodModule.ToString())" disabled /></p>
+                         <p><strong>Ny madklub:</strong> <input type="button" onclick="test(this)" value="Opret madhold" id="testBtn" disabled /></p>
+
+                        <button type="button" class="toggle-module-edit" onclick="enableModuleEditing('@module.Id')">Rediger modul</button>
+                        <button type="button" onclick="updateModule(@module.Course.Id, @module.Id)" class="save-module-button" style="display: none;">Gem ændringer</button>
+                        <button type="button" class="delete-module-button" onclick="confirmDeleteModule(@module.Course.Id, @module.Id)">Slet modul</button>
+                    </form>
+                </div>
+
+                <script>
+                    function toggleModuleDetails(moduleId) {
+                        const detailsElement = document.getElementById(`module-details-${moduleId}`);
+                        const buttonElement = document.querySelector(`#module-detail-form-${moduleId} .module-detail-button`);
+
+                        if (detailsElement.style.display === 'none') {
+                            detailsElement.style.display = 'block';
+                            buttonElement.innerHTML = '&#9650;'; // Up arrow
+                        } else {
+                            detailsElement.style.display = 'none';
+                            buttonElement.innerHTML = '&#9660;'; // Down arrow
+                        }
                     }
-                }
+
+                    function enableModuleEditing(moduleId) {
+                        document.querySelectorAll(`#module-details-${moduleId} input`).forEach(field => {
+                            field.removeAttribute('disabled');
+                        });
+
+                        document.querySelector(`#module-details-${moduleId} #Teacher`).removeAttribute('disabled');
+                        document.querySelector(`#module-details-${moduleId} .toggle-module-edit`).style.display = 'none';
+                        document.querySelector(`#module-details-${moduleId} .save-module-button`).style.display = 'inline-block';
+                    }
+
+                    function confirmDeleteModule(courseId, moduleId) {
+                        if (confirm("Er du sikker på, at du vil slette dette modul?")) {
+                            console.log(`Attempting to delete module with ID ${moduleId} in course ${courseId}`);
+                            $.ajax({
+                                url: `/course/${courseId}/delete/${moduleId}`,
+                                method: 'POST',
+                                success: function () {
+                                    alert("Modul slettet!");
+                                    location.reload(); // Reloads the page
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("Error details:", xhr.responseText); // This logs the response
+                                    alert("Fejl ved sletning af modul.");
+                                }
+                            });
+                        }
+                    }
 
                 function updateModule(courseId, moduleId) {
                     console.log(`Attempting to update module with ID ${moduleId} in course ${courseId}`);
@@ -106,8 +122,10 @@
 
                     console.log(JSON.stringify(objectB));
 
+                    let teacherId = $('#Teacher').find(":selected").val();
+
                     $.ajax({
-                        url: `/course/${courseId}/update/${moduleId}`,
+                        url: `/course/${courseId}/update/${moduleId}/${teacherId}`,
                         method: 'POST',
                         contentType: "application/json; charset=utf-8",
                         data: JSON.stringify(objectB),

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -21,19 +23,20 @@ namespace SchoolBytes.Controllers
         [Route("course/{id}/moduleOverview")]
         public ActionResult ModuleOverview(int id)
         {
-            var course = dBConnection.courses.Find(id);
+            var course = dBConnection.courses.Include(c => c.CoursesModules).ToList().Where(c  => c.Id == id).First();
             if (course == null)
             {
                 return HttpNotFound("Course not found");
             }
 
+            ViewBag.teachers = dBConnection.teachers.ToList();
             return View(course.CoursesModules.ToList()); // Passes only the course modules to the view
         }
 
         // POST: api/course/{courseid}/update/{moduleid} (Update course module)
         [HttpPost]
-        [Route("course/{courseId}/update/{moduleId}")]
-        public ActionResult Update(int courseId, int moduleId, CourseModule updatedCourseModule)
+        [Route("course/{courseId}/update/{moduleId}/{teacherId}")]
+        public ActionResult Update(int courseId, int moduleId, int teacherId, CourseModule updatedCourseModule)
         {
             //updatedCourse module already has all this info, do we really need course id and module id? It's in updatedCourseModule
             var course = dBConnection.courses.Find(courseId);
@@ -66,10 +69,10 @@ namespace SchoolBytes.Controllers
             }
 
 
-            //TODO: Make this use ModelState again, but need to fix frontend for that as it sends a string not a teacher obj so there can be no mapping
-            //Easy solution would be to queury for all teachers, then make dropdown where you can choose teacher's name. Then have the value for the select option be the teachers id
-            //and set it that way. Won't fix modelstate, but we can just avoid modelstate anyway as we're not posting a form here.
-            module.Teacher = updatedCourseModule.Teacher;
+            //TODO: need to find a better way of doing this - fetching the teacherID in this way is not very elegant!!
+            
+            Teacher updatedTeacher = dBConnection.teachers.ToList().Where(t => t.Id == teacherId).FirstOrDefault();
+            module.Teacher = updatedTeacher;
             
        
             module.Date = updatedCourseModule.Date;
