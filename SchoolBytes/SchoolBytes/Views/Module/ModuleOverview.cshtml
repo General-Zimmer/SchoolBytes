@@ -27,7 +27,7 @@
                         <input type="hidden" name="Name" value="@module.Name" />
 
                         <strong>Underviser:</strong>
-                        <select id="Teacher" name="Teacher" disabled>
+                        <select id="Teacher" @*name="Teacher"*@ disabled>
                             @foreach (var teacher in teachers)
                             {
                                 if (teacher.Id == module.Teacher.Id)
@@ -101,7 +101,7 @@
                     
 
                     var objectA;
-                    if (document.querySelector(`#fmFormName`).value != "") { 
+                    if (document.querySelector(`#fmFormName`)!=null && document.querySelector(`#fmFormName`).value != "") { 
                         var objectA = {};
                         var formData = new FormData(document.querySelector(`#da-form`));
                         formData.forEach(function (value, key) {
@@ -114,18 +114,25 @@
                     //const data = $(`#module-update-form-${moduleId}`).serialize();
                     //console.log(data)
 
+                    let teacherId = $('#Teacher').find(":selected").val();
+                    let teacherName = $('#Teacher').find(":selected").text();
+
+                    var teacherObject = { Name: teacherName, Id: teacherId }
+
                     var formData2 = $(`#module-update-form-${moduleId}`).serializeArray();
-                    var objectB = {FoodModule: objectA};
+                    var objectB = {FoodModule: objectA, Teacher: teacherObject};
                     formData2.forEach(function (field) {
                         objectB[field.name] = field.value;
                     });
 
+                    
+
                     console.log(JSON.stringify(objectB));
 
-                    let teacherId = $('#Teacher').find(":selected").val();
+                   
 
                     $.ajax({
-                        url: `/course/${courseId}/update/${moduleId}/${teacherId}`,
+                        url: `/course/${courseId}/update/${moduleId}`,
                         method: 'POST',
                         contentType: "application/json; charset=utf-8",
                         data: JSON.stringify(objectB),

@@ -35,8 +35,8 @@ namespace SchoolBytes.Controllers
 
         // POST: api/course/{courseid}/update/{moduleid} (Update course module)
         [HttpPost]
-        [Route("course/{courseId}/update/{moduleId}/{teacherId}")]
-        public ActionResult Update(int courseId, int moduleId, int teacherId, CourseModule updatedCourseModule)
+        [Route("course/{courseId}/update/{moduleId}")]
+        public ActionResult Update(int courseId, int moduleId, CourseModule updatedCourseModule)
         {
             //updatedCourse module already has all this info, do we really need course id and module id? It's in updatedCourseModule
             var course = dBConnection.courses.Find(courseId);
@@ -55,11 +55,11 @@ namespace SchoolBytes.Controllers
 
             FoodModule fm = updatedCourseModule.FoodModule;
 
-            Debug.Print("TEEEEEEEEEEEEEEEEEEST: " + fm.Name);
-
+            
             //FoodModule code
             if (fm!= null && fm.Name != "")
             {
+                Debug.Print("TEEEEEEEEEEEEEEEEEEST: " + fm.Name);
                 fm.Course = course;
                 fm.Date = updatedCourseModule.Date;
                 fm.Capacity = updatedCourseModule.Capacity;
@@ -70,11 +70,10 @@ namespace SchoolBytes.Controllers
 
 
             //TODO: need to find a better way of doing this - fetching the teacherID in this way is not very elegant!!
-            
-            Teacher updatedTeacher = dBConnection.teachers.ToList().Where(t => t.Id == teacherId).FirstOrDefault();
+
+            Teacher updatedTeacher = dBConnection.teachers.ToList().Where(t => t.Id == updatedCourseModule.Teacher.Id).FirstOrDefault();
             module.Teacher = updatedTeacher;
-            
-       
+
             module.Date = updatedCourseModule.Date;
             module.StartTime = updatedCourseModule.StartTime;
             module.EndTime = updatedCourseModule.EndTime;
