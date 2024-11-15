@@ -1,7 +1,24 @@
-﻿
+﻿@model SchoolBytes.Models.Course
 @{
     ViewBag.Title = "ParticipantView";
 }
 
 <h2>ParticipantView</h2>
 
+
+<h1>Opret Tilmelding</h1>
+<form id="create-form" action="/participant/create" method="post">
+    <div class="create-group">
+        <label class="create-label" for="Name">Navn:</label>
+        <input class="create-input" type="text" id="Name" name="Name" required />
+    </div>
+
+    <div class="create-group">
+        <label class="create-label" for="PhoneNumber">Telefon nummer:</label>
+        <input class="create-input" type="text" id="PhoneNumber" name="PhoneNumber" required />
+    </div>
+
+    <div class="create-group">
+        <label class="create-label" for="Hold">Hold:</label>
+    </div>
+</form>
