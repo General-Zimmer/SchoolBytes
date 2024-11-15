@@ -315,6 +315,7 @@
     <Content Include="Views\Module\ModuleOverview.cshtml" />
     <Content Include="Views\QR\GenerateQR.cshtml" />
     <Content Include="Views\QR\Index.cshtml" />
+    <Content Include="Views\QR\_CourseModulesDropdown.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

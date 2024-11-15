@@ -1,39 +1,88 @@
 @model List<SchoolBytes.Models.Course>
 
+
 <h1>@ViewBag.Title</h1>
 <br />
-<ul id="courseList">
-    @foreach (var course in Model)
-    {
-        <li>
-            <div>
-                @{
-                    var selectedCourseId = ViewBag.SelectedCourseId as int?;
-                }
-                <!-- Toggle course details -->
-                <form id="detail-form-@course.Id" asp-action="CourseOverview" method="get">
-                    <input type="hidden" name="selectedCourseId" value="@(selectedCourseId == course.Id ? string.Empty : course.Id.ToString())" />
-                    @course.Name
-                    <button type="submit" class="detail-button">
-                        @if (selectedCourseId == course.Id)
-                        {
-                            @Html.Raw("&#9650;")
-                            <!-- Up arrow when expanded -->
-                        }
-                        else
-                        {
-                            @Html.Raw("&#9660;")
-                            <!-- Down arrow when collapsed -->
-                        }
-                    </button>
-                </form>
-            </div>
-        </li>
+<!-- Course Dropdown Form -->
+<form asp-action="CourseOverviewQR" method="get">
+    @{
+        var selectedCourseId = ViewBag.SelectedCourseId as int?;
     }
-</ul>
+    <select name="selectedCourseId" id="courseDropdown" onchange="PopulateCourseModule()">
+        <option value="">-- Select a course --</option>
+        @foreach (var course in Model)
+        {
+            <option value="@course.Id" >
+                @course.Name
+            </option>
+        }
+    </select>
+</form>
+
+
+<!-- CourseModules Dropdown -->
+@if (selectedCourseId != null)
+{
+    var selectedCourse = Model.FirstOrDefault(c => c.Id == selectedCourseId);
+    if (selectedCourse != null)
+    {
+        var courseModules = selectedCourse.CoursesModules;
+        if (courseModules.Any())
+        {
+            <label for="moduleDropdown">Select a module:</label>
+            <select id="moduleDropdown" name="selectedModuleId">
+                <option value="">-- Select a module --</option>
+                @foreach (var module in courseModules)
+                {
+                    <option value="@module.Id">@module.Name</option>
+                }
+            </select>
+        }
+        else
+        {
+            <p>No modules available for the selected course.</p>
+        }
+    }
+    else
+    {
+        <p>Could not find the selected course.</p>
+    }
+}
+else
+{
+    <label for="moduleDropdown">Select a module:</label>
+    <select id="moduleDropdown" name="selectedModuleId">
+        <option value="">-- Select a module --</option>
+    </select>
+}
+
+
+
+<noscript>
+    <button type="submit">Submit</button>
+</noscript>
 <form method="post" action="/YourController/YourAction">
     <label for="inputField">Enter tlf. nr:</label>
     <input type="text" id="inputField" name="inputField" placeholder="88888888">
 
     <button type="submit">Tjek Ind</button>
 </form>
+
+<script>
+    function PopulateCourseModule(courseId) {
+        /*$.ajax({
+            url: `/QR/` + courseId + '/modules',
+            method: 'GET',
+            success: function (data) {
+                
+            },
+            error: function (xhr, status, error) {
+                console.error("Error details:", xhr.responseText); // This logs the response
+                alert("Fejl ved sletning af modul.");
+            }
+        });*/
+        @{ 
+            <text >var course = Model.where(c => c.Id == courseId).First() </text>
+        }
+    }
+</script>

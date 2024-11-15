@@ -10,6 +10,7 @@ using System.Web;
 using System.Data.Common;
 using SchoolBytes.DTO;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace SchoolBytes.Controllers
 {
@@ -47,30 +48,20 @@ namespace SchoolBytes.Controllers
 
         // GET: Course
         [HttpGet]
-        //[Route("QR")]
-        public ActionResult CourseOverview(int? selectedCourseId = null)
+        //[Route("QR/Index/")]
+        public ActionResult CourseOverviewQR(int? selectedCourseId = null)
         {
+            var courses = dbConnection.courses.ToList();
             if (selectedCourseId != null)
             {
                 ViewBag.SelectedCourseId = selectedCourseId;
+                var selectedCourse = dbConnection.courses.Include(c => c.CoursesModules)
+                                                          .FirstOrDefault(c => c.Id == selectedCourseId);
+                ViewBag.SelectedCourse = selectedCourse;  // Pass the selected course with its modules to the view
             }
-
-            return View(dbConnection.courses.ToList());
+            return View(courses);  // Send the list of courses to the view
         }
 
 
-        // GET: course/{id}/modules (Get course modules by course ID)
-        [HttpGet]
-        //[Route("course/{id}/moduleOverview")]
-        public ActionResult ModuleOverview(int id)
-        {
-            var course = dbConnection.courses.Find(id);
-            if (course == null)
-            {
-                return HttpNotFound("Course not found");
-            }
-
-            return View(course.CoursesModules.ToList()); // Passes only the course modules to the view
-        }
     }
 }
