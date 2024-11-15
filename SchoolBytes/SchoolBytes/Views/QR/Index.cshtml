@@ -1,88 +1,68 @@
 @model List<SchoolBytes.Models.Course>
 
-
 <h1>@ViewBag.Title</h1>
 <br />
 <!-- Course Dropdown Form -->
-<form asp-action="CourseOverviewQR" method="get">
-    @{
-        var selectedCourseId = ViewBag.SelectedCourseId as int?;
+
+<select name="selectedCourseId" id="courseDropdown" onchange="populateCourseModules()">
+    <option value="">-- Select a course --</option>
+    @foreach (var course in Model)
+    {
+        <option value="@course.Id">@course.Name</option>
     }
-    <select name="selectedCourseId" id="courseDropdown" onchange="PopulateCourseModule()">
-        <option value="">-- Select a course --</option>
-        @foreach (var course in Model)
-        {
-            <option value="@course.Id" >
-                @course.Name
-            </option>
-        }
-    </select>
-</form>
+</select>
 
 
 <!-- CourseModules Dropdown -->
-@if (selectedCourseId != null)
-{
-    var selectedCourse = Model.FirstOrDefault(c => c.Id == selectedCourseId);
-    if (selectedCourse != null)
-    {
-        var courseModules = selectedCourse.CoursesModules;
-        if (courseModules.Any())
-        {
-            <label for="moduleDropdown">Select a module:</label>
-            <select id="moduleDropdown" name="selectedModuleId">
-                <option value="">-- Select a module --</option>
-                @foreach (var module in courseModules)
-                {
-                    <option value="@module.Id">@module.Name</option>
-                }
-            </select>
-        }
-        else
-        {
-            <p>No modules available for the selected course.</p>
-        }
-    }
-    else
-    {
-        <p>Could not find the selected course.</p>
-    }
-}
-else
-{
-    <label for="moduleDropdown">Select a module:</label>
-    <select id="moduleDropdown" name="selectedModuleId">
-        <option value="">-- Select a module --</option>
-    </select>
-}
-
-
+<label for="moduleDropdown">Select a module:</label>
+<select id="moduleDropdown" name="selectedModuleId">
+    <option value="">-- Select a module --</option>
+</select>
 
 <noscript>
     <button type="submit">Submit</button>
 </noscript>
+
+<!-- Tlf. form -->
 <form method="post" action="/YourController/YourAction">
     <label for="inputField">Enter tlf. nr:</label>
     <input type="text" id="inputField" name="inputField" placeholder="88888888">
-
     <button type="submit">Tjek Ind</button>
 </form>
 
+<!-- JavaScript Code -->
+@using Newtonsoft;
 <script>
-    function PopulateCourseModule(courseId) {
-        /*$.ajax({
-            url: `/QR/` + courseId + '/modules',
-            method: 'GET',
-            success: function (data) {
-                
-            },
-            error: function (xhr, status, error) {
-                console.error("Error details:", xhr.responseText); // This logs the response
-                alert("Fejl ved sletning af modul.");
-            }
-        });*/
-        @{ 
-            <text >var course = Model.where(c => c.Id == courseId).First() </text>
+    // Serialize course data to a JavaScript object
+    const courses = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+
+    // Function to populate the modules dropdown based on selected course
+    function populateCourseModules() {
+        console.log(courses);
+        const courseDropdown = document.getElementById("courseDropdown");
+        const moduleDropdown = document.getElementById("moduleDropdown");
+        const selectedCourseId = parseInt(courseDropdown.value);
+        console.log(selectedCourseId);
+        // Clear the existing modules
+        moduleDropdown.innerHTML = '<option value="">-- Select a module --</option>';
+
+        // Find the selected course and populate modules if it exists
+        const selectedCourse = courses.find(course => course.Id === selectedCourseId);
+        // Todays date
+        const today = new Date();
+        const todayFormatted = today.toISOString().split('T')[0]; // Get only yyyy-mm-dd
+        console.log(selectedCourse.CoursesModules[0].Date);
+        if (selectedCourse && selectedCourse.CoursesModules.length > 0) {
+            selectedCourse.CoursesModules.filter(module => {
+                // Convert module.Date to a string format (yyyy-mm-dd)
+                const moduleDateFormatted = new Date(module.Date).toISOString().split('T')[0];
+                return moduleDateFormatted === todayFormatted;
+            }).forEach(module => {
+                const option = document.createElement("option");
+                option.value = module.Id;
+                option.textContent = module.Name;
+                moduleDropdown.appendChild(option);
+            });
         }
     }
 </script>
