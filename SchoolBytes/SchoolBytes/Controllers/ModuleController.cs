@@ -114,11 +114,11 @@ namespace SchoolBytes.Controllers
             Participant newParticipant = new Participant(participant.Name, participant.PhoneNumber);
 
 
-            Course course = dBConnection.courses.Find(courseId);
+            //Course course = dBConnection.courses.Find(courseId);
 
-            if (course.Participants.Count < 5)
+            if (courseModule.Participants.Count < 5)
             {
-                course.Participants.Add(newParticipant);
+                courseModule.Participants.Add(newParticipant);
 
                 dBConnection.Update(courseModule);
                 dBConnection.SaveChanges();
@@ -139,12 +139,12 @@ namespace SchoolBytes.Controllers
         {
             CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
 
-            Course course = dBConnection.courses.Find(courseId);
+            //Course course = dBConnection.courses.Find(courseId);
 
-            Participant participant = course.Participants.Find(p => p.PhoneNumber == tlfNr);
+            Participant participant = courseModule.Participants.Find(p => p.PhoneNumber == tlfNr);
             if (participant != null)
             {
-                course.Participants.Remove(participant);
+                courseModule.Participants.Remove(participant);
 
                 dBConnection.Update(courseModule);
                 dBConnection.SaveChanges();
