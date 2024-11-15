@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SchoolBytes.Models
 {
@@ -14,5 +15,7 @@ namespace SchoolBytes.Models
         public int Capacity { get; set; }
         public virtual Course Course { get; set; }
         public string Location { get; set; }
+        public virtual List<Participant> Participants { get; set; } = new List<Participant>();
+        public int MaxCapacity { get; set; }
     }
 }

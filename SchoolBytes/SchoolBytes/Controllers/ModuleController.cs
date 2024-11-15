@@ -100,5 +100,59 @@ namespace SchoolBytes.Controllers
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
+
+
+        //TILMELDINGER
+        
+        [HttpPost]
+        [Route("course/{courseId}/{moduleId}/tilmeld")]
+        public ActionResult Subscribe(int courseId, int moduleId, Participant participant)
+        {
+            CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
+            
+
+            Participant newParticipant = new Participant(participant.Name, participant.PhoneNumber);
+
+            if (courseModule.Participants.Count < courseModule.MaxCapacity)
+            {
+                courseModule.Participants.Add(newParticipant);
+
+                dBConnection.Update(courseModule);
+                dBConnection.SaveChanges();
+            }
+            else
+            {
+                //VENTELISTE LOGIK SKAL IND HER - PLACEHOLDER INDTIL VIDERE
+                return HttpNotFound("Hold fyldt");
+            }
+
+
+            return RedirectToAction("CourseOverview");
+        }
+
+        [HttpPost]
+        [Route("course/{courseId}/{moduleId}/afmeld")]
+        public ActionResult Cancel(int courseId, int moduleId, string tlfNr)
+        {
+            CourseModule courseModule = dBConnection.courseModules.Find(courseId);
+
+            Participant participant = courseModule.Participants.Find(p => p.PhoneNumber == tlfNr);
+            if (participant != null)
+            {
+                courseModule.Participants.Remove(participant);
+
+                dBConnection.Update(courseModule);
+                dBConnection.SaveChanges();
+            }
+            else
+            {
+                //placeholder
+                return HttpNotFound("Ingen tilmeldte med opgivne informationer fundet");
+            }
+
+
+
+            return View();
+        }
     }
 }
