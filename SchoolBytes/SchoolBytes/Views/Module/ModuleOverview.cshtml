@@ -22,7 +22,7 @@
             <div class="module-details" id="module-details-@module.Id" style="display: none;">
                 <form id="module-update-form-@module.Id" onsubmit="updateModule(@module.Course.Id, @module.Id); return false;">
                     <input type="hidden" name="Name" value="@module.Name" />
-                    <input type="hidden" name="FoodModule" id="fm"/>
+                    @*<input type="hidden" name="FoodModule" id="fm"/>*@
 
                     <p><strong>Underviser:</strong> <input type="text" name="TeacherName" value="@module.Teacher.Name" disabled /></p>
                     <p><strong>Dato:</strong> <input type="date" name="Date" value="@module.Date.ToString("yyyy-MM-dd")" disabled /></p>
@@ -84,22 +84,33 @@
                     console.log(`Attempting to update module with ID ${moduleId} in course ${courseId}`);
                     
 
+                    var objectA;
                     if (document.querySelector(`#fmFormName`).value != "") { 
-                        var object = {};
+                        var objectA = {};
                         var formData = new FormData(document.querySelector(`#da-form`));
                         formData.forEach(function (value, key) {
-                            object[key] = value;
+                            objectA[key] = value;
                         });
 
 
-                        document.querySelector(`#module-update-form-${moduleId} #fm`).value = object;//$(`#da-form`).serialize();
+                        
                     }
-                    const data = $(`#module-update-form-${moduleId}`).serialize();
-                    console.log(data)
+                    //const data = $(`#module-update-form-${moduleId}`).serialize();
+                    //console.log(data)
+
+                    var formData2 = $(`#module-update-form-${moduleId}`).serializeArray();
+                    var objectB = {FoodModule: objectA};
+                    formData2.forEach(function (field) {
+                        objectB[field.name] = field.value;
+                    });
+
+                    console.log(JSON.stringify(objectB));
+
                     $.ajax({
                         url: `/course/${courseId}/update/${moduleId}`,
                         method: 'POST',
-                        data: data,
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(objectB),
                         success: function () {
                             alert("Modul opdateret!");
                             //location.reload(); // Reloads the page
