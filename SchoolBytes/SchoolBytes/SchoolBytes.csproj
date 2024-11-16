@@ -239,13 +239,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\20241108084207_initial.cs" />
-    <Compile Include="Migrations\20241108084207_initial.Designer.cs">
-      <DependentUpon>20241108084207_initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20241115110921_ParticipantCourseModule.cs" />
-    <Compile Include="Migrations\20241115110921_ParticipantCourseModule.Designer.cs">
-      <DependentUpon>20241115110921_ParticipantCourseModule.cs</DependentUpon>
+    <Compile Include="Migrations\20241116152314_Version-3.cs" />
+    <Compile Include="Migrations\20241116152314_Version-3.Designer.cs">
+      <DependentUpon>20241116152314_Version-3.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\DBConnectionModelSnapshot.cs" />
     <Compile Include="Models\Course.cs" />

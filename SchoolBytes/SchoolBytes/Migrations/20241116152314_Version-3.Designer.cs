@@ -9,8 +9,8 @@ using SchoolBytes.Models;
 namespace SchoolBytes.Migrations
 {
     [DbContext(typeof(DBConnection))]
-    [Migration("20241115110921_ParticipantCourseModule")]
-    partial class ParticipantCourseModule
+    [Migration("20241116152314_Version-3")]
+    partial class Version3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,6 +28,10 @@ namespace SchoolBytes.Migrations
 
                     b.Property<int?>("CourseModuleId");
 
+                    b.Property<int?>("CourseModuleId1");
+
+                    b.Property<int?>("FoodModuleId");
+
                     b.Property<string>("Name");
 
                     b.Property<string>("PhoneNumber");
@@ -37,6 +41,10 @@ namespace SchoolBytes.Migrations
                     b.HasIndex("CourseId");
 
                     b.HasIndex("CourseModuleId");
+
+                    b.HasIndex("CourseModuleId1");
+
+                    b.HasIndex("FoodModuleId");
 
                     b.ToTable("participants");
                 });
@@ -81,6 +89,8 @@ namespace SchoolBytes.Migrations
                     b.Property<int?>("FoodModuleId");
 
                     b.Property<string>("Location");
+
+                    b.Property<int>("MaxCapacity");
 
                     b.Property<string>("Name");
 
@@ -150,6 +160,14 @@ namespace SchoolBytes.Migrations
                     b.HasOne("SchoolBytes.Models.CourseModule")
                         .WithMany("Participants")
                         .HasForeignKey("CourseModuleId");
+
+                    b.HasOne("SchoolBytes.Models.CourseModule")
+                        .WithMany("Waitlist")
+                        .HasForeignKey("CourseModuleId1");
+
+                    b.HasOne("SchoolBytes.Models.FoodModule")
+                        .WithMany("Participants")
+                        .HasForeignKey("FoodModuleId");
                 });
 
             modelBuilder.Entity("SchoolBytes.Models.Course", b =>

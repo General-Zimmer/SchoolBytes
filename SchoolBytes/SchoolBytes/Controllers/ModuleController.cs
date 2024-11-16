@@ -186,7 +186,7 @@ namespace SchoolBytes.Controllers
             var participants = dBConnection.participants;
             foreach (var participant in participants) 
             { 
-                module.Waitlist.Enqueue(participant);
+                module.Waitlist.AddLast(participant);
             }
 
             return View(module);
