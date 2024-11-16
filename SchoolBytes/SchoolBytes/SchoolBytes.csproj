@@ -235,16 +235,10 @@
     <Compile Include="Controllers\FoodController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
-    <Compile Include="Controllers\ParticipantController.cs" />
     <Compile Include="DTO\CourseDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\20241108084207_initial.cs" />
-    <Compile Include="Migrations\20241108084207_initial.Designer.cs">
-      <DependentUpon>20241108084207_initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\DBConnectionModelSnapshot.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\CourseModule.cs" />
     <Compile Include="Models\DBConnection.cs" />
@@ -311,6 +305,8 @@
     <Content Include="Views\Food\Index.cshtml" />
     <Content Include="Views\Food\SletDetHer.cshtml" />
     <Content Include="Views\Module\ModuleOverview.cshtml" />
+    <Content Include="Views\Course\ParticipantView.cshtml" />
+    <Content Include="Views\Module\ParticipantView.cshtml" />
     <Content Include="Views\Module\WaitlistSignup.cshtml" />
     <Content Include="Views\Participant\ParticipantView.cshtml" />
   </ItemGroup>

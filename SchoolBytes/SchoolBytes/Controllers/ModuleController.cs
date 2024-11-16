@@ -101,6 +101,71 @@ namespace SchoolBytes.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
+
+        //TILMELDINGER
+        
+        [HttpPost]
+        [Route("Module/course/{courseId}/{moduleId}/tilmeld")]
+        public ActionResult Subscribe(int courseId, int moduleId, Participant participant)
+        {
+            CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
+            
+
+            Participant newParticipant = new Participant(participant.Name, participant.PhoneNumber);
+
+
+            //Course course = dBConnection.courses.Find(courseId);
+
+            if (courseModule.Participants.Count < 5)
+            {
+                courseModule.Participants.Add(newParticipant);
+
+                dBConnection.Update(courseModule);
+                dBConnection.SaveChanges();
+            }
+            else
+            {
+                //VENTELISTE LOGIK SKAL IND HER - PLACEHOLDER INDTIL VIDERE
+                return HttpNotFound("Hold fyldt");
+            }
+
+
+            return RedirectToAction("CourseOverview");
+        }
+
+        [HttpPost]
+        [Route("Module/course/{courseId}/{moduleId}/afmeld")]
+        public ActionResult Cancel(int courseId, int moduleId, string tlfNr)
+        {
+            CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
+
+            //Course course = dBConnection.courses.Find(courseId);
+
+            Participant participant = courseModule.Participants.Find(p => p.PhoneNumber == tlfNr);
+            if (participant != null)
+            {
+                courseModule.Participants.Remove(participant);
+
+                dBConnection.Update(courseModule);
+                dBConnection.SaveChanges();
+            }
+            else
+            {
+                //placeholder
+                return HttpNotFound("Ingen tilmeldte med opgivne informationer fundet");
+            }
+
+
+
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult TheView()
+        {
+            return View("ParticipantView");
+        }
+
         // GET: api/course/{courseId}/{moduleId}/signup/waitlist (Sign up for the waitlist for a course module)
         [HttpGet]
         [Route("course/{courseId}/{moduleId}/signup/waitlist")]
