@@ -139,7 +139,7 @@ namespace SchoolBytes.Controllers
 
             return TheView(null);
         }
-
+        //TODO: Skal det her med?
         [HttpPost]
         [Route("Module/course/{courseId}/{moduleId}/tilmeld")]
         public ActionResult Subscribe(int courseId, List<int> moduleIds, Participant participant)
