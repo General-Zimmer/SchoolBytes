@@ -11,5 +11,10 @@ public class  Registration
         this.participant = participant;
         CourseModules = courseModules;
     }
+
+    public Registration(Participant newParticipant, CourseModule courseModule)
+    {
+
+    }
 }
 

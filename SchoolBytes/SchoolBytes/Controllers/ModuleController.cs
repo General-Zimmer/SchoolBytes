@@ -109,16 +109,13 @@ namespace SchoolBytes.Controllers
         public ActionResult Subscribe(int courseId, int moduleId, Participant participant)
         {
             CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
-            
-
-            Participant newParticipant = new Participant(participant.Name, participant.PhoneNumber);
-
 
             //Course course = dBConnection.courses.Find(courseId);
 
-            if (courseModule.Participants.Count < 5)
+            if (courseModule.Registrations.Count < 5)
             {
-                courseModule.Participants.Add(newParticipant);
+                Participant newParticipant = new Participant(participant.Name, participant.PhoneNumber);
+                Registration registration = new Registration(newParticipant, courseModule);
 
                 dBConnection.Update(courseModule);
                 dBConnection.SaveChanges();
@@ -130,7 +127,7 @@ namespace SchoolBytes.Controllers
             }
 
 
-            return RedirectToAction("CourseOverview");
+            return TheView();
         }
 
         [HttpPost]
@@ -182,7 +179,7 @@ namespace SchoolBytes.Controllers
 
             dBConnection.SaveChanges();
 
-            return RedirectToAction("CourseOverview");
+            return TheView();
         }
 
         [HttpPost]
@@ -209,35 +206,7 @@ namespace SchoolBytes.Controllers
 
 
 
-            return View();
-        }
-
-
-        [HttpPost]
-        [Route("Module/course/{courseId}/{moduleId}/afmeld")]
-        public ActionResult Cancel(int courseId, int moduleId, string tlfNr)
-        {
-            CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
-
-            //Course course = dBConnection.courses.Find(courseId);
-
-            Participant participant = courseModule.Participants.Find(p => p.PhoneNumber == tlfNr);
-            if (participant != null)
-            {
-                courseModule.Participants.Remove(participant);
-
-                dBConnection.Update(courseModule);
-                dBConnection.SaveChanges();
-            }
-            else
-            {
-                //placeholder
-                return HttpNotFound("Ingen tilmeldte med opgivne informationer fundet");
-            }
-
-
-
-            return View();
+            return TheView();
         }
 
         [HttpGet]

@@ -9,7 +9,7 @@ namespace SchoolBytes.Models
         public string Name { get; set; }
         public virtual Teacher Teacher { get; set; }
         public virtual FoodModule FoodModule { get; set; }
-        public virtual List<Participant> Participants { get; set; } = new List<Participant>();
+        public virtual List<Registration> Registrations { get; set; } = new List<Registration>();
         public virtual LinkedList<Participant> Waitlist { get; set; } = new LinkedList<Participant>();
         public DateTime Date { get ; set ; }
         public DateTime StartTime { get; set; }

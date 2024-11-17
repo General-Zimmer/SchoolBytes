@@ -1,4 +1,4 @@
-﻿@model SchoolBytes.Models.Course
+﻿@model List<SchoolBytes.Models.Course>
 @{
     ViewBag.Title = "ParticipantView";
 }
@@ -17,13 +17,26 @@
         <label class="participant-label" for="PhoneNumber">Telefon nummer:</label>
         <input class="participant-input" type="text" id="PhoneNumber" name="PhoneNumber" required />
     </div>
-
+    
     <div class="participant-group">
         <label class="participant-label" for="Course">Hold:</label>
+        <select asp-for="Id" class="select-course">
+            <option value="">Vælg et hold</option>
+            @foreach (var course in Model)
+            {
+                <option value="@course.Id">@course.Name </option>
+            }
+        </select>
     </div>
 
     <div class="participant-group">
         <label class="participant-label" for="CourseModule">Moduler</label>
+        <ul>
+            @foreach (var module in Model )
+            {
+                <li>@module.CoursesModules</li>
+            }
+        </ul>
     </div>
 
     <div class="participant-group">
