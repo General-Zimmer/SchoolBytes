@@ -134,6 +134,86 @@ namespace SchoolBytes.Controllers
         }
 
         [HttpPost]
+        [Route("Module/course/{courseId}/{moduleId}/tilmeld")]
+        public ActionResult Subscribe(int courseId, List<int> moduleIds, Participant participant)
+        {
+            Course course = dBConnection.courses.Find(courseId);
+
+            if (course == null)
+            {
+                return HttpNotFound("Course does not");
+            }
+
+            List<CourseModule> selectedModules = new List<CourseModule>();
+
+            foreach (var moduleId in moduleIds)
+            {
+                CourseModule module = dBConnection.courseModules.Find(moduleId);
+
+                if (module != null)
+                {
+                    selectedModules.Add(module);
+                }
+                else
+                {
+                    return HttpNotFound($"Module {moduleId} not found");
+                }
+            }
+
+
+            if (course.Participants.Count >= course.MaxCapacity) // skal ændres til modul
+            {
+                return HttpNotFound($"Module {course.Id} is full.");
+            }
+
+            Participant newParticipant = new Participant(participant.Name, participant.PhoneNumber);
+            Registration registration = new Registration(newParticipant, selectedModules);
+
+            foreach (var module in selectedModules)
+            {
+                course.Participants.Add(newParticipant); // skal også laves om til modul
+            }
+
+            dBConnection.Update(course);
+            foreach (var module in selectedModules)
+            {
+                dBConnection.Update(module);
+            }
+
+            dBConnection.SaveChanges();
+
+            return RedirectToAction("CourseOverview");
+        }
+
+        [HttpPost]
+        [Route("Module/course/{courseId}/{moduleId}/afmeld")]
+        public ActionResult Cancel(int courseId, int moduleId, string tlfNr)
+        {
+            CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
+
+            Course course = dBConnection.courses.Find(courseId);
+
+            Participant participant = course.Participants.Find(p => p.PhoneNumber == tlfNr);
+            if (participant != null)
+            {
+                course.Participants.Remove(participant);
+
+                dBConnection.Update(courseModule);
+                dBConnection.SaveChanges();
+            }
+            else
+            {
+                //placeholder
+                return HttpNotFound("Ingen tilmeldte med opgivne informationer fundet");
+            }
+
+
+
+            return View();
+        }
+
+
+        [HttpPost]
         [Route("Module/course/{courseId}/{moduleId}/afmeld")]
         public ActionResult Cancel(int courseId, int moduleId, string tlfNr)
         {

@@ -250,6 +250,7 @@
     <Compile Include="Models\FoodModule.cs" />
     <Compile Include="Models\IModule.cs" />
     <Compile Include="Models\Participant.cs" />
+    <Compile Include="Models\Registration.cs" />
     <Compile Include="Models\Teacher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
