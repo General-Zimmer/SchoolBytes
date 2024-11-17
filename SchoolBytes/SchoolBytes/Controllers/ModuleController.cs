@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Common;
@@ -8,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Ajax.Utilities;
 using Microsoft.EntityFrameworkCore;
 using SchoolBytes.Models;
 
@@ -112,13 +114,21 @@ namespace SchoolBytes.Controllers
 
             //Course course = dBConnection.courses.Find(courseId);
 
-            if (courseModule.Registrations.Count < 5)
+            if (courseModule.Capacity <= courseModule.MaxCapacity)
             {
+                if(DBConnection.IsEligibleToSubscribe(participant))
+                {
+
+                
                 Participant newParticipant = new Participant(participant.Name, participant.PhoneNumber);
                 Registration registration = new Registration(newParticipant, courseModule);
-
+                courseModule.Capacity += 1;
                 dBConnection.Update(courseModule);
                 dBConnection.SaveChanges();
+                } else
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Du har allerede tilmeldt dig maksimum antal hold.");
+                }
             }
             else
             {
@@ -127,7 +137,7 @@ namespace SchoolBytes.Controllers
             }
 
 
-            return TheView();
+            return TheView(null);
         }
 
         [HttpPost]
@@ -138,48 +148,46 @@ namespace SchoolBytes.Controllers
 
             if (course == null)
             {
+                //burde være en httpstatuscode
                 return HttpNotFound("Course does not");
             }
 
             List<CourseModule> selectedModules = new List<CourseModule>();
+            List<CourseModule> skippedModules = new List<CourseModule> ();
 
             foreach (var moduleId in moduleIds)
             {
                 CourseModule module = dBConnection.courseModules.Find(moduleId);
 
-                if (module != null)
+                if (module != null && module.Capacity < module.MaxCapacity)
                 {
                     selectedModules.Add(module);
                 }
                 else
                 {
-                    return HttpNotFound($"Module {moduleId} not found");
+                   skippedModules.Add(module);
                 }
             }
 
 
-            if (course.Participants.Count >= course.MaxCapacity) // skal ændres til modul
-            {
-                return HttpNotFound($"Module {course.Id} is full.");
+
+           //TODO: edit the 5 so it comes from some kind of setting. It's the max amount of subcribtions u can have at once
+            if (selectedModules.Count + DBConnection.GetSubscribeCount(participant) > 5) {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Deltager er tilmeldt for mange hold."); 
             }
 
-            Participant newParticipant = new Participant(participant.Name, participant.PhoneNumber);
-            Registration registration = new Registration(newParticipant, selectedModules);
-
-            foreach (var module in selectedModules)
+            selectedModules.ForEach(sm =>
             {
-                course.Participants.Add(newParticipant); // skal også laves om til modul
-            }
+                Registration registration = new Registration(participant, sm);
+                sm.Registrations.Add(registration);
 
-            dBConnection.Update(course);
-            foreach (var module in selectedModules)
-            {
-                dBConnection.Update(module);
-            }
+            });
 
+
+            dBConnection.Update(selectedModules);
             dBConnection.SaveChanges();
 
-            return TheView();
+            return TheView(skippedModules);
         }
 
         [HttpPost]
@@ -206,12 +214,13 @@ namespace SchoolBytes.Controllers
 
 
 
-            return TheView();
+            return TheView(null);
         }
 
         [HttpGet]
-        public ActionResult TheView()
+        public ActionResult TheView(IList skippedModules)
         {
+            ViewBag.skippedModules = skippedModules;
             return View("ParticipantView");
         }
 

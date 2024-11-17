@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 
 namespace SchoolBytes.Models
@@ -55,6 +56,16 @@ namespace SchoolBytes.Models
 
 
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<CourseModule>()
+                   .HasMany(cm => cm.Registrations)
+                   .WithOne(r => r.CourseModule)
+                   .HasPrincipalKey(cm => cm.Id) // Specifies the primary key on CourseModule
+                   .HasForeignKey(r => r.Id); // Define the foreign key property in Registration
+        }
+
         public static DBConnection getDBContext()
         {
 
@@ -65,10 +76,32 @@ namespace SchoolBytes.Models
             return self;
         }
 
+
+
         private static string getCredentialsPath()
         {
-            StreamReader credJson = new StreamReader(HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json"));
+            string filePath = @"C:\Users\Duff\Desktop\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
+            StreamReader credJson = new StreamReader(filePath); //HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json")
             return (string)JObject.Parse(credJson.ReadToEnd())["credentials"];
+        }
+
+        public static bool IsEligibleToSubscribe(Participant participant)
+        {
+            int registrations = getDBContext().courseModules.Sum(cm => cm.Registrations.Count(r => r.participant == participant));
+
+            if (registrations > 5 )
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static int GetSubscribeCount(Participant participant)
+        {
+           return getDBContext().courseModules.Sum(cm => cm.Registrations.Count(r => r.participant == participant));
+
+            
         }
     }
 }

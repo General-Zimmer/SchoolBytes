@@ -14,7 +14,7 @@ namespace SchoolBytes.Models
         public DateTime Date { get ; set ; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public int Capacity { get; set; }
+        public int Capacity { get; set; } = 0;
         public virtual Course Course { get; set; }
         public string Location { get; set; }
         public int MaxCapacity { get; set; }
