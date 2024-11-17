@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Ajax.Utilities;
@@ -103,11 +104,23 @@ namespace SchoolBytes.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
+        [HttpGet]
+        [Route("Module/SubModalWindow/{courseId}/{ModuleId}")]
+        public ActionResult SubModal(int courseId, int ModuleId)
+        {
+            var course = dBConnection.courses.Find(courseId);
+            var module = dBConnection.courseModules.Find(ModuleId);
+            ViewBag.CourseId = courseId;
+            ViewBag.ModuleId = ModuleId;
+            ViewBag.CourseName = course.Name;
+            ViewBag.ModuleName = module.Name;
+            return View("SubModal");
+        }
 
         //TILMELDINGER
         
         [HttpPost]
-        [Route("Module/course/{courseId}/{moduleId}/tilmeld")]
+        [Route("course/{courseId}/module/{moduleId}/tilmeld")]
         public ActionResult Subscribe(int courseId, int moduleId, Participant participant)
         {
             CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
@@ -123,8 +136,7 @@ namespace SchoolBytes.Controllers
                 Participant newParticipant = new Participant(participant.Name, participant.PhoneNumber);
                 Registration registration = new Registration(newParticipant, courseModule);
                 courseModule.Capacity += 1;
-                dBConnection.Update(courseModule);
-                dBConnection.SaveChanges();
+                dBConnection.UpdateSub(registration, courseModule);
                 } else
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Du har allerede tilmeldt dig maksimum antal hold.");
@@ -141,7 +153,7 @@ namespace SchoolBytes.Controllers
         }
         //TODO: Skal det her med?
         [HttpPost]
-        [Route("Module/course/{courseId}/{moduleId}/tilmeld")]
+        [Route("Module/course/{courseId}/module/{moduleId}/tilmeld")]
         public ActionResult Subscribe(int courseId, List<int> moduleIds, Participant participant)
         {
             Course course = dBConnection.courses.Find(courseId);

@@ -97,6 +97,13 @@ namespace SchoolBytes.Models
             return true;
         }
 
+        public void UpdateSub(Registration registration, CourseModule course)
+        {
+            self.Update(registration);
+            self.Update(course);
+            self.SaveChanges();
+        }
+
         public static int GetSubscribeCount(Participant participant)
         {
            return getDBContext().courseModules.Sum(cm => cm.Registrations.Count(r => r.participant == participant));
