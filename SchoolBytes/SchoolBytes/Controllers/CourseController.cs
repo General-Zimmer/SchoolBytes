@@ -45,25 +45,29 @@ namespace SchoolBytes.Controllers
                 Id = courseDTO.Id
             };
 
-            var modules = new List<CourseModule>();
+            var req = Request.Form;
+            Console.WriteLine("TEEEEEEST"  + req.ToString());
+
             var activeDays = new List<DayOfWeek>();
 
-            if (courseDTO.Monday)
+            
+
+            if (req.AllKeys.Contains("Monday"))
                 activeDays.Add(DayOfWeek.Monday);
-            if (courseDTO.Tuesday)
+            if (req.AllKeys.Contains("Tuesday"))
                 activeDays.Add(DayOfWeek.Tuesday);
-            if (courseDTO.Wednesday)
+            if (req.AllKeys.Contains("Wednesday"))
                 activeDays.Add(DayOfWeek.Wednesday);
-            if (courseDTO.Thursday)
+            if (req.AllKeys.Contains("Thursday"))
                 activeDays.Add(DayOfWeek.Thursday);
-            if (courseDTO.Friday)
+            if (req.AllKeys.Contains("Friday"))
                 activeDays.Add(DayOfWeek.Friday);
-            if (courseDTO.Saturday)
+            if (req.AllKeys.Contains("Saturday"))
                 activeDays.Add(DayOfWeek.Saturday);
-            if (courseDTO.Sunday)
+            if (req.AllKeys.Contains("Sunday"))
                 activeDays.Add(DayOfWeek.Sunday);
-            //TODO: delete this line
-            activeDays.Add(DayOfWeek.Monday);
+
+
             var daysCount = activeDays.Count;
             
             if (daysCount == 0)
@@ -72,39 +76,30 @@ namespace SchoolBytes.Controllers
                 throw new InvalidOperationException("Ingen dage valgt på kursus.");
             }
 
-            var modulesPerDay = courseDTO.numberOfModules / daysCount;
-            var remainingModules = courseDTO.numberOfModules % daysCount;
-            var currentDate = DateTime.Now;
-            //Dunno about this?
-            foreach (var activeDayDate in activeDays.Select(day => GetDayForWeekday(currentDate, day)))
-            {
-                for (var i = 0; i < modulesPerDay; i++)
-                {
-                    modules.Add(new CourseModule()
-                    {
-                        Name = $"Module {modules.Count + 1}",
-                        Date = activeDayDate,
-                        MaxCapacity = course.MaxCapacity,
-                        Teacher = course.Teacher,
-                    });
-                }
+            
+            var remainingModules = courseDTO.numberOfModules;
+           
 
-                if (remainingModules > 0)
+
+            for (DateTime start = course.StartDate; start <= course.EndDate; start=start.AddDays(1))
+            {
+                if (activeDays.Contains(start.DayOfWeek))
                 {
-                    modules.Add(new CourseModule()
+                    CourseModule cm = new CourseModule()
                     {
-                        Name = $"Module {modules.Count + 1}",
-                        Date = activeDayDate,
+                        Name = $"Module {course.CoursesModules.Count + 1}",
+                        Date = start,
                         MaxCapacity = course.MaxCapacity,
                         Teacher = course.Teacher,
-                    });
+                    };
+                    dbConnection.Add(cm);
+                    course.CoursesModules.Add(cm);
+
                     remainingModules--;
                 }
             }
 
-            course.CoursesModules.AddRange(modules);
             dbConnection.Add(course);
-
             dbConnection.SaveChanges();
 
             return RedirectToAction("CourseOverview");
