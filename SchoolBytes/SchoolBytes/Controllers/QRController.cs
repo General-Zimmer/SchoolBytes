@@ -40,6 +40,7 @@ namespace SchoolBytes.Controllers
         }
 
         [HttpGet]
+        [Route("QR/Index")]
         public ActionResult Index()
         {
             ViewBag.Title = "Fremmøde Tjek Ind";
@@ -56,5 +57,13 @@ namespace SchoolBytes.Controllers
             return View(courses);  // Send the list of courses to the view
         }
 
+        // Post: Fremmøde
+        [HttpPost]
+        [Route("QR/Index/RegistrationCheckIn")]
+        public ActionResult RegistrationCheckIn()
+        {
+            System.Diagnostics.Debug.WriteLine("Fremmøde Check In");
+            return RedirectToAction("Index", "QR"); // Redirects to QR/Index
+        }
     }
 }
