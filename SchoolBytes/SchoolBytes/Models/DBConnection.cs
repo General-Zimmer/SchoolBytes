@@ -67,6 +67,7 @@ namespace SchoolBytes.Models
 
         private static string getCredentialsPath()
         {
+            // string filePath = @"C:\Users\rgmar\source\repos\General-Zimmer\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
             StreamReader credJson = new StreamReader(HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json"));
             return (string)JObject.Parse(credJson.ReadToEnd())["credentials"];
         }
