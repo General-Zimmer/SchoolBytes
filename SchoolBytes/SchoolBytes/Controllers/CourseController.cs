@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web.Mvc;
 using SchoolBytes.DTO;
 using SchoolBytes.Models;
@@ -50,23 +51,18 @@ namespace SchoolBytes.Controllers
 
             var activeDays = new List<DayOfWeek>();
 
-            
+            foreach (DayOfWeek day in (DayOfWeek[])Enum.GetValues(typeof(DayOfWeek)))
+            {
+                bool isDayContained = req.AllKeys.Contains(day.ToString());
 
-            if (req.AllKeys.Contains("Monday"))
-                activeDays.Add(DayOfWeek.Monday);
-            if (req.AllKeys.Contains("Tuesday"))
-                activeDays.Add(DayOfWeek.Tuesday);
-            if (req.AllKeys.Contains("Wednesday"))
-                activeDays.Add(DayOfWeek.Wednesday);
-            if (req.AllKeys.Contains("Thursday"))
-                activeDays.Add(DayOfWeek.Thursday);
-            if (req.AllKeys.Contains("Friday"))
-                activeDays.Add(DayOfWeek.Friday);
-            if (req.AllKeys.Contains("Saturday"))
-                activeDays.Add(DayOfWeek.Saturday);
-            if (req.AllKeys.Contains("Sunday"))
-                activeDays.Add(DayOfWeek.Sunday);
+                if (isDayContained) activeDays.Add(day);
 
+                PropertyInfo prop = course.GetType().GetProperty(day.ToString(), BindingFlags.Public | BindingFlags.Instance);
+                if (null != prop && prop.CanWrite)
+                {
+                    prop.SetValue(course, isDayContained, null);
+                }
+            }
 
             var daysCount = activeDays.Count;
             
