@@ -96,7 +96,11 @@ namespace SchoolBytes.Models
                     modules.Add(new CourseModule()
                     {
                         Name = $"Module {modules.Count + 1}",
-                        Date = activeDayDate
+                        Date = activeDayDate,
+                        MaxCapacity = course.MaxCapacity,
+                        Teacher = course.Teacher,
+                        
+
                     });
                 }
 
@@ -105,7 +109,9 @@ namespace SchoolBytes.Models
                     modules.Add(new CourseModule()
                     {
                         Name = $"Module {modules.Count + 1}",
-                        Date = activeDayDate
+                        Date = activeDayDate,
+                        MaxCapacity = course.MaxCapacity,
+                        Teacher = course.Teacher,
                     });
                     remainingModules--;
                 }

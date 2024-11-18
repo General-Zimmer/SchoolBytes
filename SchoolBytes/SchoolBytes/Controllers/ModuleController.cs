@@ -66,7 +66,7 @@ namespace SchoolBytes.Controllers
             module.Date = updatedCourseModule.Date;
             module.StartTime = updatedCourseModule.StartTime;
             module.EndTime = updatedCourseModule.EndTime;
-            module.Capacity = updatedCourseModule.Capacity;
+            module.MaxCapacity = updatedCourseModule.MaxCapacity;
             module.Location = updatedCourseModule.Location;
             dBConnection.Update(module);
             dBConnection.SaveChanges();
