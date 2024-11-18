@@ -246,6 +246,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20241116152314_Version-3.cs" />
+    <Compile Include="Migrations\20241116152314_Version-3.Designer.cs">
+      <DependentUpon>20241116152314_Version-3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20241117172125_parti-Regi-Fix.cs" />
+    <Compile Include="Migrations\20241117172125_parti-Regi-Fix.Designer.cs">
+      <DependentUpon>20241117172125_parti-Regi-Fix.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\20241118080635_QR.cs" />
     <Compile Include="Migrations\20241118080635_QR.Designer.cs">
       <DependentUpon>20241118080635_QR.cs</DependentUpon>
@@ -257,6 +265,7 @@
     <Compile Include="Models\FoodModule.cs" />
     <Compile Include="Models\IModule.cs" />
     <Compile Include="Models\Participant.cs" />
+    <Compile Include="Models\Registration.cs" />
     <Compile Include="Models\QRGeneratorService.cs" />
     <Compile Include="Models\Teacher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -318,6 +327,10 @@
     <Content Include="Views\Food\Index.cshtml" />
     <Content Include="Views\Food\SletDetHer.cshtml" />
     <Content Include="Views\Module\ModuleOverview.cshtml" />
+    <Content Include="Views\Course\ParticipantView.cshtml" />
+    <Content Include="Views\Module\ParticipantView.cshtml" />
+    <Content Include="Views\Module\WaitlistSignup.cshtml" />
+    <Content Include="Views\Module\SubModal.cshtml" />
     <Content Include="Views\QR\GenerateQR.cshtml" />
     <Content Include="Views\QR\Index.cshtml" />
     <Content Include="Views\QR\_CourseModulesDropdown.cshtml" />

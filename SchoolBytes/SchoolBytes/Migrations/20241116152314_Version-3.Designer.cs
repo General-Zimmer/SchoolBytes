@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolBytes.Models;
 
 namespace SchoolBytes.Migrations
 {
     [DbContext(typeof(DBConnection))]
-    partial class DBConnectionModelSnapshot : ModelSnapshot
+    [Migration("20241116152314_Version-3")]
+    partial class Version3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,6 +28,8 @@ namespace SchoolBytes.Migrations
 
                     b.Property<int?>("CourseModuleId");
 
+                    b.Property<int?>("CourseModuleId1");
+
                     b.Property<int?>("FoodModuleId");
 
                     b.Property<string>("Name");
@@ -38,38 +42,9 @@ namespace SchoolBytes.Migrations
 
                     b.HasIndex("CourseModuleId");
 
+                    b.HasIndex("CourseModuleId1");
+
                     b.HasIndex("FoodModuleId");
-
-                    b.ToTable("participants");
-                });
-
-            modelBuilder.Entity("Registration", b =>
-                {
-                    b.Property<int>("Id");
-
-                    b.Property<int?>("participantId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("participantId");
-
-                    b.ToTable("Registration");
-                });
-
-            modelBuilder.Entity("SchoolBytes.Models.Course", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("CourseId");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
 
                     b.ToTable("participants");
                 });
@@ -183,24 +158,16 @@ namespace SchoolBytes.Migrations
                         .HasForeignKey("CourseId");
 
                     b.HasOne("SchoolBytes.Models.CourseModule")
-                        .WithMany("Waitlist")
+                        .WithMany("Participants")
                         .HasForeignKey("CourseModuleId");
+
+                    b.HasOne("SchoolBytes.Models.CourseModule")
+                        .WithMany("Waitlist")
+                        .HasForeignKey("CourseModuleId1");
 
                     b.HasOne("SchoolBytes.Models.FoodModule")
                         .WithMany("Participants")
                         .HasForeignKey("FoodModuleId");
-                });
-
-            modelBuilder.Entity("Registration", b =>
-                {
-                    b.HasOne("SchoolBytes.Models.CourseModule", "CourseModule")
-                        .WithMany("Registrations")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Participant", "participant")
-                        .WithMany()
-                        .HasForeignKey("participantId");
                 });
 
             modelBuilder.Entity("SchoolBytes.Models.Course", b =>

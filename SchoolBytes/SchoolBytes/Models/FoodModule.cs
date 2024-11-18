@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace SchoolBytes.Models
 {
@@ -20,6 +21,7 @@ namespace SchoolBytes.Models
         public string Name { get; set; }
         [JsonIgnore]
         public virtual Teacher Teacher { get; set; }
+        public virtual List<Participant> Participants{ get; set; } = new List<Participant>();
 
         public int Id { get; set; }
     }
