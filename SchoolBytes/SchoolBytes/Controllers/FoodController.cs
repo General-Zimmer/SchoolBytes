@@ -55,7 +55,7 @@ namespace SchoolBytes.Controllers
             fm.Teacher.Name = "HENNY TEACHER";
 
             //fm.Course = new Course();
-            fm.Course.Name = "HENNY COURSE";
+            //fm.Course.Name = "HENNY COURSE";
 
             Session["fm"] = fm;
 

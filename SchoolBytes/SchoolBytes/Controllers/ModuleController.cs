@@ -14,6 +14,7 @@ using Gherkin.CucumberMessages.Types;
 using Microsoft.Ajax.Utilities;
 using Microsoft.EntityFrameworkCore;
 using SchoolBytes.Models;
+using static SchoolBytes.util.DatabaseUtils;
 
 namespace SchoolBytes.Controllers
 {
@@ -39,8 +40,8 @@ namespace SchoolBytes.Controllers
 
         // POST: api/course/{courseid}/update/{moduleid} (Update course module)
         [HttpPost]
-        [Route("course/{courseId}/update/{moduleId}/{teacherId}")]
-        public ActionResult Update(int courseId, int moduleId, int teacherId, CourseModule updatedCourseModule)
+        [Route("course/{courseId}/update/{moduleId}")]
+        public ActionResult Update(int courseId, int moduleId, CourseModule updatedCourseModule)
         {
             //updatedCourse module already has all this info, do we really need course id and module id? It's in updatedCourseModule
             var course = dBConnection.courses.Find(courseId);
@@ -57,17 +58,31 @@ namespace SchoolBytes.Controllers
        
             module.Name = updatedCourseModule.Name;
 
+            FoodModule fm = updatedCourseModule.FoodModule;
+
+            
+            //FoodModule code
+            if (fm!= null && fm.Name != "")
+            {
+                Debug.Print("TEEEEEEEEEEEEEEEEEEST: " + fm.Name);
+                fm.Course = course;
+                fm.Date = updatedCourseModule.Date;
+                fm.Capacity = updatedCourseModule.Capacity;
+                fm.Teacher = updatedCourseModule.Teacher;
+                module.FoodModule = fm;
+                dBConnection.Add(fm);
+            }
+
 
             //TODO: need to find a better way of doing this - fetching the teacherID in this way is not very elegant!!
-            
-            Teacher updatedTeacher = dBConnection.teachers.ToList().Where(t => t.Id == teacherId).FirstOrDefault();
+
+            Teacher updatedTeacher = dBConnection.teachers.ToList().Where(t => t.Id == updatedCourseModule.Teacher.Id).FirstOrDefault();
             module.Teacher = updatedTeacher;
-            
-       
+
             module.Date = updatedCourseModule.Date;
             module.StartTime = updatedCourseModule.StartTime;
             module.EndTime = updatedCourseModule.EndTime;
-            module.Capacity = updatedCourseModule.Capacity;
+            module.MaxCapacity = updatedCourseModule.MaxCapacity;
             module.Location = updatedCourseModule.Location;
             dBConnection.Update(module);
             dBConnection.SaveChanges();
@@ -134,8 +149,8 @@ namespace SchoolBytes.Controllers
                 {
 
                 
-                Participant newParticipant = new Participant(participant.Name, participant.PhoneNumber);
-                Registration registration = new Registration(newParticipant, courseModule);
+                
+                Registration registration = new Registration(participant, courseModule);
                 courseModule.Capacity += 1;
                 dBConnection.UpdateSub(registration, courseModule);
                 } else
@@ -145,17 +160,24 @@ namespace SchoolBytes.Controllers
             }
             else
             {
-                //VENTELISTE LOGIK SKAL IND HER - PLACEHOLDER INDTIL VIDERE
-                return HttpNotFound("Hold fyldt");
+                //VENTELISTE LOGIK SKAL IND HER
+                
+                dBConnection.Update(courseModule);
+                WaitRegistration yeet = new WaitRegistration(participant, courseModule, DateTime.Now);
+
+                courseModule.Waitlist.AddLast(yeet);
+                dBConnection.SaveChangesV2();
+                return RedirectToAction(courseId +"/" + courseModule.Id + "/signup/waitlist", "course");
+                }
+
+
+                return TheView(null);
             }
 
-
-            return TheView(null);
-        }
-        //TODO: Skal det her med?
-        [HttpPost]
-        [Route("Module/course/{courseId}/module/{moduleId}/tilmeld")]
-        public ActionResult Subscribe(int courseId, List<int> moduleIds, Participant participant)
+            //TODO: Skal det her med?
+            [HttpPost]
+            [Route("Module/course/{courseId}/module/{moduleId}/tilmeld")]
+            public ActionResult Subscribe(int courseId, List<int> moduleIds, Participant participant)
         {
             Course course = dBConnection.courses.Find(courseId);
 
@@ -268,12 +290,6 @@ namespace SchoolBytes.Controllers
             if (module == null)
             {
                 return HttpNotFound("Course module not found");
-            }
-
-            var participants = dBConnection.participants;
-            foreach (var participant in participants) 
-            { 
-                module.Waitlist.AddLast(participant);
             }
 
             return View(module);

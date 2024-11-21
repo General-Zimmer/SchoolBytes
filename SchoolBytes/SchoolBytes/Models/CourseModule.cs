@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 
 namespace SchoolBytes.Models
@@ -10,7 +12,7 @@ namespace SchoolBytes.Models
         public virtual Teacher Teacher { get; set; }
         public virtual FoodModule FoodModule { get; set; }
         public virtual List<Registration> Registrations { get; set; } = new List<Registration>();
-        public virtual LinkedList<Participant> Waitlist { get; set; } = new LinkedList<Participant>();
+        public virtual LinkedList<WaitRegistration> Waitlist { get; set; } = new LinkedList<WaitRegistration>();
         public DateTime Date { get ; set ; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
@@ -18,5 +20,7 @@ namespace SchoolBytes.Models
         public virtual Course Course { get; set; }
         public string Location { get; set; }
         public int MaxCapacity { get; set; }
+
+
     }
 }

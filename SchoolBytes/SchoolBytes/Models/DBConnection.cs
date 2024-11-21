@@ -51,7 +51,7 @@ namespace SchoolBytes.Models
             if (!optionsBuilder.IsConfigured)
             {   
                 optionsBuilder.UseLazyLoadingProxies();
-                optionsBuilder.UseMySql(getCredentialsPath());
+                optionsBuilder.UseMySql("Server=localhost;Database=schoolbytes;User=root;Password=yeet;port=3306;");
             }
 
 
@@ -64,6 +64,8 @@ namespace SchoolBytes.Models
                    .WithOne(r => r.CourseModule)
                    .HasPrincipalKey(cm => cm.Id) // Specifies the primary key on CourseModule
                    .HasForeignKey(r => r.Id); // Define the foreign key property in Registration
+
+
         }
 
         public static DBConnection getDBContext()
@@ -80,8 +82,10 @@ namespace SchoolBytes.Models
 
         private static string getCredentialsPath()
         {
-            string filePath = @"C:\Users\andre\Desktop\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
-            StreamReader credJson = new StreamReader(filePath); //HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json")
+            //string filePath = @"C:\Users\Duff\Desktop\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
+            string filePath = HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
+            StreamReader credJson = new StreamReader(filePath);
+            HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
             return (string)JObject.Parse(credJson.ReadToEnd())["credentials"];
         }
 
