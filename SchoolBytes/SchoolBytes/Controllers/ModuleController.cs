@@ -13,6 +13,7 @@ using System.Web.Mvc;
 using Microsoft.Ajax.Utilities;
 using Microsoft.EntityFrameworkCore;
 using SchoolBytes.Models;
+using static SchoolBytes.util.DatabaseUtils;
 
 namespace SchoolBytes.Controllers
 {
@@ -133,8 +134,8 @@ namespace SchoolBytes.Controllers
                 {
 
                 
-                Participant newParticipant = new Participant(participant.Name, participant.PhoneNumber);
-                Registration registration = new Registration(newParticipant, courseModule);
+                
+                Registration registration = new Registration(participant, courseModule);
                 courseModule.Capacity += 1;
                 dBConnection.UpdateSub(registration, courseModule);
                 } else
@@ -144,17 +145,24 @@ namespace SchoolBytes.Controllers
             }
             else
             {
-                //VENTELISTE LOGIK SKAL IND HER - PLACEHOLDER INDTIL VIDERE
-                return HttpNotFound("Hold fyldt");
+                //VENTELISTE LOGIK SKAL IND HER
+                
+                dBConnection.Update(courseModule);
+                WaitRegistration yeet = new WaitRegistration(participant, courseModule, DateTime.Now);
+
+                courseModule.Waitlist.AddLast(yeet);
+                dBConnection.SaveChangesV2();
+                return RedirectToAction(courseId +"/" + courseModule.Id + "/signup/waitlist", "course");
+                }
+
+
+                return TheView(null);
             }
 
-
-            return TheView(null);
-        }
-        //TODO: Skal det her med?
-        [HttpPost]
-        [Route("Module/course/{courseId}/module/{moduleId}/tilmeld")]
-        public ActionResult Subscribe(int courseId, List<int> moduleIds, Participant participant)
+            //TODO: Skal det her med?
+            [HttpPost]
+            [Route("Module/course/{courseId}/module/{moduleId}/tilmeld")]
+            public ActionResult Subscribe(int courseId, List<int> moduleIds, Participant participant)
         {
             Course course = dBConnection.courses.Find(courseId);
 
@@ -251,12 +259,6 @@ namespace SchoolBytes.Controllers
             if (module == null)
             {
                 return HttpNotFound("Course module not found");
-            }
-
-            var participants = dBConnection.participants;
-            foreach (var participant in participants) 
-            { 
-                module.Waitlist.AddLast(participant);
             }
 
             return View(module);
