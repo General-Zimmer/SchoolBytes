@@ -55,57 +55,59 @@
                     <button type="button" class="delete-module-button" onclick="confirmDeleteModule(@module.Course.Id, @module.Id)">Slet modul</button>
                 </form>
             </div>
+        </li>
+    }
+</ul>
+<div id='subModal' class='modal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeBtn">×</button>
+            <div id='subModalContent'></div>
+        </div>
+    </div>
+</div>
+<div id='myModal' class='modal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeBtn">×</button>
+            <div id='myModalContent'></div>
+            <button type="button" class="close" id="opretBtn">OK</button>
+        </div>
+    </div>
+</div>
 
-            <div id='subModal' class='modal'>
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeBtn">×</button>
-                        <div id='subModalContent'></div>
-                    </div>
-                </div>
-            </div>
-            <div id='myModal' class='modal'>
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeBtn">×</button>
-                        <div id='myModalContent'></div>
-                        <button type="button" class="close" id="opretBtn">OK</button>
-                    </div>
-                </div>
-            </div>
+<div id='UnSubModal' class='modal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeBtn">×</button>
+            <div id='UnSubModalContent'></div>
+        </div>
+    </div>
+</div>
 
-            <div id='UnSubModal' class='modal'>
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeBtn">×</button>
-                        <div id='UnSubModalContent'></div>
-                    </div>
-                </div>
-            </div>
+<script>
+    function toggleModuleDetails(moduleId) {
+        const detailsElement = document.getElementById(`module-details-${moduleId}`);
+        const buttonElement = document.querySelector(`#module-detail-form-${moduleId} .module-detail-button`);
 
-            <script>
-                function toggleModuleDetails(moduleId) {
-                    const detailsElement = document.getElementById(`module-details-${moduleId}`);
-                    const buttonElement = document.querySelector(`#module-detail-form-${moduleId} .module-detail-button`);
+        if (detailsElement.style.display === 'none') {
+            detailsElement.style.display = 'block';
+            buttonElement.innerHTML = '&#9650;'; // Up arrow
+        } else {
+            detailsElement.style.display = 'none';
+            buttonElement.innerHTML = '&#9660;'; // Down arrow
+        }
+    }
 
-                        if (detailsElement.style.display === 'none') {
-                            detailsElement.style.display = 'block';
-                            buttonElement.innerHTML = '&#9650;'; // Up arrow
-                        } else {
-                            detailsElement.style.display = 'none';
-                            buttonElement.innerHTML = '&#9660;'; // Down arrow
-                        }
-                    }
+    function enableModuleEditing(moduleId) {
+        document.querySelectorAll(`#module-details-${moduleId} input`).forEach(field => {
+            field.removeAttribute('disabled');
+        });
 
-                    function enableModuleEditing(moduleId) {
-                        document.querySelectorAll(`#module-details-${moduleId} input`).forEach(field => {
-                            field.removeAttribute('disabled');
-                        });
-
-                        document.querySelector(`#module-details-${moduleId} #Teacher`).removeAttribute('disabled');
-                        document.querySelector(`#module-details-${moduleId} .toggle-module-edit`).style.display = 'none';
-                        document.querySelector(`#module-details-${moduleId} .save-module-button`).style.display = 'inline-block';
-                    }
+        document.querySelector(`#module-details-${moduleId} #Teacher`).removeAttribute('disabled');
+        document.querySelector(`#module-details-${moduleId} .toggle-module-edit`).style.display = 'none';
+        document.querySelector(`#module-details-${moduleId} .save-module-button`).style.display = 'inline-block';
+    }
 
     function confirmDeleteModule(courseId, moduleId) {
         if (confirm("Er du sikker på, at du vil slette dette modul?")) {
@@ -167,6 +169,27 @@
         });
     }
 
+    function unSubscribeModal(courseId, moduleId) {
+        var options = { "backdrop": "static", keyboard: true };
+
+        $.ajax({
+            type: "GET",
+            url: `/course/${courseId}/${moduleId}/afmeld`,
+            success: function (data) {
+                $('#UnSubModalContent').html(data);
+                $('#UnSubModal').modal(options);
+                $('#UnSubModal').modal('show');
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+        });
+
+        $(".close").click(function () {
+            $('#UnSubModal').modal('hide');
+        });
+    }
+
     function updateModule(courseId, moduleId) {
 
         var objectA;
@@ -208,54 +231,15 @@
 </script>
 
 
+<style>
+    #moduleList {
+        list-style: none;
+        padding: 0;
+    }
 
-
-
-
-
-
-
-
-                    $(".close").click(function () {
-                        $('#subModal').modal('hide');
-                    });
-                }
-
-
-                function unSubscribeModal(courseId, moduleId) {
-                    var options = { "backdrop": "static", keyboard: true };
-
-                    $.ajax({
-                        type: "GET",
-                        url: `/course/${courseId}/${moduleId}/afmeld`,
-                        success: function (data) {
-                            $('#UnSubModalContent').html(data);
-                            $('#UnSubModal').modal(options);
-                            $('#UnSubModal').modal('show');
-                        },
-                        error: function () {
-                            alert("Dynamic content load failed.");
-                        }
-                    });
-
-                    $(".close").click(function () {
-                        $('#UnSubModal').modal('hide');
-                    });
-                }
-            </script>
-        </li>
-        }
-    </ul>
-
-    <style>
-        #moduleList {
-            list-style: none;
-            padding: 0;
-        }
-
-        .module-details {
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #ccc;
-        }
-    </style>
+    .module-details {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+    }
+</style>
