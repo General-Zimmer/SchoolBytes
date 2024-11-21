@@ -47,7 +47,6 @@ namespace SchoolBytes.Controllers
             };
 
             var req = Request.Form;
-            Console.WriteLine("TEEEEEEST"  + req.ToString());
 
             var activeDays = new List<DayOfWeek>();
 
@@ -68,13 +67,9 @@ namespace SchoolBytes.Controllers
             
             if (daysCount == 0)
             {
-                //yeh this is not a good way of doing it... smider en hen på en fejlside
-                throw new InvalidOperationException("Ingen dage valgt på kursus.");
-            }
-
-            
-            var remainingModules = courseDTO.numberOfModules;
-           
+                //TODO: yeh this is not a good way of doing it... smider en hen på en fejlside
+                throw new InvalidOperationException("Ingen dage valgt for kursus.");
+            }         
 
 
             for (DateTime start = course.StartDate; start <= course.EndDate; start=start.AddDays(1))
@@ -83,7 +78,7 @@ namespace SchoolBytes.Controllers
                 {
                     CourseModule cm = new CourseModule()
                     {
-                        Name = $"Module {course.CoursesModules.Count + 1}",
+                        Name = $"Lektion {course.CoursesModules.Count + 1}",
                         Date = start,
                         MaxCapacity = course.MaxCapacity,
                         Teacher = course.Teacher,
@@ -91,7 +86,6 @@ namespace SchoolBytes.Controllers
                     dbConnection.Add(cm);
                     course.CoursesModules.Add(cm);
 
-                    remainingModules--;
                 }
             }
 
