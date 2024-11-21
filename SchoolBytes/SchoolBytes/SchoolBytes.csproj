@@ -319,6 +319,7 @@
     <Content Include="Views\Module\ParticipantView.cshtml" />
     <Content Include="Views\Module\WaitlistSignup.cshtml" />
     <Content Include="Views\Module\SubModal.cshtml" />
+    <Content Include="Views\Module\UnSubModal.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -47,6 +47,7 @@
                     <p><strong>Madklub:</strong> <input type="text" name="FoodModule" value="@(module.FoodModule == null ? "Ikke tilføjet" : module.FoodModule.ToString())" disabled /></p>
 
                     <button type="button" class="delete-module-button" onclick="subscribeModal(@module.Course.Id,@module.Id)">Tilmeld</button>
+                    <button type="button" class="delete-module-button" onclick="unSubscribeModal(@module.Course.Id,@module.Id)">Afmeld</button>
                     <button type="button" class="toggle-module-edit" onclick="enableModuleEditing('@module.Id')">Rediger modul</button>
                     <button type="button" onclick="updateModule(@module.Course.Id, @module.Id)" class="save-module-button" style="display: none;">Gem ændringer</button>
                     <button type="button" class="delete-module-button" onclick="confirmDeleteModule(@module.Course.Id, @module.Id)">Slet modul</button>
@@ -62,77 +63,86 @@
                 </div>
             </div>
 
+            <div id='UnSubModal' class='modal'>
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeBtn">×</button>
+                        <div id='UnSubModalContent'></div>
+                    </div>
+                </div>
+            </div>
+
             <script>
-                    function toggleModuleDetails(moduleId) {
-                        const detailsElement = document.getElementById(`module-details-${moduleId}`);
-                        const buttonElement = document.querySelector(`#module-detail-form-${moduleId} .module-detail-button`);
+                function toggleModuleDetails(moduleId) {
+                    const detailsElement = document.getElementById(`module-details-${moduleId}`);
+                    const buttonElement = document.querySelector(`#module-detail-form-${moduleId} .module-detail-button`);
 
-                        if (detailsElement.style.display === 'none') {
-                            detailsElement.style.display = 'block';
-                            buttonElement.innerHTML = '&#9650;'; // Up arrow
-                        } else {
-                            detailsElement.style.display = 'none';
-                            buttonElement.innerHTML = '&#9660;'; // Down arrow
-                        }
+                    if (detailsElement.style.display === 'none') {
+                        detailsElement.style.display = 'block';
+                        buttonElement.innerHTML = '&#9650;'; // Up arrow
+                    } else {
+                        detailsElement.style.display = 'none';
+                        buttonElement.innerHTML = '&#9660;'; // Down arrow
                     }
+                }
 
-                    function enableModuleEditing(moduleId) {
-                        document.querySelectorAll(`#module-details-${moduleId} input`).forEach(field => {
-                            field.removeAttribute('disabled');
-                        });
+                function enableModuleEditing(moduleId) {
+                    document.querySelectorAll(`#module-details-${moduleId} input`).forEach(field => {
+                        field.removeAttribute('disabled');
+                    });
 
-                        document.querySelector(`#module-details-${moduleId} #Teacher`).removeAttribute('disabled');
-                        document.querySelector(`#module-details-${moduleId} .toggle-module-edit`).style.display = 'none';
-                        document.querySelector(`#module-details-${moduleId} .save-module-button`).style.display = 'inline-block';
-                    }
+                    document.querySelector(`#module-details-${moduleId} #Teacher`).removeAttribute('disabled');
+                    document.querySelector(`#module-details-${moduleId} .toggle-module-edit`).style.display = 'none';
+                    document.querySelector(`#module-details-${moduleId} .save-module-button`).style.display = 'inline-block';
+                }
 
-                    function confirmDeleteModule(courseId, moduleId) {
-                        if (confirm("Er du sikker på, at du vil slette dette modul?")) {
-                            console.log(`Attempting to delete module with ID ${moduleId} in course ${courseId}`);
-                            $.ajax({
-                                url: `/course/${courseId}/delete/${moduleId}`,
-                                method: 'POST',
-                                success: function () {
-                                    alert("Modul slettet!");
-                                    location.reload(); // Reloads the page
-                                },
-                                error: function (xhr, status, error) {
-                                    console.error("Error details:", xhr.responseText); // This logs the response
-                                    alert("Fejl ved sletning af modul.");
-                                }
-                            });
-                        }
-                    }
-
-                    function updateModule(courseId, moduleId) {
-                        console.log(`Attempting to update module with ID ${moduleId} in course ${courseId}`);
-
-                        // Enable the Teacher dropdown temporarily for serialization
-                        // const teacherDropdown = document.querySelector(`#module-details-${moduleId} #Teacher`);
-                        // teacherDropdown.removeAttribute('disabled');
-                        // TODO: Remember to remove this ^^^^^^ if it doesn't get used!!!
-
-                        const data = $(`#module-update-form-${moduleId}`).serialize();
-                        let teacherId = $('#Teacher').find(":selected").val();
-                        console.log(data)
-
+                function confirmDeleteModule(courseId, moduleId) {
+                    if (confirm("Er du sikker på, at du vil slette dette modul?")) {
+                        console.log(`Attempting to delete module with ID ${moduleId} in course ${courseId}`);
                         $.ajax({
-                            url: `/course/${courseId}/update/${moduleId}/${teacherId}`,
+                            url: `/course/${courseId}/delete/${moduleId}`,
                             method: 'POST',
-                            data: data,
                             success: function () {
-                                alert("Modul opdateret!");
-                                //location.reload(); // Reloads the page
+                                alert("Modul slettet!");
+                                location.reload(); // Reloads the page
                             },
                             error: function (xhr, status, error) {
                                 console.error("Error details:", xhr.responseText); // This logs the response
-                                alert("Fejl ved opdatering af modul.");
+                                alert("Fejl ved sletning af modul.");
                             }
                         });
                     }
+                }
+
+                function updateModule(courseId, moduleId) {
+                    console.log(`Attempting to update module with ID ${moduleId} in course ${courseId}`);
+
+                    // Enable the Teacher dropdown temporarily for serialization
+                    // const teacherDropdown = document.querySelector(`#module-details-${moduleId} #Teacher`);
+                    // teacherDropdown.removeAttribute('disabled');
+                    // TODO: Remember to remove this ^^^^^^ if it doesn't get used!!!
+
+                    const data = $(`#module-update-form-${moduleId}`).serialize();
+                    let teacherId = $('#Teacher').find(":selected").val();
+                    console.log(data)
+
+                    $.ajax({
+                        url: `/course/${courseId}/update/${moduleId}/${teacherId}`,
+                        method: 'POST',
+                        data: data,
+                        success: function () {
+                            alert("Modul opdateret!");
+                            //location.reload(); // Reloads the page
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error details:", xhr.responseText); // This logs the response
+                            alert("Fejl ved opdatering af modul.");
+                        }
+                    });
+                }
 
 
-                  function subscribeModal(courseId, moduleId) {
+                function subscribeModal(courseId, moduleId) {
                     var options = { "backdrop": "static", keyboard: true };
 
                     $.ajax({
@@ -151,7 +161,29 @@
                     $(".close").click(function () {
                         $('#subModal').modal('hide');
                     });
-                  }
+                }
+
+
+                function unSubscribeModal(courseId, moduleId) {
+                    var options = { "backdrop": "static", keyboard: true };
+
+                    $.ajax({
+                        type: "GET",
+                        url: `/course/${courseId}/${moduleId}/afmeld`,
+                        success: function (data) {
+                            $('#UnSubModalContent').html(data);
+                            $('#UnSubModal').modal(options);
+                            $('#UnSubModal').modal('show');
+                        },
+                        error: function () {
+                            alert("Dynamic content load failed.");
+                        }
+                    });
+
+                    $(".close").click(function () {
+                        $('#UnSubModal').modal('hide');
+                    });
+                }
             </script>
         </li>
         }

@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
+using Gherkin.CucumberMessages.Types;
 using Microsoft.Ajax.Utilities;
 using Microsoft.EntityFrameworkCore;
 using SchoolBytes.Models;
@@ -202,31 +203,47 @@ namespace SchoolBytes.Controllers
             return TheView(skippedModules);
         }
 
+        [HttpGet]
+        [Route("course/{courseId}/{moduleId}/afmeld")]
+        public ActionResult unsub(int courseId, int moduleId)
+        {
+            var course = dBConnection.courses.Find(courseId);
+            var module = dBConnection.courseModules.Find(moduleId);
+
+            ViewBag.CourseId = courseId;
+            ViewBag.ModuleId = moduleId;
+            ViewBag.CourseName = course.Name;
+            ViewBag.ModuleName = module.Name;
+
+
+            return View("UnSubModal");
+        }
+
         [HttpPost]
-        [Route("Module/course/{courseId}/{moduleId}/afmeld")]
-        public ActionResult Cancel(int courseId, int moduleId, string tlfNr)
+        [Route("course/{courseId}/module/{moduleId}/afmeld/{tlfNr}")]
+        public ActionResult Unsub(int courseId, int moduleId, string tlfNr)
         {
             CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
 
-            Course course = dBConnection.courses.Find(courseId);
-
-            Participant participant = course.Participants.Find(p => p.PhoneNumber == tlfNr);
-            if (participant != null)
+            Registration registration =  courseModule.Registrations.Where(r => r.participant.PhoneNumber == tlfNr).First();
+            if (registration != null)
             {
-                course.Participants.Remove(participant);
+                courseModule.Registrations.Remove(registration);
 
                 dBConnection.Update(courseModule);
                 dBConnection.SaveChanges();
+
+                //TODO: Maybe take person from waiting list if there is any?
             }
             else
             {
                 //placeholder
-                return HttpNotFound("Ingen tilmeldte med opgivne informationer fundet");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "No registration found for the couse with the phonenumber.");
             }
 
 
 
-            return TheView(null);
+            return Redirect("~/course/" + courseId + "/ModuleOverview");
         }
 
         [HttpGet]
