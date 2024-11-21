@@ -165,7 +165,7 @@ namespace SchoolBytes.Controllers
                 }
                 else
                 {
-                   skippedModules.Add(module);
+                   skippedModules.Add(module); // hvad er det?
                 }
             }
 
