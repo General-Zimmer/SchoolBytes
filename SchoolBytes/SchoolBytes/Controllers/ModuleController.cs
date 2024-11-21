@@ -11,6 +11,7 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.Ajax.Utilities;
 using Microsoft.EntityFrameworkCore;
+using SchoolBytes.DTO;
 using SchoolBytes.Models;
 
 namespace SchoolBytes.Controllers
@@ -142,7 +143,7 @@ namespace SchoolBytes.Controllers
 
         [HttpPost]
         [Route("Module/course/{courseId}/{moduleId}/tilmeld")]
-        public ActionResult Subscribe(int courseId, List<int> moduleIds, Participant participant)
+        public ActionResult Subscribe(int courseId, List<int> moduleIds, Participant participant, CourseCourseModule courseCourseModule)
         {
             Course course = dBConnection.courses.Find(courseId);
 
@@ -183,6 +184,20 @@ namespace SchoolBytes.Controllers
 
             });
 
+            var selectedCourses = dBConnection.courses
+                .Include(c => c.CoursesModules)
+                .FirstOrDefault(c => c.Id == courseCourseModule.SelectedModuleId);
+
+            if (selectedCourses != null)
+            {
+                var selecedModules = selectedCourses.CoursesModules.Where(c => c.isSelected).ToList();
+
+                foreach(var module in selecedModules)
+                {
+                    Console.WriteLine(module.Name); //Testing
+                }
+            }
+
 
             dBConnection.Update(selectedModules);
             dBConnection.SaveChanges();
@@ -221,7 +236,18 @@ namespace SchoolBytes.Controllers
         public ActionResult TheView(IList skippedModules)
         {
             ViewBag.skippedModules = skippedModules;
-            return View("ParticipantView");
+
+            //var selectedModules = course.CoursesModules.Where(module => module.isSelected).ToList();
+            //var CourseModules = dBConnection.courses.Include(course => course.CoursesModules).ToList();
+
+            var courses = dBConnection.courses.Include(c => c.CoursesModules).ToList();
+
+            var CourseCourseModule = new CourseCourseModule
+            {
+                Courses = courses
+            };
+
+            return View("ParticipantView", CourseCourseModule);
         }
 
         // GET: api/course/{courseId}/{moduleId}/signup/waitlist (Sign up for the waitlist for a course module)

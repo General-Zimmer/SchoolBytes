@@ -1,4 +1,4 @@
-﻿@model List<SchoolBytes.Models.Course>
+﻿@model SchoolBytes.DTO.CourseCourseModule
 @{
     ViewBag.Title = "ParticipantView";
 }
@@ -17,26 +17,33 @@
         <label class="participant-label" for="PhoneNumber">Telefon nummer:</label>
         <input class="participant-input" type="text" id="PhoneNumber" name="PhoneNumber" required />
     </div>
-    
+
     <div class="participant-group">
         <label class="participant-label" for="Course">Hold:</label>
         <select asp-for="Id" class="select-course">
             <option value="">Vælg et hold</option>
-            @foreach (var course in Model)
+            @foreach (var course in Model.Courses)
             {
                 <option value="@course.Id">@course.Name </option>
+
             }
         </select>
     </div>
 
     <div class="participant-group">
-        <label class="participant-label" for="CourseModule">Moduler</label>
-        <ul>
-            @foreach (var module in Model )
-            {
-                <li>@module.CoursesModules</li>
-            }
-        </ul>
+        @foreach (var course in Model.Courses)
+        {
+            <div class="coursemodules-group" id="course-@course.Id">
+                <h4>Modules for @course.Name</h4>
+                @foreach (var module in course.CoursesModules)
+                {
+                    <div class="module">
+                        <input type="checkbox" asp-for="CourseModule.isSelected" value="@module.Id" />
+                        <label for="@module.Id">@module.Name</label>
+                    </div>
+                }
+            </div>
+        }
     </div>
 
     <div class="participant-group">
