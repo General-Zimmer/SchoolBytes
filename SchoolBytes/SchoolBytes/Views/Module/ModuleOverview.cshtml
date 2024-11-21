@@ -2,7 +2,7 @@
 @using SchoolBytes.Models;
 @{
     var teachers = ViewBag.teachers as List<Teacher>;
- }
+}
 
 <link rel="stylesheet" href="/Content/CourseModuleStyles.css" />
 
@@ -26,27 +26,27 @@
                 <form id="module-update-form-@module.Id" onsubmit="updateModule(@module.Course.Id, @module.Id); return false;">
                     <input type="hidden" name="Name" value="@module.Name" />
 
-                        <strong>Underviser:</strong>
-                        <select id="Teacher" @*name="Teacher"*@ disabled>
-                            @foreach (var teacher in teachers)
+                    <strong>Underviser:</strong>
+                    <select id="Teacher" @*name="Teacher"*@ disabled>
+                        @foreach (var teacher in teachers)
+                        {
+                            if (teacher.Id == module.Teacher.Id)
                             {
-                                if (teacher.Id == module.Teacher.Id)
-                                {
-                                    <option value="@teacher.Id" selected>@teacher.Name</option>
-                                }
-                                else
-                                {
-                                    <option value="@teacher.Id">@teacher.Name</option>
-                                }
+                                <option value="@teacher.Id" selected>@teacher.Name</option>
                             }
-                        </select>
-                        <p><strong>Dato:</strong> <input type="date" name="Date" value="@module.Date.ToString("yyyy-MM-dd")" disabled /></p>
-                        <p><strong>Start:</strong> <input type="time" name="StartTime" value="@module.StartTime.ToString("HH:mm")" disabled /></p>
-                        <p><strong>Slut:</strong> <input type="time" name="EndTime" value="@module.EndTime.ToString("HH:mm")" disabled /></p>
-                        <p><strong>Lokale:</strong> <input type="text" name="Location" value="@module.Location" disabled /></p>
-                        <p><strong>Maksimum antal deltagere:</strong> <input type="text" name="Capacity" value="@module.Capacity" disabled /></p>
-                        <p><strong>Madklub:</strong> <input type="text" value="@(module.FoodModule == null ? "Ikke tilføjet" : module.FoodModule.ToString())" disabled /></p>
-                         <p><strong>Ny madklub:</strong> <input type="button" onclick="test(this)" value="Opret madhold" id="testBtn" disabled /></p>
+                            else
+                            {
+                                <option value="@teacher.Id">@teacher.Name</option>
+                            }
+                        }
+                    </select>
+                    <p><strong>Dato:</strong> <input type="date" name="Date" value="@module.Date.ToString("yyyy-MM-dd")" disabled /></p>
+                    <p><strong>Start:</strong> <input type="time" name="StartTime" value="@module.StartTime.ToString("HH:mm")" disabled /></p>
+                    <p><strong>Slut:</strong> <input type="time" name="EndTime" value="@module.EndTime.ToString("HH:mm")" disabled /></p>
+                    <p><strong>Lokale:</strong> <input type="text" name="Location" value="@module.Location" disabled /></p>
+                    <p><strong>Maksimum antal deltagere:</strong> <input type="text" name="Capacity" value="@module.Capacity" disabled /></p>
+                    <p><strong>Madklub:</strong> <input type="text" value="@(module.FoodModule == null ? "Ikke tilføjet" : module.FoodModule.ToString())" disabled /></p>
+                    <p><strong>Ny madklub:</strong> <input type="button" onclick="test(this)" value="Opret madhold" id="testBtn" disabled /></p>
 
                     <button type="button" class="delete-module-button" onclick="subscribeModal(@module.Course.Id,@module.Id)">Tilmeld</button>
                     <button type="button" class="toggle-module-edit" onclick="enableModuleEditing('@module.Id')">Rediger modul</button>
@@ -63,188 +63,160 @@
                     </div>
                 </div>
             </div>
+            <div id='myModal' class='modal'>
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeBtn">×</button>
+                        <div id='myModalContent'></div>
+                        <button type="button" class="close" id="opretBtn">OK</button>
+                    </div>
+                </div>
+            </div>
 
-            <script>
-                    function toggleModuleDetails(moduleId) {
-                        const detailsElement = document.getElementById(`module-details-${moduleId}`);
-                        const buttonElement = document.querySelector(`#module-detail-form-${moduleId} .module-detail-button`);
-
-                        if (detailsElement.style.display === 'none') {
-                            detailsElement.style.display = 'block';
-                            buttonElement.innerHTML = '&#9650;'; // Up arrow
-                        } else {
-                            detailsElement.style.display = 'none';
-                            buttonElement.innerHTML = '&#9660;'; // Down arrow
-                        }
-                    }
-
-                    function enableModuleEditing(moduleId) {
-                        document.querySelectorAll(`#module-details-${moduleId} input`).forEach(field => {
-                            field.removeAttribute('disabled');
-                        });
-
-                        document.querySelector(`#module-details-${moduleId} #Teacher`).removeAttribute('disabled');
-                        document.querySelector(`#module-details-${moduleId} .toggle-module-edit`).style.display = 'none';
-                        document.querySelector(`#module-details-${moduleId} .save-module-button`).style.display = 'inline-block';
-                    }
-
-                    function confirmDeleteModule(courseId, moduleId) {
-                        if (confirm("Er du sikker på, at du vil slette dette modul?")) {
-                            console.log(`Attempting to delete module with ID ${moduleId} in course ${courseId}`);
-                            $.ajax({
-                                url: `/course/${courseId}/delete/${moduleId}`,
-                                method: 'POST',
-                                success: function () {
-                                    alert("Modul slettet!");
-                                    location.reload(); // Reloads the page
-                                },
-                                error: function (xhr, status, error) {
-                                    console.error("Error details:", xhr.responseText); // This logs the response
-                                    alert("Fejl ved sletning af modul.");
-                                }
-                            });
-                        }
-                    }
-
-                function updateModule(courseId, moduleId) { 
-                    
-
-                    var objectA;
-                    if (document.querySelector(`#fmFormName`)!=null && document.querySelector(`#fmFormName`).value != "") { 
-                        var objectA = {};
-                        var formData = new FormData(document.querySelector(`#da-form`));
-                        formData.forEach(function (value, key) {
-                            objectA[key] = value;
-                        });
-
-
-                        
-                    }
-                    //const data = $(`#module-update-form-${moduleId}`).serialize();
-                    //console.log(data)
-
-                    let teacherId = $('#Teacher').find(":selected").val();
-                    let teacherName = $('#Teacher').find(":selected").text();
-
-                    var teacherObject = { Name: teacherName, Id: teacherId }
-
-                    var formData2 = $(`#module-update-form-${moduleId}`).serializeArray();
-                    var objectB = {FoodModule: objectA, Teacher: teacherObject};
-                    formData2.forEach(function (field) {
-                        objectB[field.name] = field.value;
-                    });
-
-                    
-
-                    console.log(JSON.stringify(objectB));
-
-                   
-
-                    $.ajax({
-                        url: `/course/${courseId}/update/${moduleId}`,
-                        method: 'POST',
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify(objectB),
-                        success: function () {
-                            alert("Modul opdateret!");
-                            //location.reload(); // Reloads the page
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error details:", xhr.responseText); // This logs the response
-                            alert("Fejl ved sletning af modul.");
-                        }
-                    });
-                }
-            </script>
         </li>
     }
 </ul>
-                        $.ajax({
-                            url: `/course/${courseId}/update/${moduleId}/${teacherId}`,
-                            method: 'POST',
-                            data: data,
-                            success: function () {
-                                alert("Modul opdateret!");
-                                //location.reload(); // Reloads the page
-                            },
-                            error: function (xhr, status, error) {
-                                console.error("Error details:", xhr.responseText); // This logs the response
-                                alert("Fejl ved opdatering af modul.");
-                            }
-                        });
-                    }
 
 
-                  function subscribeModal(courseId, moduleId) {
-                    var options = { "backdrop": "static", keyboard: true };
+<script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
 
-                    $.ajax({
-                        type: "GET",
-                        url: `/Module/SubModalWindow/${courseId}/${moduleId}`,
-                        success: function (data) {
-                            $('#subModalContent').html(data);
-                            $('#subModal').modal(options);
-                            $('#subModal').modal('show');
-                        },
-                        error: function () {
-                            alert("Dynamic content load failed.");
-                        }
-                    });
+<script>
+    function toggleModuleDetails(moduleId) {
+        const detailsElement = document.getElementById(`module-details-${moduleId}`);
+        const buttonElement = document.querySelector(`#module-detail-form-${moduleId} .module-detail-button`);
 
-                    $(".close").click(function () {
-                        $('#subModal').modal('hide');
-                    });
-                  }
-            </script>
-        </li>
+        if (detailsElement.style.display === 'none') {
+            detailsElement.style.display = 'block';
+            buttonElement.innerHTML = '&#9650;'; // Up arrow
+        } else {
+            detailsElement.style.display = 'none';
+            buttonElement.innerHTML = '&#9660;'; // Down arrow
         }
-    </ul>
+    }
 
-<div>
-    <div class="modal-header">
+    function enableModuleEditing(moduleId) {
+        document.querySelectorAll(`#module-details-${moduleId} input`).forEach(field => {
+            field.removeAttribute('disabled');
+        });
 
-        @*<h4 class="modal-title" id="myModalLabel">Opret madhold</h4>*@
-    </div>
+        document.querySelector(`#module-details-${moduleId} #Teacher`).removeAttribute('disabled');
+        document.querySelector(`#module-details-${moduleId} .toggle-module-edit`).style.display = 'none';
+        document.querySelector(`#module-details-${moduleId} .save-module-button`).style.display = 'inline-block';
+    }
 
-    <div id='myModal' class='modal'>
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeBtn">×</button>
-                <div id='myModalContent'></div>
-                <button type="button" class="close" id="opretBtn">OK</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.7.1.js"
-            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-            crossorigin="anonymous"></script>
-    <script src="~/Scripts/bootstrap.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
-    <script>
-
-        function test(element) {
-            var options = { "backdrop": "static", keyboard: true };
-
+    function confirmDeleteModule(courseId, moduleId) {
+        if (confirm("Er du sikker på, at du vil slette dette modul?")) {
+            console.log(`Attempting to delete module with ID ${moduleId} in course ${courseId}`);
             $.ajax({
-                type: "GET",
-                url: '/Food/ModalWindow',
-                success: function (data) {
-                    $('#myModalContent').html(data);
-                    $('#myModal').modal(options);
-                    $('#myModal').modal('show');
+                url: `/course/${courseId}/delete/${moduleId}`,
+                method: 'POST',
+                success: function () {
+                    alert("Modul slettet!");
+                    location.reload(); // Reloads the page
                 },
-                error: function () {
-                    alert("Dynamic content load failed.");
+                error: function (xhr, status, error) {
+                    console.error("Error details:", xhr.responseText); // This logs the response
+                    alert("Fejl ved sletning af modul.");
                 }
             });
+        }
+    }
 
-            $(".close").click(function () {
-                $('#myModal').modal('hide');
+    function test(element) {
+        var options = { "backdrop": "static", keyboard: true };
+
+        $.ajax({
+            type: "GET",
+            url: '/Food/ModalWindow',
+            success: function (data) {
+                $('#myModalContent').html(data);
+                $('#myModal').modal(options);
+                $('#myModal').modal('show');
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+        });
+
+        $(".close").click(function () {
+            $('#myModal').modal('hide');
+        });
+    }
+
+    function subscribeModal(courseId, moduleId) {
+        var options = { "backdrop": "static", keyboard: true };
+
+        $.ajax({
+            type: "GET",
+            url: `/Module/SubModalWindow/${courseId}/${moduleId}`,
+            success: function (data) {
+                $('#subModalContent').html(data);
+                $('#subModal').modal(options);
+                $('#subModal').modal('show');
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+        });
+
+        $(".close").click(function () {
+            $('#subModal').modal('hide');
+        });
+    }
+
+    function updateModule(courseId, moduleId) {
+
+        var objectA;
+        if (document.querySelector(`#fmFormName`) != null && document.querySelector(`#fmFormName`).value != "") {
+            var objectA = {};
+            var formData = new FormData(document.querySelector(`#da-form`));
+            formData.forEach(function (value, key) {
+                objectA[key] = value;
             });
         }
 
-    </script>
+        let teacherId = $('#Teacher').find(":selected").val();
+        let teacherName = $('#Teacher').find(":selected").text();
+
+        var teacherObject = { Name: teacherName, Id: teacherId }
+
+        var formData2 = $(`#module-update-form-${moduleId}`).serializeArray();
+        var objectB = { FoodModule: objectA, Teacher: teacherObject };
+        formData2.forEach(function (field) {
+            objectB[field.name] = field.value;
+        });
+
+
+        $.ajax({
+            url: `/course/${courseId}/update/${moduleId}`,
+            method: 'POST',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(objectB),
+            success: function () {
+                alert("Modul opdateret!");
+                //location.reload(); // Reloads the page
+            },
+            error: function (xhr, status, error) {
+                console.error("Error details:", xhr.responseText); // This logs the response
+                alert("Fejl ved sletning af modul.");
+            }
+        });
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
 
     <style>
         #moduleList {
