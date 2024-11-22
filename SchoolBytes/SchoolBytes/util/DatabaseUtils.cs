@@ -8,8 +8,12 @@ using System.Web;
 
 namespace SchoolBytes.util
 {
-    public static class DatabaseUtils
+    public class DatabaseUtils
     {
+        public DatabaseUtils()
+        {
+        }
+
         public static int SaveChangesV2(this DbContext FOK)
         {
             try

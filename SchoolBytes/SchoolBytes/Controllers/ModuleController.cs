@@ -14,6 +14,7 @@ using Gherkin.CucumberMessages.Types;
 using Microsoft.Ajax.Utilities;
 using Microsoft.EntityFrameworkCore;
 using SchoolBytes.Models;
+using SchoolBytes.util;
 using static SchoolBytes.util.DatabaseUtils;
 
 namespace SchoolBytes.Controllers
@@ -245,22 +246,11 @@ namespace SchoolBytes.Controllers
         [Route("course/{courseId}/module/{moduleId}/afmeld/{tlfNr}")]
         public ActionResult Unsub(int courseId, int moduleId, string tlfNr)
         {
-            CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
-
-            Registration registration =  courseModule.Registrations.Where(r => r.participant.PhoneNumber == tlfNr).First();
-            if (registration != null)
+            //Returns null if succesful or HTTPstatus code result if it did not work.
+            HttpStatusCodeResult res = DatabaseUtils.Unsub(courseId, moduleId, tlfNr);
+            if(res != null)
             {
-                courseModule.Registrations.Remove(registration);
-
-                dBConnection.Update(courseModule);
-                dBConnection.SaveChanges();
-
-                //TODO: Maybe take person from waiting list if there is any?
-            }
-            else
-            {
-                //placeholder
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "No registration found for the couse with the phonenumber.");
+                return res;
             }
 
 
