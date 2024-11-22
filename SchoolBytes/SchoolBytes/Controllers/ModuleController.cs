@@ -12,6 +12,7 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.Ajax.Utilities;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SchoolBytes.Models;
 
 namespace SchoolBytes.Controllers
@@ -36,8 +37,30 @@ namespace SchoolBytes.Controllers
             return View(course.CoursesModules.ToList()); // Passes only the course modules to the view
         }
 
-        // POST: api/course/{courseid}/update/{moduleid} (Update course module)
-        [HttpPost]
+        // Get all course modules for a course as a JSON object
+        [HttpGet]
+        [Route("course/{id}/modules")]
+        public ActionResult ModuleList(int id)
+    {
+        List<CourseModule> courseModules = dBConnection.courses.ToList().Where(c => c.Id == id).First().CoursesModules;
+        if (courseModules == null)
+        {
+            return HttpNotFound("Course not found");
+        }
+            Dictionary<int, string> dict = new Dictionary<int, string>();
+
+            courseModules.ForEach(cm =>
+            {
+                if (cm.Date.Date == DateTime.Today)
+                {
+                    dict.Add(cm.Id, cm.Name);
+                }
+            });
+            return Json(JsonConvert.SerializeObject(dict), JsonRequestBehavior.AllowGet); // Passes the course modules as JSON
+        }
+
+    // POST: api/course/{courseid}/update/{moduleid} (Update course module)
+    [HttpPost]
         [Route("course/{courseId}/update/{moduleId}/{teacherId}")]
         public ActionResult Update(int courseId, int moduleId, int teacherId, CourseModule updatedCourseModule)
         {

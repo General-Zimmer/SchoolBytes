@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using SchoolBytes.DTO;
 
 namespace SchoolBytes.Models
@@ -11,6 +12,7 @@ namespace SchoolBytes.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public virtual Teacher Teacher { get; set; }
+        [JsonIgnore]
         public virtual List<CourseModule> CoursesModules { get; set; } = new List<CourseModule>();
         public virtual List<Participant> Participants { get; set; } = new List<Participant>();
         public DateTime StartDate { get; set; }

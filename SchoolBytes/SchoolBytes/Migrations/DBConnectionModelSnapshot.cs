@@ -47,6 +47,8 @@ namespace SchoolBytes.Migrations
                 {
                     b.Property<int>("Id");
 
+                    b.Property<bool>("Attendance");
+
                     b.Property<int?>("participantId");
 
                     b.HasKey("Id");
@@ -54,24 +56,6 @@ namespace SchoolBytes.Migrations
                     b.HasIndex("participantId");
 
                     b.ToTable("Registration");
-                });
-
-            modelBuilder.Entity("SchoolBytes.Models.Course", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("CourseId");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("participants");
                 });
 
             modelBuilder.Entity("SchoolBytes.Models.Course", b =>

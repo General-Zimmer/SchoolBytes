@@ -254,9 +254,9 @@
     <Compile Include="Migrations\20241117172125_parti-Regi-Fix.Designer.cs">
       <DependentUpon>20241117172125_parti-Regi-Fix.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\20241118080635_QR.cs" />
-    <Compile Include="Migrations\20241118080635_QR.Designer.cs">
-      <DependentUpon>20241118080635_QR.cs</DependentUpon>
+    <Compile Include="Migrations\20241118100240_QRRegistration.cs" />
+    <Compile Include="Migrations\20241118100240_QRRegistration.Designer.cs">
+      <DependentUpon>20241118100240_QRRegistration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\DBConnectionModelSnapshot.cs" />
     <Compile Include="Models\Course.cs" />
@@ -298,6 +298,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="App_Data\ConnectionCredentials.json" />
+    <Content Include="appsettings.json" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -331,9 +332,8 @@
     <Content Include="Views\Module\ParticipantView.cshtml" />
     <Content Include="Views\Module\WaitlistSignup.cshtml" />
     <Content Include="Views\Module\SubModal.cshtml" />
-    <Content Include="Views\QR\GenerateQR.cshtml" />
+    <Content Include="Views\QR\Generation.cshtml" />
     <Content Include="Views\QR\Index.cshtml" />
-    <Content Include="Views\QR\_CourseModulesDropdown.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
