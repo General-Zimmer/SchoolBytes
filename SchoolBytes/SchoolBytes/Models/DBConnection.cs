@@ -51,7 +51,7 @@ namespace SchoolBytes.Models
             if (!optionsBuilder.IsConfigured)
             {   
                 optionsBuilder.UseLazyLoadingProxies();
-                optionsBuilder.UseMySql("Server=localhost;Database=schoolbytes;User=root;Password=yeet;port=3306;");
+                optionsBuilder.UseMySql(getCredentialsPath());
             }
 
 
