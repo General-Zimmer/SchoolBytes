@@ -19,6 +19,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using System.Data.Common;
+using System.Net;
+using System.Reflection;
 
 
 namespace SchoolBytes.Models
@@ -82,10 +85,10 @@ namespace SchoolBytes.Models
 
         private static string getCredentialsPath()
         {
-            //string filePath = @"C:\Users\Duff\Desktop\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
-            string filePath = HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
+            string filePath = @"C:\Users\Duff\Desktop\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
+            //string filePath = HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
             StreamReader credJson = new StreamReader(filePath);
-            HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
+            //HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
             return (string)JObject.Parse(credJson.ReadToEnd())["credentials"];
         }
 
@@ -111,8 +114,7 @@ namespace SchoolBytes.Models
         public static int GetSubscribeCount(Participant participant)
         {
            return getDBContext().courseModules.Sum(cm => cm.Registrations.Count(r => r.participant == participant));
-
-            
         }
+     
     }
 }

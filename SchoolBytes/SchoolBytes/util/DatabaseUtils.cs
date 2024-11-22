@@ -1,15 +1,41 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SchoolBytes.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Web;
+using System.Web.Mvc;
 
 namespace SchoolBytes.util
 {
     public static class DatabaseUtils
     {
+        private static DBConnection self = DBConnection.getDBContext();
+
+        public static HttpStatusCodeResult Unsub(int courseId, int moduleId, string tlfNr)
+        {
+            CourseModule courseModule = self.courseModules.Find(moduleId);
+
+            Registration registration = courseModule.Registrations.Where(r => r.participant.PhoneNumber == tlfNr).First();
+            if (registration != null)
+            {
+                courseModule.Registrations.Remove(registration);
+
+                self.Update(courseModule);
+                self.SaveChanges();
+
+                return null;
+                //TODO: Maybe take person from waiting list if there is any?
+            }
+            else
+            {
+                //placeholder
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "No registration found for the couse with the phonenumber.");
+            }
+        }
         public static int SaveChangesV2(this DbContext FOK)
         {
             try
