@@ -12,9 +12,11 @@ namespace SchoolBytes.util
         public static void AddToWaitlist(CourseModule courseModule, Participant participant) 
         {
             dBConnection.Update(courseModule);
-            WaitRegistration yeet = new WaitRegistration(participant, courseModule, DateTime.Now);
+            WaitRegistration newWaitRegistation = new WaitRegistration(participant, courseModule, DateTime.Now);
 
-            courseModule.Waitlist.AddLast(yeet);
+            // TODO: logic so that you can't add duplicated to the waitlist
+
+            courseModule.Waitlist.AddLast(newWaitRegistation);
             dBConnection.SaveChangesV2();
         }
 
