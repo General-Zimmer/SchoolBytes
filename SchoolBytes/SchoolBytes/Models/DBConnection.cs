@@ -96,13 +96,26 @@ namespace SchoolBytes.Models
         {
             int registrations = getDBContext().courseModules.Sum(cm => cm.Registrations.Count(r => r.participant == participant));
 
-            if (registrations > 5 )
+            if (registrations > 5)
             {
                 return false;
             }
 
             return true;
         }
+
+        public static bool IsParticipantSubscribed(Participant participant)
+        {
+            foreach(var modul in getDBContext().courseModules)
+            {
+                if (modul.Registrations.Exists(r => r.participant == participant))
+                    {
+                    return true;
+                    }
+            }
+            return false;
+        }
+
 
         public void UpdateSub(Registration registration, CourseModule course)
         {
@@ -121,7 +134,7 @@ namespace SchoolBytes.Models
         public static string GetParticipantFromModul(Participant participant)
         {
 
-            bool getParticipant = getDBContext().courseModules.Any(p => p.Name.Equals(participant.Name));
+            bool getParticipant = getDBContext().courseModules.Any(p => p.Id.Equals(participant.Id));
 
             if (getParticipant)
             {
@@ -158,8 +171,8 @@ namespace SchoolBytes.Models
                 getDBContext().Update(courseModule);
                 WaitRegistration yeet = new WaitRegistration(participant, courseModule, DateTime.Now);
 
-                courseModule.Waitlist.AddLast(yeet);
-                getDBContext().SaveChangesV2();
+                //courseModule.Waitlist.AddLast(yeet);
+                //getDBContext().SaveChangesV2();
 
             }
         }
