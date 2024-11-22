@@ -19,6 +19,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using System.Data.Common;
+using SchoolBytes.util;
+using Microsoft.Ajax.Utilities;
 
 
 namespace SchoolBytes.Models
@@ -51,7 +54,7 @@ namespace SchoolBytes.Models
             if (!optionsBuilder.IsConfigured)
             {   
                 optionsBuilder.UseLazyLoadingProxies();
-                optionsBuilder.UseMySql("Server=localhost;Database=schoolbytes;User=root;Password=yeet;port=3306;");
+                optionsBuilder.UseMySql(getCredentialsPath());
             }
 
 
@@ -82,10 +85,10 @@ namespace SchoolBytes.Models
 
         private static string getCredentialsPath()
         {
-            //string filePath = @"C:\Users\Duff\Desktop\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
-            string filePath = HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
+            string filePath = @"C:\Users\Kasper\Source\Repos\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
+            //string filePath = HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
             StreamReader credJson = new StreamReader(filePath);
-            HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
+            //HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
             return (string)JObject.Parse(credJson.ReadToEnd())["credentials"];
         }
 
@@ -113,6 +116,52 @@ namespace SchoolBytes.Models
            return getDBContext().courseModules.Sum(cm => cm.Registrations.Count(r => r.participant == participant));
 
             
+        }
+
+        public static string GetParticipantFromModul(Participant participant)
+        {
+
+            bool getParticipant = getDBContext().courseModules.Any(p => p.Name.Equals(participant.Name));
+
+            if (getParticipant)
+            {
+                return "${participant.Name} er der";
+            }
+            else
+            {
+                return "${participant.Name} findes ikke";
+            }
+        }
+
+        public static void SubscribeTest(int courseId, int moduleId, Participant participant)
+        {
+            CourseModule courseModule = getDBContext().courseModules.Find(moduleId);
+
+            if (courseModule.Capacity <= courseModule.MaxCapacity)
+            {
+                if (DBConnection.IsEligibleToSubscribe(participant))
+                {
+
+                    Registration registration = new Registration(participant, courseModule);
+                    courseModule.Capacity += 1;
+                    getDBContext().UpdateSub(registration, courseModule);
+                }
+                else
+                {
+                    Console.WriteLine("Du har allerede tilmeldt dig maksimum antal hold.");
+                }
+            }
+            else
+            {
+                //VENTELISTE LOGIK SKAL IND HER
+
+                getDBContext().Update(courseModule);
+                WaitRegistration yeet = new WaitRegistration(participant, courseModule, DateTime.Now);
+
+                courseModule.Waitlist.AddLast(yeet);
+                getDBContext().SaveChangesV2();
+
+            }
         }
     }
 }

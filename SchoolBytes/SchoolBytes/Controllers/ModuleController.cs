@@ -21,14 +21,14 @@ namespace SchoolBytes.Controllers
     public class ModuleController : Controller
     {
         DBConnection dBConnection = DBConnection.getDBContext();
-               
+
 
         // GET: course/{id}/modules (Get course modules by course ID)
         [HttpGet]
         [Route("course/{id}/moduleOverview")]
         public ActionResult ModuleOverview(int id)
         {
-            var course = dBConnection.courses.Include(c => c.CoursesModules).ToList().Where(c  => c.Id == id).First();
+            var course = dBConnection.courses.Include(c => c.CoursesModules).ToList().Where(c => c.Id == id).First();
             if (course == null)
             {
                 return HttpNotFound("Course not found");
@@ -51,18 +51,18 @@ namespace SchoolBytes.Controllers
             }
 
             var module = course.CoursesModules.Find(m => m.Id == moduleId);
-            if (module == null) 
+            if (module == null)
             {
                 return HttpNotFound("Course module not found");
             }
-       
+
             module.Name = updatedCourseModule.Name;
 
             FoodModule fm = updatedCourseModule.FoodModule;
 
-            
+
             //FoodModule code
-            if (fm!= null && fm.Name != "")
+            if (fm != null && fm.Name != "")
             {
                 Debug.Print("TEEEEEEEEEEEEEEEEEEST: " + fm.Name);
                 fm.Course = course;
@@ -87,12 +87,12 @@ namespace SchoolBytes.Controllers
             dBConnection.Update(module);
             dBConnection.SaveChanges();
 
-           /* if (ModelState.IsValid)
-            {
-               
+            /* if (ModelState.IsValid)
+             {
 
-                return new HttpStatusCodeResult(HttpStatusCode.OK);
-            }*/
+
+                 return new HttpStatusCodeResult(HttpStatusCode.OK);
+             }*/
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
@@ -134,7 +134,7 @@ namespace SchoolBytes.Controllers
         }
 
         //TILMELDINGER
-        
+
         [HttpPost]
         [Route("course/{courseId}/module/{moduleId}/tilmeld")]
         public ActionResult Subscribe(int courseId, int moduleId, Participant participant)
@@ -145,14 +145,14 @@ namespace SchoolBytes.Controllers
 
             if (courseModule.Capacity <= courseModule.MaxCapacity)
             {
-                if(DBConnection.IsEligibleToSubscribe(participant))
+                if (DBConnection.IsEligibleToSubscribe(participant))
                 {
 
-                
-                
-                Registration registration = new Registration(participant, courseModule);
-                courseModule.Capacity += 1;
-                dBConnection.UpdateSub(registration, courseModule);
+
+
+                    Registration registration = new Registration(participant, courseModule);
+                    courseModule.Capacity += 1;
+                    dBConnection.UpdateSub(registration, courseModule);
                 } else
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Du har allerede tilmeldt dig maksimum antal hold.");
@@ -161,23 +161,23 @@ namespace SchoolBytes.Controllers
             else
             {
                 //VENTELISTE LOGIK SKAL IND HER
-                
+
                 dBConnection.Update(courseModule);
                 WaitRegistration yeet = new WaitRegistration(participant, courseModule, DateTime.Now);
 
                 courseModule.Waitlist.AddLast(yeet);
                 dBConnection.SaveChangesV2();
-                return RedirectToAction(courseId +"/" + courseModule.Id + "/signup/waitlist", "course");
-                }
-
-
-                return TheView(null);
+                return RedirectToAction(courseId + "/" + courseModule.Id + "/signup/waitlist", "course");
             }
 
-            //TODO: Skal det her med?
-            [HttpPost]
-            [Route("Module/course/{courseId}/module/{moduleId}/tilmeld")]
-            public ActionResult Subscribe(int courseId, List<int> moduleIds, Participant participant)
+
+            return TheView(null);
+        }
+
+        //TODO: Skal det her med?
+        [HttpPost]
+        [Route("Module/course/{courseId}/module/{moduleId}/tilmeld")]
+        public ActionResult Subscribe(int courseId, List<int> moduleIds, Participant participant)
         {
             Course course = dBConnection.courses.Find(courseId);
 
@@ -188,7 +188,7 @@ namespace SchoolBytes.Controllers
             }
 
             List<CourseModule> selectedModules = new List<CourseModule>();
-            List<CourseModule> skippedModules = new List<CourseModule> ();
+            List<CourseModule> skippedModules = new List<CourseModule>();
 
             foreach (var moduleId in moduleIds)
             {
@@ -200,15 +200,15 @@ namespace SchoolBytes.Controllers
                 }
                 else
                 {
-                   skippedModules.Add(module);
+                    skippedModules.Add(module);
                 }
             }
 
 
 
-           //TODO: edit the 5 so it comes from some kind of setting. It's the max amount of subcribtions u can have at once
+            //TODO: edit the 5 so it comes from some kind of setting. It's the max amount of subcribtions u can have at once
             if (selectedModules.Count + DBConnection.GetSubscribeCount(participant) > 5) {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Deltager er tilmeldt for mange hold."); 
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Deltager er tilmeldt for mange hold.");
             }
 
             selectedModules.ForEach(sm =>
@@ -247,7 +247,7 @@ namespace SchoolBytes.Controllers
         {
             CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
 
-            Registration registration =  courseModule.Registrations.Where(r => r.participant.PhoneNumber == tlfNr).First();
+            Registration registration = courseModule.Registrations.Where(r => r.participant.PhoneNumber == tlfNr).First();
             if (registration != null)
             {
                 courseModule.Registrations.Remove(registration);
@@ -294,5 +294,9 @@ namespace SchoolBytes.Controllers
 
             return View(module);
         }
+
+  
     }
 }
+
+   
