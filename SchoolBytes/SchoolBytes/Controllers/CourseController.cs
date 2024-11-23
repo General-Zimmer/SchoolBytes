@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
@@ -96,19 +97,19 @@ namespace SchoolBytes.Controllers
 
         }
      
-        // GET: api/course/{id} (Get course by ID)
-        [Route("course/{id}")]
-        public ActionResult GetCourse(int id)
-        {
-            Course course = dbConnection.courses.Find(id);
+        //// GET: api/course/{id} (Get course by ID)
+        //[Route("course/{id}")]
+        //public ActionResult GetCourse(int id)
+        //{
+        //    Course course = dbConnection.courses.Find(id);
 
-            if (course == null)
-            {
-                return HttpNotFound("Course not found");
-            }
+        //    if (course == null)
+        //    {
+        //        return HttpNotFound("Course not found");
+        //    }
 
-            return View(course);
-        }
+        //    return View(course);
+        //}
 
         // POST: api/course/update/{id} (Update course)
         [HttpPost]
@@ -168,7 +169,38 @@ namespace SchoolBytes.Controllers
 
         }
 
-        
+        // DELETE: api/course/{participantId} (Remove course)
+        [HttpPost]
+        [Route("course/{courseId}/delete/{participantId}")]
+        public ActionResult DeleteParticipant(int participantId, int courseId)
+        {    
+            Course course = dbConnection.courses
+                .Include(c => c.Participants)
+                .FirstOrDefault(c => c.Id  == courseId);
+            Participant participant = dbConnection.participants.Find(participantId);
+
+            if (course == null)
+            {
+                return HttpNotFound("Course not found.");
+            }
+            else if (participant == null)
+            {
+                return HttpNotFound("Participant not found.");
+            }
+            else if (!course.Participants.Contains(participant))
+            {
+                    return HttpNotFound("Participant not associated with this course.");
+            }
+            else
+            {
+                course.Participants.Remove(participant);
+                dbConnection.SaveChanges();
+
+                return RedirectToAction("CourseOverview");
+            }
+        }
+
+
         private static DateTime GetDayForWeekday(DateTime currentDate, DayOfWeek dayOfWeek)
         {
             var daysToAdd = ((int)dayOfWeek - (int)currentDate.DayOfWeek + 7) % 7;
