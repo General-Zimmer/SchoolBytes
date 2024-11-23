@@ -27,9 +27,13 @@ namespace SchoolBytes.util
 
             if (notOnTheList) 
             {
-                WaitRegistration newWaitRegistation = new WaitRegistration(participant, courseModule, DateTime.Now);
-                courseModule.Waitlist.AddLast(newWaitRegistation);
-                dBConnection.SaveChangesV2();
+                // hvis courseModule er fuld booket
+                if (courseModule.Capacity == courseModule.MaxCapacity) 
+                {
+                    WaitRegistration newWaitRegistation = new WaitRegistration(participant, courseModule, DateTime.Now);
+                    courseModule.Waitlist.AddLast(newWaitRegistation);
+                    dBConnection.SaveChangesV2();
+                }
             }
         }
 
