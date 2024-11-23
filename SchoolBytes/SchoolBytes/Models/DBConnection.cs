@@ -85,7 +85,7 @@ namespace SchoolBytes.Models
 
         private static string getCredentialsPath()
         {
-            string filePath = @"C:\Users\Kasper\Source\Repos\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
+            string filePath = @"C:\Users\victo\Source\Repos\General-Zimmer\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
             //string filePath = HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
             StreamReader credJson = new StreamReader(filePath);
             //HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
@@ -173,7 +173,6 @@ namespace SchoolBytes.Models
 
                 //courseModule.Waitlist.AddLast(yeet);
                 //getDBContext().SaveChangesV2();
-
             }
         }
     }
