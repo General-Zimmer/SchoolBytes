@@ -104,16 +104,19 @@ namespace SchoolBytes.Models
             return true;
         }
 
-        public static bool IsParticipantSubscribed(Participant participant)
+        public static bool IsParticipantSubscribedToCourseModule(Participant participant, int CourseModuleID)
         {
-            foreach(var modul in getDBContext().courseModules)
-            {
-                if (modul.Registrations.Exists(r => r.participant == participant))
-                    {
-                    return true;
-                    }
-            }
-            return false;
+
+            return getDBContext().courseModules.Find(CourseModuleID).Registrations.Exists(r => r.participant == participant);
+
+            //foreach(var modul in getDBContext().courseModules)
+            //{
+            //    if (modul.Registrations.Exists(r => r.participant == participant))
+            //        {
+            //        return true;
+            //        }
+            //}
+            //return false;
         }
 
 
