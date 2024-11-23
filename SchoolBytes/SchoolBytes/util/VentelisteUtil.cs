@@ -12,12 +12,25 @@ namespace SchoolBytes.util
         public static void AddToWaitlist(CourseModule courseModule, Participant participant) 
         {
             dBConnection.Update(courseModule);
-            WaitRegistration newWaitRegistation = new WaitRegistration(participant, courseModule, DateTime.Now);
+            // Logic so that you can't add duplicates to the waitlist
+            LinkedList<WaitRegistration> existingWaitRegistrations = courseModule.Waitlist;
+            bool notOnTheList = true;
 
-            // TODO: logic so that you can't add duplicated to the waitlist
+            foreach (WaitRegistration registration in existingWaitRegistrations) 
+            {
+                if (registration.participant.PhoneNumber == participant.PhoneNumber) 
+                { 
+                    notOnTheList = false;
+                    break;
+                }
+            }
 
-            courseModule.Waitlist.AddLast(newWaitRegistation);
-            dBConnection.SaveChangesV2();
+            if (notOnTheList) 
+            {
+                WaitRegistration newWaitRegistation = new WaitRegistration(participant, courseModule, DateTime.Now);
+                courseModule.Waitlist.AddLast(newWaitRegistation);
+                dBConnection.SaveChangesV2();
+            }
         }
 
     }
