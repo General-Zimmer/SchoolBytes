@@ -174,9 +174,7 @@ namespace SchoolBytes.Controllers
         [Route("course/{courseId}/delete/{participantId}")]
         public ActionResult DeleteParticipant(int participantId, int courseId)
         {    
-            Course course = dbConnection.courses
-                .Include(c => c.Participants)
-                .FirstOrDefault(c => c.Id  == courseId);
+            Course course = dbConnection.courses.Find(courseId);
             Participant participant = dbConnection.participants.Find(participantId);
 
             if (course == null)
@@ -187,10 +185,10 @@ namespace SchoolBytes.Controllers
             {
                 return HttpNotFound("Participant not found.");
             }
-            else if (!course.Participants.Contains(participant))
-            {
-                    return HttpNotFound("Participant not associated with this course.");
-            }
+            //else if (!course.Participants.Contains(participant))
+            //{
+            //        return HttpNotFound("Participant not associated with this course.");
+            //}
             else
             {
                 course.Participants.Remove(participant);

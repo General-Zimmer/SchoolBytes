@@ -89,15 +89,46 @@
                 </form>
 
                 <b>Vælg deltager som skal fjernes fra kurset</b>
-                <form method="post" action="course/@course.Id/delete">
-                    <select>
+                <form>
+                    <select id="dropdown-participant">
                         @foreach (var participant in course.Participants)
                         {
                             <option value="@participant.Id">@participant.Name</option>
                         }
                     </select>
-                    <button>Slet deltager</button>
+                    <input type="hidden" id="courseId" value="@course.Id">
+                    <button id="delete-participant-btn">Slet deltager</button>
                 </form>
+
+                <script>
+                    $('#delete-participant-btn').click(function (event) {
+                        event.preventDefault();
+
+                        var selectedParticpant = $('#dropdown-participant').val();
+                        var courseId = $('#courseId').val();
+
+                        $.ajax({
+                            type: "POST",
+                            url: `course/${courseId}/delete/${selectedParticpant}`,
+                            data: {
+                                courseId: courseId,
+                                participantId: selectedParticpant
+                            },
+                            success: function (data) {
+
+                                console.log("Server Response:", data); //testig testing
+
+                                $('#dropdown-participant option[value="' + selectedParticpant + '"]').remove();
+
+                                $('#responseContainer').html('<p>participant deleted</p>');
+                            },
+                            error: function () {
+
+                                $('#responseContainer').html('<p>failed deleting participant</p>');
+                            }
+                        });
+                    });
+                </script>
 
 
                 <script>
