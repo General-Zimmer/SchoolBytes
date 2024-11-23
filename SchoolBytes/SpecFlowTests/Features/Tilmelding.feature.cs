@@ -74,14 +74,14 @@ namespace SpecFlowTests.Features
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Oprettelse af tilmelding")]
+        [NUnit.Framework.DescriptionAttribute("A Oprettelse af tilmelding")]
         [NUnit.Framework.CategoryAttribute("tag1")]
-        public virtual void OprettelseAfTilmelding()
+        public virtual void AOprettelseAfTilmelding()
         {
             string[] tagsOfScenario = new string[] {
                     "tag1"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Oprettelse af tilmelding", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A Oprettelse af tilmelding", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 6
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -116,12 +116,12 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("En participant kan kun tilmeldes et CourseModule en gang")]
-        public virtual void EnParticipantKanKunTilmeldesEtCourseModuleEnGang()
+        [NUnit.Framework.DescriptionAttribute("B En participant kan kun tilmeldes et CourseModule en gang")]
+        public virtual void BEnParticipantKanKunTilmeldesEtCourseModuleEnGang()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("En participant kan kun tilmeldes et CourseModule en gang", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("B En participant kan kun tilmeldes et CourseModule en gang", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 11
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -156,12 +156,12 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("En participant kan kun tilmeldes fremtidige kurser")]
-        public virtual void EnParticipantKanKunTilmeldesFremtidigeKurser()
+        [NUnit.Framework.DescriptionAttribute("C En participant kan kun tilmeldes fremtidige kurser")]
+        public virtual void CEnParticipantKanKunTilmeldesFremtidigeKurser()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("En participant kan kun tilmeldes fremtidige kurser", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("C En participant kan kun tilmeldes fremtidige kurser", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 16
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -196,12 +196,12 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("En participant med 5 aktive tilmeldte kurser, kan ikke tilmeldes")]
-        public virtual void EnParticipantMed5AktiveTilmeldteKurserKanIkkeTilmeldes()
+        [NUnit.Framework.DescriptionAttribute("D En participant med 5 aktive tilmeldte kurser, kan ikke tilmeldes")]
+        public virtual void DEnParticipantMed5AktiveTilmeldteKurserKanIkkeTilmeldes()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("En participant med 5 aktive tilmeldte kurser, kan ikke tilmeldes", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("D En participant med 5 aktive tilmeldte kurser, kan ikke tilmeldes", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 22
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -236,12 +236,12 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("En participant med fejl formateret data, tilmeldes ikke")]
-        public virtual void EnParticipantMedFejlFormateretDataTilmeldesIkke()
+        [NUnit.Framework.DescriptionAttribute("E En participant med fejl formateret data, tilmeldes ikke")]
+        public virtual void EEnParticipantMedFejlFormateretDataTilmeldesIkke()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("En participant med fejl formateret data, tilmeldes ikke", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("E En participant med fejl formateret data, tilmeldes ikke", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 28
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -276,12 +276,12 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("En participant operettes ikke, hvis den allerede findes")]
-        public virtual void EnParticipantOperettesIkkeHvisDenAlleredeFindes()
+        [NUnit.Framework.DescriptionAttribute("F En participant operettes ikke, hvis den allerede findes")]
+        public virtual void FEnParticipantOperettesIkkeHvisDenAlleredeFindes()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("En participant operettes ikke, hvis den allerede findes", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("F En participant operettes ikke, hvis den allerede findes", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 33
 this.ScenarioInitialize(scenarioInfo);
 #line hidden

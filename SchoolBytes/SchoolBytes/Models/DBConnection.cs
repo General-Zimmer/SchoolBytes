@@ -94,14 +94,13 @@ namespace SchoolBytes.Models
 
         public static bool IsEligibleToSubscribe(Participant participant)
         {
-            int registrations = getDBContext().courseModules.Sum(cm => cm.Registrations.Count(r => r.participant == participant));
+            //Finder aktive courses og tilmelder tilmeldinger fra paticipant
+            Console.WriteLine(string.Join(", ", getDBContext().courseModules.Where(cm => DateTime.Compare(DateTime.Now, cm.StartTime) <= 0)));
+            int registrations = getDBContext().courseModules
+                .Where(cm => DateTime.Compare(DateTime.Now, cm.StartTime)<=0)
+                .Sum(cm => cm.Registrations.Count(r => r.participant == participant));
 
-            if (registrations > 5)
-            {
-                return false;
-            }
-
-            return true;
+            return registrations<=4;
         }
 
         public static bool IsParticipantSubscribedToCourseModule(Participant participant, int CourseModuleID)
@@ -152,6 +151,8 @@ namespace SchoolBytes.Models
         public static void SubscribeTest(int courseId, int moduleId, Participant participant)
         {
             CourseModule courseModule = getDBContext().courseModules.Find(moduleId);
+
+            if (DateTime.Compare(DateTime.Now, courseModule.StartTime) > 0) return; //Checks if courseModule date has been passed
 
             if (courseModule.Capacity <= courseModule.MaxCapacity)
             {

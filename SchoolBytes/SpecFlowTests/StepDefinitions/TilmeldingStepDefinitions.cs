@@ -1,5 +1,6 @@
 using SchoolBytes.Models;
 using System;
+using System.Runtime.Remoting.Contexts;
 using TechTalk.SpecFlow;
 
 namespace SpecFlowTests.StepDefinitions
@@ -12,28 +13,34 @@ namespace SpecFlowTests.StepDefinitions
         private static Participant bob = new Participant("Bob", "69695512");
         private static Teacher teacher1 = new Teacher() { Name = "teacher1", Id = 55435 };
         private static Course course1 = new Course() { Name = "Course1", Id = 666, Teacher = teacher1 };
-        private static CourseModule cm1 = new CourseModule() { Name = "cm1", Id = 888, Teacher = teacher1, Course = course1, Date = DateTime.Now.AddDays(1) };
-        private static CourseModule cmOutdated = new CourseModule() { Name="Outdated coursemodule", Id=62343, Teacher=teacher1, Course = course1, Date = DateTime.Now.AddDays(-1)};
+        private static CourseModule cm1 = new CourseModule() { Name = "cm1", Id = 888, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cmOutdated = new CourseModule() { Name = "Outdated coursemodule", Id = 62343, Teacher = teacher1, Course = course1, Date = DateTime.Now.AddDays(-1), StartTime = DateTime.Now.AddDays(-1) };
 
-        private static CourseModule cm2 = new CourseModule() { Name = "cm2", Id = 123132232, Teacher = teacher1, Course = course1, Date = DateTime.Now.AddDays(1) };
-        private static CourseModule cm3 = new CourseModule() { Name = "cm3", Id = 423524, Teacher = teacher1, Course = course1, Date = DateTime.Now.AddDays(1) };
-        private static CourseModule cm4 = new CourseModule() { Name = "cm4", Id = 68368833, Teacher = teacher1, Course = course1, Date = DateTime.Now.AddDays(1) };
-        private static CourseModule cm5 = new CourseModule() { Name = "cm5", Id = 345372, Teacher = teacher1, Course = course1, Date = DateTime.Now.AddDays(1) };
-
-        private static CourseModule cm6 = new CourseModule() { Name = "cm6", Id = 323411114, Teacher = teacher1, Course = course1, Date = DateTime.Now.AddDays(1) };
-
-        private Participant bobNonStatic = new Participant("Bob", "69695512");
+        private static CourseModule cm2 = new CourseModule() { Name = "cm2", Id = 123132232, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cm3 = new CourseModule() { Name = "cm3", Id = 423524, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cm4 = new CourseModule() { Name = "cm4", Id = 68368833, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cm5 = new CourseModule() { Name = "cm5", Id = 345372, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cm6 = new CourseModule() { Name = "cm6", Id = 323411114, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
 
         private static Participant bobby = new Participant("Bobby", "A69695512");
-        private static Participant bob2 = new Participant("Bob2", "69695512") {Id=47284};
+        private static Participant bob2 = new Participant("Bob2", "69695512") { Id = 47284 };
 
         [BeforeFeature]
         public static void BeforeTilmeldingFeature(FeatureContext featureContext)
         {
             _context.Add(bob);
+            _context.Add(bobby);
+            _context.Add(bob2);
             _context.Add(teacher1);
             _context.Add(course1);
             _context.Add(cm1);
+            _context.Add(cm2);
+            _context.Add(cm3);
+            _context.Add(cm4);
+            _context.Add(cm5);
+            _context.Add(cm6);
+            _context.Add(cmOutdated);
+
             _context.SaveChanges();
         }
 
@@ -41,9 +48,18 @@ namespace SpecFlowTests.StepDefinitions
         public static void AfterTilmeldingFeature(FeatureContext featureContext)
         {
             _context.Remove(_context.courseModules.Find(cm1.Id));
+            _context.Remove(_context.courseModules.Find(cm2.Id));
+            _context.Remove(_context.courseModules.Find(cm3.Id));
+            _context.Remove(_context.courseModules.Find(cm4.Id));
+            _context.Remove(_context.courseModules.Find(cm5.Id));
+            _context.Remove(_context.courseModules.Find(cm6.Id));
+            _context.Remove(_context.courseModules.Find(cmOutdated.Id));
             _context.Remove(_context.courses.Find(course1.Id));
             _context.Remove(_context.teachers.Find(teacher1.Id));
             _context.Remove(_context.participants.Find(bob.Id));
+            _context.Remove(_context.participants.Find(bobby.Id));
+            _context.Remove(_context.participants.Find(bob2.Id));
+
             _context.SaveChanges();
         }
 
