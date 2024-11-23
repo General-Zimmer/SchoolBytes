@@ -30,7 +30,7 @@ namespace SpecFlowTests.StepDefinitions
         {
             _context.Add(bob);
             _context.Add(bobby);
-            _context.Add(bob2);
+            //_context.Add(bob2);  Ideen er at bob2 aldrig oprettes i db'en da hans tlf nummer er brugt
             _context.Add(teacher1);
             _context.Add(course1);
             _context.Add(cm1);

@@ -22,6 +22,7 @@ using System.Web.UI.WebControls;
 using System.Data.Common;
 using System.Net;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 
 namespace SchoolBytes.Models
@@ -103,6 +104,44 @@ namespace SchoolBytes.Models
             return registrations<=4;
         }
 
+        public static bool IsParticipantFormatValid(Participant participant)
+        {
+            string daNumba = participant.PhoneNumber.Trim();
+            daNumba = Regex.Replace(daNumba, @"\s+", "");
+
+            if (daNumba[0] == '+')
+            {
+                try
+                {
+                    if (daNumba.Substring(1).Length != 10) return false; //Hvis der er indtastet landekode, +45, forventes i alt 10 cifre
+                    int testConvert = Int32.Parse(daNumba.Substring(1));
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                try
+                {
+                    int testConvert = Int32.Parse(daNumba);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+
+            //Tester hvis telefon nummeret er brugt allerede, ved en participant med andet navn
+
+            if (getDBContext().participants.ToList().Exists(p => p.PhoneNumber.Equals(participant.PhoneNumber) && !p.Name.Equals(participant.Name))) return false;
+
+
+            return true;
+        }
+
         public static bool IsParticipantSubscribedToCourseModule(Participant participant, int CourseModuleID)
         {
 
@@ -156,7 +195,7 @@ namespace SchoolBytes.Models
 
             if (courseModule.Capacity <= courseModule.MaxCapacity)
             {
-                if (DBConnection.IsEligibleToSubscribe(participant))
+                if (DBConnection.IsEligibleToSubscribe(participant) && DBConnection.IsParticipantFormatValid(participant))
                 {
 
                     Registration registration = new Registration(participant, courseModule);
