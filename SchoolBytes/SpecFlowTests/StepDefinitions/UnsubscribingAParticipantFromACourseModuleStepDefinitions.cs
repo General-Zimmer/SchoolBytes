@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using SchoolBytes.Controllers;
 using SchoolBytes.Models;
+using SchoolBytes.util;
 using System;
 using System.Reflection;
 using TechTalk.SpecFlow;
@@ -13,7 +14,6 @@ namespace SpecFlowTests.StepDefinitions
     {
         private readonly List<CourseModule> _courseModules = new(); 
         private readonly List<Participant> _participants = new(); 
-        private ModuleController _controller;
         private Course _course; 
         private CourseModule _courseModule; 
         private Participant _participant; 
@@ -62,7 +62,7 @@ namespace SpecFlowTests.StepDefinitions
         public void WhenIUnsubscribeTheParticipantWithPhoneNumberFromCourseIdAndModuleId(string phoneNumber, int courseId, int moduleId)
         {
 
-            _controller.unsub(courseId, moduleId, phoneNumber);
+            DatabaseUtils.Unsub(courseId, moduleId, phoneNumber);
 
         }
 
@@ -94,15 +94,13 @@ namespace SpecFlowTests.StepDefinitions
 
             var waitlistParticipant = new Participant("Waitlist Participant", "12345678");
 
-            
+
             _courseModule = new CourseModule
             {
                 Id = moduleId,
-                Waitlist = new LinkedList<WaitRegistration>
-                {
-                    new WaitRegistration(waitlistParticipant, _courseModule)
-                }
             };
+            _courseModule.Waitlist.AddFirst(new WaitRegistration(waitlistParticipant, _courseModule));
+
 
 
             _course = new Course("test1", "desc", DateTime.Now, DateTime.UtcNow, 30, 1);
