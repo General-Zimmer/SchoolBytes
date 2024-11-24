@@ -2,6 +2,7 @@
 using System;
 using TechTalk.SpecFlow;
 using SchoolBytes.Controllers;
+using SchoolBytes.Models;
 
 namespace SpecFlowTests.StepDefinitions
 {
@@ -11,9 +12,18 @@ namespace SpecFlowTests.StepDefinitions
         private string initialId;
         private string newId;
         private bool isAttendanceUpdated;
+        private Course testCourse;
+        private CourseModule courseTestModule;
+        private Participant participantTest;
+        private Registration registrationTest;
         private QRController qrController = new();
-
-        
+        DBConnection dbConnectionM = DBConnection.getDBContext();
+        [BeforeScenario]
+        public void SetUp()
+        {
+            testCourse = new Course("TestCourse", "test", DateTime.Now, DateTime.Now.AddMinutes(5), 1, 123);
+            courseTestModule = new CourseModule();
+        }
 
         // Scenario: ID for check-in changes when new QR Code is generated
         [Given(@"I have access to the Generation Webpage")]
