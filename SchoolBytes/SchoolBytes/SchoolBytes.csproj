@@ -334,6 +334,7 @@
     <Content Include="Views\Module\SubModal.cshtml" />
     <Content Include="Views\QR\Generation.cshtml" />
     <Content Include="Views\QR\Index.cshtml" />
+    <Content Include="Views\QR\InvalidId.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

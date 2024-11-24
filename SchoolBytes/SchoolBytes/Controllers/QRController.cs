@@ -53,8 +53,8 @@ namespace SchoolBytes.Controllers
                 byte[] imageBytes = ms.ToArray();
                 base64String = Convert.ToBase64String(imageBytes);
             }
-            ViewBag.ImageData = base64String;
-            return View();
+            // Return the base64 string as a JSON object
+            return Json(new { qrCode = base64String }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -62,12 +62,15 @@ namespace SchoolBytes.Controllers
         public ActionResult Index(string Id)
         {
             string currentId = GetQrId();
+            System.Diagnostics.Debug.WriteLine("Current ID: " + currentId);
             if (Id != currentId)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound, "Id ikke rigtig.");
+                return View("InvalidId");
+            } else
+            {
+                ViewBag.Title = "Fremmøde Tjek Ind";
+                return View(dbConnection.courses.ToList());
             }
-            ViewBag.Title = "Fremmøde Tjek Ind";
-            return View(dbConnection.courses.ToList());
         }
 
         // GET: Course
@@ -122,18 +125,27 @@ namespace SchoolBytes.Controllers
         }
         public string GetQrId()
         {
-            var json = System.IO.File.ReadAllText("appsettings.json");
+            /*var json = System.IO.File.ReadAllText("appsettings.json");
+            var config = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(json);
+            return config["CurrentQrId"]?.ToString();*/
+            // ovenstående blev brugt først men den kunne ikke finde appsettings
+            string appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+            var json = System.IO.File.ReadAllText(appSettingsPath);
             var config = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(json);
             return config["CurrentQrId"]?.ToString();
         }
         public void SetQrId(string newId)
         {
-            var json = System.IO.File.ReadAllText("appsettings.json");
+            /*var json = System.IO.File.ReadAllText("appsettings.json");
             var config = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(json);
             config["CurrentQrId"] = newId;
+            System.IO.File.WriteAllText("appsettings.json", config.ToString());*/
 
-            // Write updated JSON back to the file
-            System.IO.File.WriteAllText("appsettings.json", config.ToString());
+            string appSettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+            var json = System.IO.File.ReadAllText(appSettingsPath);
+            var config = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(json);
+            config["CurrentQrId"] = newId;
+            System.IO.File.WriteAllText(appSettingsPath, config.ToString());
         }
     }
 }
