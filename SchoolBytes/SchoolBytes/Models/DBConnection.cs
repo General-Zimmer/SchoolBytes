@@ -85,7 +85,7 @@ namespace SchoolBytes.Models
 
         private static string getCredentialsPath()
         {
-            string filePath = @"C:\Users\Duff\Desktop\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
+            string filePath = @"C:\Users\victo\Source\Repos\General-Zimmer\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
             //string filePath = HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
             StreamReader credJson = new StreamReader(filePath);
             //HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
@@ -116,5 +116,10 @@ namespace SchoolBytes.Models
            return getDBContext().courseModules.Sum(cm => cm.Registrations.Count(r => r.participant == participant));
         }
      
+        public static List<Participant> GetAbsentees()
+        {
+            //TODO: hvordan ved vi om en participant deltog eller ej???
+            return getDBContext().participants.Where(p => p.Id % 2 == 0).ToList();
+        }
     }
 }

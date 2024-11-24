@@ -24,10 +24,18 @@
                             <li class="nav-item">@Html.ActionLink("Hold", "CourseOverview", "Course", new { area = "" }, new { @class = "nav-link" })</li>
                             <li class="nav-item">@Html.ActionLink("Information", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                             <li class="nav-item">@Html.ActionLink("Kontakt", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li class="nav-item> id=notification"><img id="notificationImageOFF" onclick="showNotifications()" src="~/NewImages/notificationBellOFF.png" / width="25" height="25"></li>
+                            <li class="nav-item> id=notification"><img id="notificationImageON" onclick="showNotifications()" src="~/NewImages/notificationBellON.png" / width="25" height="25"></li>
                         </ul>
                     </div>
                 </div>
             </nav>
+
+            @*Notifications*@
+        <div id="globalNotification" style="display: none;">
+            <button id="closeNotification" onlick="closeNotifications()">&times;</button>
+            <span id="notificationMessage"></span>
+        </div>
 
             <!-- Body content -->
             <div class="container body-content">
@@ -39,16 +47,54 @@
                 <p>&copy; 2024</p>
 
                 <h5>Kompetencehuset</h5>
-                <p> Søren Frichs Vej 40 D, 8230 Åbyhøj <br />
+                <p>
+                    Søren Frichs Vej 40 D, 8230 Åbyhøj <br />
                     E-mail: info@kompetencehuset.com <br />
-                    Telefon 86 15 96 99</p>
+                    Telefon 86 15 96 99
+                </p>
             </footer>
             <div class="column"></div> <!-- Empty right column -->
         </div>
-     </div>
+    </div>
 
-            @Scripts.Render("~/bundles/jquery")
-            @Scripts.Render("~/bundles/bootstrap")
-            @RenderSection("scripts", required: false)
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    <script>
+        function checkNotifications() {
+            //If the string recieved is empty show the OFF notification bell
+            $.ajax({
+                type: "GET",
+                url: '/Home/CheckNotifications',
+                success: function (data) {
+                    $('#notificationMessage').html(data);
+                    if ((data + "").length == 0) {
+                        console.log("WHAT")
+                        document.querySelector("#notificationImageOFF").style.display = "inline"
+                        document.querySelector("#notificationImageON").style.display = "none"
+                    } else {
+                        document.querySelector("#notificationImageOFF").style.display = "none"
+                        document.querySelector("#notificationImageON").style.display = "inline"
+                    }
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        }
+
+        function closeNotifications() {
+            document.querySelector("#globalNotification").style.display = "none"
+        }
+
+        function showNotifications() {
+            document.querySelector("#globalNotification").style.display = "block"
+        }
+
+        document.addEventListener("DOMContentLoaded", checkNotifications());
+    </script>
 </body>
 </html>

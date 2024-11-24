@@ -7,8 +7,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 
 namespace SchoolBytes.Controllers
 {
@@ -59,6 +61,18 @@ namespace SchoolBytes.Controllers
             ViewBag.SelectedCourseId = selectedCourseId;
             
             return View(courses);
+        }
+
+        public ActionResult CheckNotifications()
+        {
+            List<Participant> absentees = DBConnection.GetAbsentees();
+
+            string resultString = "The following students are absent: " + System.Environment.NewLine;
+            resultString += string.Join(", " + System.Environment.NewLine, absentees);
+
+            if (absentees.Count() == 0) resultString = "";
+
+            return Content(resultString, "text/plain", Encoding.UTF8);
         }
     }
 }

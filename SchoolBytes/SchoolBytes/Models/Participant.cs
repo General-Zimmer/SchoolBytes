@@ -14,4 +14,9 @@
         PhoneNumber = phoneNumber;
     }
 
+    public override string ToString()
+    {
+        return Name;
+    }
+
 }
