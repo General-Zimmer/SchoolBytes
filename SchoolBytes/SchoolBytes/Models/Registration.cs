@@ -4,7 +4,8 @@ using SchoolBytes.Models;
 
 public class  Registration
 {
-    public int Id { get; set; } 
+    public int Id { get; set; }
+    public bool Attendance { get; set; }
     public virtual Participant participant { get; set; }
     public virtual CourseModule CourseModule { get; set; }
     public Registration()

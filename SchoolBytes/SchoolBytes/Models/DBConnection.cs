@@ -62,6 +62,13 @@ namespace SchoolBytes.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Ignore<Exports>();
+            modelBuilder.Ignore<ExportData>();
+            modelBuilder.Ignore<AttendanceContainer>();
+            modelBuilder.Ignore<CourseAttendance>();
+
+
+
             modelBuilder.Entity<CourseModule>()
                    .HasMany(cm => cm.Registrations)
                    .WithOne(r => r.CourseModule)

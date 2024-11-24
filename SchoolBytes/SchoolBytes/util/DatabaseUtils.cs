@@ -15,6 +15,12 @@ namespace SchoolBytes.util
     {
         private static DBConnection self = DBConnection.getDBContext();
 
+        public static List<Course> GetCoursesByParticipant(Participant p)
+        {
+            
+            return self.courses.Where(c => c.CoursesModules.Any(cm => cm.Registrations.Any(r => r.participant == p))).ToList();
+        }
+
         public static HttpStatusCodeResult Unsub(int courseId, int moduleId, string tlfNr)
         {
             CourseModule courseModule = self.courseModules.Find(moduleId);
@@ -73,6 +79,11 @@ namespace SchoolBytes.util
             }
             Debug.Print("WTF MAAAAAN");
             return 0;
+        }
+
+        internal static List<Course> GetCourseByName(string className)
+        {
+            return self.courses.Where(c => c.Name == className).ToList();
         }
     }
 }
