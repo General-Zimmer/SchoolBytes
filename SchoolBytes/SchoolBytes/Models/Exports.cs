@@ -14,7 +14,44 @@ public class Exports
 
     public WorkBook ConvertToXls()
     {
-        WorkBook workbook = new WorkBook();
+        WorkBook workbook = WorkBook.Create(ExcelFileFormat.XLS);
+        WorkSheet sheet = workbook.CreateWorkSheet("Attendance Report");
+        
+        //ws headers
+        sheet["A1"].Value = "Participant Name";
+        sheet["B1"].Value = "Course Name";
+        sheet["C1"].Value = "Attendance (%)";
+        sheet["D1"].Value = "Overall Attendance (%)";
+
+   
+        var sortedData = ExportData.OrderBy(ed => ed.participant.Name).ToList();
+
+        int row = 2; // Start from the second row for data
+        foreach (var export in sortedData)
+        {
+            string participantName = export.participant.Name;
+
+            float overallAttendance = export.attendanceContainer.OverallAttendance * 100;
+
+            bool isFirstCourseForParticipant = true;
+
+            foreach (var courseAttendance in export.attendanceContainer.Attendances)
+            {
+                if (isFirstCourseForParticipant)
+                {
+                    sheet[$"A{row}"].Value = participantName;
+                    isFirstCourseForParticipant = false;
+                }
+
+                sheet[$"B{row}"].Value = courseAttendance.Course.Name;
+                sheet[$"C{row}"].Value = (courseAttendance.Attendance * 100).ToString("0.00");
+
+                row++;
+            }
+
+            // Add the overall attendance row for the participant
+            sheet[$"D{row - 1}"].Value = overallAttendance.ToString("0.00");
+        }
 
 
         return workbook;
@@ -48,12 +85,14 @@ public class ExportsBuilder
         this.participant = participant;
         return this;
     }
+
     public ExportsBuilder ForParticipant(List<Participant> participants)
     {
         this.participants = participants;
         return this;
     }
 
+    //not used in first iteration. Will be implemented properly at a later point
     public ExportsBuilder WithAttendanceBelow(float percent)
     {
         this.percentageCriteria = percent;
