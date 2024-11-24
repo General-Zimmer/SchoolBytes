@@ -115,6 +115,6 @@ namespace SchoolBytes.Models
         {
            return getDBContext().courseModules.Sum(cm => cm.Registrations.Count(r => r.participant == participant));
         }
-     
+      
     }
 }

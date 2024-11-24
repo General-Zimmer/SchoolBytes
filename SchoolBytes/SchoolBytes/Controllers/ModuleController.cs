@@ -149,11 +149,9 @@ namespace SchoolBytes.Controllers
                 if(DBConnection.IsEligibleToSubscribe(participant))
                 {
 
-                
-                
-                Registration registration = new Registration(participant, courseModule);
-                courseModule.Capacity += 1;
-                dBConnection.UpdateSub(registration, courseModule);
+                    Registration registration = new Registration(participant, courseModule);
+                    courseModule.Capacity += 1;
+                    dBConnection.UpdateSub(registration, courseModule);
                 } else
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Du har allerede tilmeldt dig maksimum antal hold.");
