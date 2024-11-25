@@ -14,6 +14,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using System.Data.Common;
+using System.Net;
+using System.Reflection;
 
 
 namespace SchoolBytes.Models
@@ -59,6 +62,8 @@ namespace SchoolBytes.Models
                    .WithOne(r => r.CourseModule)
                    .HasPrincipalKey(cm => cm.Id) // Specifies the primary key on CourseModule
                    .HasForeignKey(r => r.Id); // Define the foreign key property in Registration
+
+
         }
 
         public static DBConnection getDBContext()
@@ -102,8 +107,7 @@ namespace SchoolBytes.Models
         public static int GetSubscribeCount(Participant participant)
         {
            return getDBContext().courseModules.Sum(cm => cm.Registrations.Count(r => r.participant == participant));
-
-            
         }
+      
     }
 }
