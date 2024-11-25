@@ -3,7 +3,7 @@
     var selectedCourseId = ViewBag.SelectedCourseId as int?;
 }
 
-<link rel="stylesheet" href="/Content/CourseOverviewStyles.css"/>
+<link rel="stylesheet" href="/Content/CourseOverviewStyles.css" />
 
 <h1>Hold oversigt</h1>
 
@@ -74,60 +74,26 @@
                         <!-- Gem ændringer Button -->
                         <button type="submit" class="save-button" onclick="enableDisabled()" style="display: none;">Gem ændringer</button>
 
-                        <!-- Fjern elev -->
-                        <button type="submit" class="save-button" onclick="enableDisabled()" style="display: none;">Gem ændringer</button>
-
                         <!-- Slet Button -->
                         <form method="post" action="@Url.Action("Delete", "Course")" onsubmit="return confirmDelete()">
                             <input type="hidden" name="id" value="@course.Id" />
                             <button type="submit" class="delete-button">Slet hold</button>
                         </form>
                     </div>
-
-                    <!-- Fjern elev -->
-                    <button type="button" class="toggle-button" onclick="enableEditing()">Rediger hold</button>
                 </form>
 
+                <!-- Fjern elev -->
                 <b>Vælg deltager som skal fjernes fra kurset</b>
-                <form>
-                    <select id="dropdown-participant">
+                <form method="post" action="@Url.Action("DeleteParticipant", "Course")">
+                    <select id="dropdown-participant" name="participantId">
                         @foreach (var participant in course.Participants)
                         {
                             <option value="@participant.Id">@participant.Name</option>
                         }
                     </select>
-                    <input type="hidden" id="courseId" value="@course.Id">
+                    <input type="hidden" name="courseId" value="@course.Id" />
                     <button id="delete-participant-btn">Slet deltager</button>
                 </form>
-
-                <script>
-                    $('#delete-participant-btn').click(function (event) {
-                        event.preventDefault();
-
-                        var selectedParticpant = $('#dropdown-participant').val();
-                        var courseId = $('#courseId').val();
-
-                        $.ajax({
-                            type: "POST",
-                            url: `course/${courseId}/delete/${selectedParticpant}`,
-                            data: {
-                                courseId: courseId,
-                                participantId: selectedParticpant
-                            },
-                            success: function (data) {
-
-                                console.log("Server Response:", data); //testing testing
-
-                                $('#dropdown-participant option[value="' + selectedParticpant + '"]').remove();
-                                $('#responseContainer').html('<p>participant deleted</p>');
-                            },
-                            error: function () {
-
-                                $('#responseContainer').html('<p>failed deleting participant</p>');
-                            }
-                        });
-                    });
-                </script>
 
                 <script>
                     function confirmDelete() {
@@ -159,7 +125,7 @@
 <form id="create-form" action="/course/create" method="post">
     <div class="create-group">
         <label class="create-label" for="Name">Kursusnavn:</label>
-        <input class="create-input" type="text" id="Name" name="Name" required/>
+        <input class="create-input" type="text" id="Name" name="Name" required />
     </div>
 
     <div class="create-group">
@@ -168,27 +134,27 @@
     </div>
 
     <div class="create-group">
-        <label class="create-label" for="Teacher">Lærer:</label>  Måske lave om til en liste? 
-        <input class="create-input" type="text" id="Teacher" name="Teacher.Name" required/>
+        <label class="create-label" for="Teacher">Lærer:</label>  Måske lave om til en liste?
+        <input class="create-input" type="text" id="Teacher" name="Teacher.Name" required />
     </div>
 
     <div class="create-group">
         <label class="create-label" for="StartDate">Startdato:</label>
-        <input class="create-input" type="date" id="StartDate" name="StartDate" required/>
+        <input class="create-input" type="date" id="StartDate" name="StartDate" required />
     </div>
 
     <div class="create-group">
         <label class="create-label" for="EndDate">Slutdato:</label>
-        <input class="create-input" type="date" id="EndDate" name="EndDate" required/>
+        <input class="create-input" type="date" id="EndDate" name="EndDate" required />
     </div>
 
     <div class="create-group">
         <label class="create-label" for="MaxCapacity">Maksimal kapacitet:</label>
-        <input class="create-input" type="number" id="MaxCapacity" name="MaxCapacity" min="1" required/>
+        <input class="create-input" type="number" id="MaxCapacity" name="MaxCapacity" min="1" required />
     </div>
 
     <h2>Vælg kursus dage</h2>
-    <label><input name="Monday" type="checkbox" checked=false/> Mandag</label><br>
+    <label><input name="Monday" type="checkbox" checked=false /> Mandag</label><br>
     <label><input name="Tuesday" type="checkbox" checked=false> Tirsdag</label><br>
     <label><input name="Wednesday" type="checkbox" checked=false> Onsdag</label><br>
     <label><input name="Thursday" type="checkbox" checked=false> Torsdag</label><br>
@@ -199,6 +165,4 @@
     <div class="create-group">
         <button class="create-button" type="submit">Opret nyt hold</button>
     </div>
-
 </form>
-

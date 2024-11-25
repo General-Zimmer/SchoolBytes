@@ -24,8 +24,8 @@ namespace SchoolBytes.Controllers
             {
                 ViewBag.SelectedCourseId = selectedCourseId;
             }
-
-            return View(dbConnection.courses.ToList());
+            var fuuuuuck = dbConnection.courses.ToList();
+            return View(fuuuuuck);
         }
       
 
@@ -169,9 +169,9 @@ namespace SchoolBytes.Controllers
 
         }
 
-        // DELETE: api/course/{participantId} (Remove course)
+        // DELETE: api/course/{participantId}
         [HttpPost]
-        [Route("course/{courseId}/delete/{participantId}")]
+        //[Route("course/{courseId}/delete/{participantId}")]
         public ActionResult DeleteParticipant(int participantId, int courseId)
         {    
             Course course = dbConnection.courses.Find(courseId);
