@@ -14,6 +14,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using System.Text;
 
 
 namespace SchoolBytes.Models
@@ -117,6 +118,18 @@ namespace SchoolBytes.Models
             List<Participant> absentess = getDBContext().participants.Where(p => registrations.Count(r => r.participant.Id == p.Id && !r.Attendance) > 2).ToList();
 
             return getDBContext().participants.Where(p => p.Id % 2 == 0).ToList();
+        }
+
+        public static string CheckNotificationsTest()
+        {
+            List<Participant> absentees = DBConnection.GetAbsentees();
+
+            string resultString = "The following students are absent: " + System.Environment.NewLine;
+            resultString += string.Join(", " + System.Environment.NewLine, absentees);
+
+            if (absentees.Count() == 0) resultString = "";
+
+            return resultString;
         }
     }
 }
