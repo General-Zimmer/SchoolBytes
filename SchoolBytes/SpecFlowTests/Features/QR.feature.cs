@@ -141,12 +141,12 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 9
- testRunner.Given("I have a valid registration for a course module with id 123 for course id 1 for a" +
-                        " participant with phone number \"1234567890\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I have a valid registration for a course module with id 888 for course id 666 for" +
+                        " a participant with phone number \"12345678\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 10
- testRunner.When("I check in the participant with phone number \"1234567890\" from course id 1 and mo" +
-                        "dule id 123", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I check in the participant with phone number \"12345678\" from course id 666 and mo" +
+                        "dule id 888", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 11
  testRunner.Then("the attendance for my registration should change to true", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

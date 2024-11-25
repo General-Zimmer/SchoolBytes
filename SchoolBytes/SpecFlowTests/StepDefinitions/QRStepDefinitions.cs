@@ -10,45 +10,84 @@ namespace SpecFlowTests.StepDefinitions
     [Binding]
     public class QRStepDefinitions
     {
+        
         private string initialId;
         private string newId;
-        private Course testCourse;
-        private CourseModule courseTestModule;
-        private Participant participantTest;
-        private Registration registrationTest;
-        private QRController qrController = new();
-        DBConnection dbConnection = DBConnection.getDBContext();
-        [BeforeScenario]
-        public void SetUp()
+        private static DBConnection _context = DBConnection.getDBContext();
+        private static Participant bob = new Participant("Bob", "12345678");
+        private static Teacher teacher1 = new Teacher() { Name = "teacher1", Id = 55435 };
+        private static Course course1 = new Course() { Name = "Course1", Id = 666, Teacher = teacher1 };
+        private static CourseModule cm1 = new CourseModule() { Name = "cm1", Id = 888, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+
+        private static CourseModule cm2 = new CourseModule() { Name = "cm2", Id = 123132232, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cm3 = new CourseModule() { Name = "cm3", Id = 423524, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cm4 = new CourseModule() { Name = "cm4", Id = 68368833, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cm5 = new CourseModule() { Name = "cm5", Id = 345372, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cm6 = new CourseModule() { Name = "cm6", Id = 323411114, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+
+        private static Participant bobby = new Participant("Bobby", "69695512");
+        private static Registration registrationTest = new Registration(bob, cm1);
+
+        private static QRController qrController = new();
+
+        [BeforeFeature]
+        public static void BeforeTilmeldingFeature(FeatureContext featureContext)
         {
-            testCourse = new Course("TestCourse", "test", DateTime.Now, DateTime.Now.AddMinutes(5), 1, 123);
-            courseTestModule = new CourseModule
-            {
-                Id = 123,
-                Name = "Test Course Module",
-                Date = DateTime.Now, // This should be the date for the module
-                StartTime = DateTime.Now.AddMinutes(10), // Set a time 10 minutes from now
-                EndTime = DateTime.Now.AddMinutes(15), // Set a time 15 minutes from now
-                Capacity = 30, // Set the capacity of the course module
-                MaxCapacity = 50, // Max capacity for the module
-                Location = "Room 101", // Example location
-                Teacher = new Teacher { Id = 1, Name = "John Doe" }, // Associate a teacher
-                Course = testCourse // Associate the testCourse with this module
-            };
+            _context.Add(bob);
+            _context.Add(bobby);
+            _context.Add(teacher1);
+            _context.Add(course1);
+            _context.Add(cm1);
+            _context.Add(cm2);
+            _context.Add(cm3);
+            _context.Add(cm4);
+            _context.Add(cm5);
+            _context.Add(cm6);
+
+            _context.SaveChanges();
+        }
+
+        [AfterFeature]
+        public static void AfterTilmeldingFeature(FeatureContext featureContext)
+        {
+            _context.Remove(_context.courseModules.Find(cm1.Id));
+            _context.Remove(_context.courseModules.Find(cm2.Id));
+            _context.Remove(_context.courseModules.Find(cm3.Id));
+            _context.Remove(_context.courseModules.Find(cm4.Id));
+            _context.Remove(_context.courseModules.Find(cm5.Id));
+            _context.Remove(_context.courseModules.Find(cm6.Id));
+            _context.Remove(_context.courses.Find(course1.Id));
+            _context.Remove(_context.teachers.Find(teacher1.Id));
+            _context.Remove(_context.participants.Find(bob.Id));
+            _context.Remove(_context.participants.Find(bobby.Id));
+
+            _context.SaveChanges();
+        }
+        
+
+        /*private static Course testCourse = new Course("TestCourse", "test", DateTime.Now, DateTime.Now.AddMinutes(5), 1, 1);
+        private static CourseModule courseTestModule = new CourseModule { Id = 1, Name = "Test Course Module",
+            Date = DateTime.Now, StartTime = DateTime.Now.AddMinutes(10), EndTime = DateTime.Now.AddMinutes(15), 
+            Capacity = 30, MaxCapacity = 50, Location = "Room 101", Teacher = new Teacher { Id = 1, Name = "John Doe" }, Course = testCourse };
+        private static Participant participantTest = new Participant("TestParticipant", "12345678");
+        private static Registration registrationTest = new Registration(participantTest, courseTestModule);
+        private static DBConnection dbConnection = DBConnection.getDBContext();
+
+        [BeforeFeature]
+        public static void SetUp()
+        {
             testCourse.CoursesModules.Add(courseTestModule);
-            Participant testParticipant = new Participant("TestParticipant", "88888888");
-            testParticipant.Id = 123;
-            Registration testRegistration = new Registration(testParticipant, courseTestModule);
-            courseTestModule.Registrations.Add(testRegistration);
+            participantTest.Id = 1;
+            courseTestModule.Registrations.Add(registrationTest);
             dbConnection.Add(testCourse);
             dbConnection.Add(courseTestModule);
-            dbConnection.Add(testParticipant);
-            dbConnection.Add(testRegistration);
+            dbConnection.Add(participantTest);
+            dbConnection.Add(registrationTest);
             dbConnection.SaveChanges();
         }
 
-        [AfterScenario]
-        public void CleanUp()
+        [AfterFeature]
+        public static void CleanUp()
         {
             // Clean up the test data from the database after the test
             dbConnection.Remove(testCourse);
@@ -56,7 +95,7 @@ namespace SpecFlowTests.StepDefinitions
             dbConnection.Remove(participantTest);
             dbConnection.Remove(registrationTest);
             dbConnection.SaveChanges();
-        }
+        }*/
 
         // Scenario: ID for check-in changes when new QR Code is generated
         [Given(@"I have access to the Generation Webpage")]
@@ -90,7 +129,7 @@ namespace SpecFlowTests.StepDefinitions
         public void GivenIHaveAValidRegistration(int moduleId, int courseId, string phoneNumber)
         {
             // Ensure that the registration exists in the database with the given parameters
-            var course = dbConnection.courses.Find(courseId);
+            var course = _context.courses.Find(courseId);
             CourseModule courseModule = course.CoursesModules.Find(c => c.Id == moduleId);
             Registration reg = courseModule.Registrations.Find(r => r.participant.PhoneNumber == phoneNumber);
             reg = registrationTest;
@@ -98,9 +137,8 @@ namespace SpecFlowTests.StepDefinitions
             Assert.IsNotNull(reg, "Registration not found");
         }
 
-        [When(@"I check in the participant with phone number ""(.*)"" from course id (.*)
-                and module id (.*)")]
-        public void WhenICheckInTheParticipant(string phoneNumber, int courseId, int moduleId)
+        [When(@"I check in the participant with phone number ""(.*)"" from course id (.*) and module id (.*)")]
+        public void WhenICheckInTheParticipantWithPhoneNumberFromCourseIdAndModuleId(string phoneNumber, int courseId, int moduleId)    
         {
             // Call the RegistrationCheckIn method and store the result
             ActionResult checkInResult = qrController.RegistrationCheckIn(phoneNumber, moduleId);
