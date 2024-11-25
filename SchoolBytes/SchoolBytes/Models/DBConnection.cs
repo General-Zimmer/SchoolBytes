@@ -105,5 +105,18 @@ namespace SchoolBytes.Models
 
             
         }
+
+        public static List<Participant> GetAbsentees()
+        {
+            //Finder courseModules afholdt inden for seneste 2 months
+            List<CourseModule> recentCMs = getDBContext().courseModules.Where(cm => DateTime.Compare(DateTime.Now.AddMonths(-2), cm.StartTime)<0).ToList();
+                
+            List<Registration> registrations = recentCMs.SelectMany(cm => cm.Registrations).ToList();
+
+            //Finder participants der har 3 eller flere udeblivelser indenfor seneste 2 months
+            List<Participant> absentess = getDBContext().participants.Where(p => registrations.Count(r => r.participant.Id == p.Id && !r.Attendance) > 2).ToList();
+
+            return getDBContext().participants.Where(p => p.Id % 2 == 0).ToList();
+        }
     }
 }
