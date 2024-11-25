@@ -16,8 +16,8 @@ namespace SpecFlowTests.StepDefinitions
 
 
         private static DBConnection _context = DBConnection.getDBContext();
-        private static Participant bob = new Participant("Bob", "12341234") { Id = ++rId};
-        private static Participant absentBob = new Participant("Absent Bob", "11223344") { Id = ++rId};
+        private static Participant bob = new Participant("Bob", "12341234") { Id = ++rId };
+        private static Participant absentBob = new Participant("Absent Bob", "11223344") { Id = ++rId };
         private static Teacher teacher1 = new Teacher() { Name = "teacher1", Id = ++rId };
         private static Course course1 = new Course() { Name = "Course1", Id = ++rId, Teacher = teacher1 };
 
@@ -29,7 +29,7 @@ namespace SpecFlowTests.StepDefinitions
         private static CourseModule cmOutdated2 = new CourseModule() { Name = "Outdated coursemodule 2", Id = ++rId, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddMonths(-3) };
         private static CourseModule cmOutdated3 = new CourseModule() { Name = "Outdated coursemodule 3", Id = ++rId, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddMonths(-3) };
 
-        private static Registration r1 = new Registration() { Id = ++rId, participant= absentBob, CourseModule=cm1, Attendance=false};
+        private static Registration r1 = new Registration() { Id = ++rId, participant = absentBob, CourseModule = cm1, Attendance = false };
         private static Registration r2 = new Registration() { Id = ++rId, participant = absentBob, CourseModule = cm2, Attendance = false };
         private static Registration r3 = new Registration() { Id = ++rId, participant = absentBob, CourseModule = cm3, Attendance = false };
 
@@ -116,7 +116,7 @@ namespace SpecFlowTests.StepDefinitions
         [Then(@"Findes Participants navn ikke i stringen")]
         public void ThenFindesParticipantsNavnIkkeIStringen()
         {
-             tempNotification.Contains(" Bob ").Should().BeFalse();
+            tempNotification.Contains(" Bob ").Should().BeFalse();
         }
     }
 }

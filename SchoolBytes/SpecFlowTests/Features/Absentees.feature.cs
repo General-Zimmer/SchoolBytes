@@ -116,12 +116,12 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Participant med 3 g<me udeblivelser findes ikke i notifikation")]
-        public virtual void ParticipantMed3GMeUdeblivelserFindesIkkeINotifikation()
+        [NUnit.Framework.DescriptionAttribute("Participant med 3 game udeblivelser findes ikke i notifikation")]
+        public virtual void ParticipantMed3GameUdeblivelserFindesIkkeINotifikation()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Participant med 3 g<me udeblivelser findes ikke i notifikation", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Participant med 3 game udeblivelser findes ikke i notifikation", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 11
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
