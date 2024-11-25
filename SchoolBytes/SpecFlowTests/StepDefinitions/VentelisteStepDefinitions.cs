@@ -14,10 +14,8 @@ namespace SpecFlowTests.StepDefinitions
         private static Course course1 = new Course() { Name = "Course1", Id = 666, Teacher = teacher1 };
         private static CourseModule cm1 = new CourseModule() { Name = "cm1", Id = 888, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1), Capacity = 5, MaxCapacity = 5 };
         private static CourseModule cm2 = new CourseModule() { Name = "cm2", Id = 123132232, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1), Capacity = 10, MaxCapacity = 10 };
-        private static CourseModule cm3 = new CourseModule() { Name = "cm3", Id = 423524, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
-        private static CourseModule cm4 = new CourseModule() { Name = "cm4", Id = 68368833, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
-        private static CourseModule cm5 = new CourseModule() { Name = "cm5", Id = 345372, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
-        private static CourseModule cm6 = new CourseModule() { Name = "cm6", Id = 323411114, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cm3 = new CourseModule() { Name = "cm3", Id = 423524, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1), Capacity = 5, MaxCapacity = 10 };
+        private static CourseModule cm4 = new CourseModule() { Name = "cm4", Id = 68368833, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1), Capacity = 9, MaxCapacity = 10 };
         private static Participant jim = new Participant("Jim", "90785634") { Id = 47284 };
 
         [BeforeFeature]
@@ -31,8 +29,6 @@ namespace SpecFlowTests.StepDefinitions
             _context.Add(cm2);
             _context.Add(cm3);
             _context.Add(cm4);
-            _context.Add(cm5);
-            _context.Add(cm6);
 
             _context.SaveChanges();
         }
@@ -44,8 +40,6 @@ namespace SpecFlowTests.StepDefinitions
             _context.Remove(_context.courseModules.Find(cm2.Id));
             _context.Remove(_context.courseModules.Find(cm3.Id));
             _context.Remove(_context.courseModules.Find(cm4.Id));
-            _context.Remove(_context.courseModules.Find(cm5.Id));
-            _context.Remove(_context.courseModules.Find(cm6.Id));
             _context.Remove(_context.courses.Find(course1.Id));
             _context.Remove(_context.teachers.Find(teacher1.Id));
             _context.Remove(_context.participants.Find(bob.Id));
@@ -114,60 +108,66 @@ namespace SpecFlowTests.StepDefinitions
                 }
             }
             counter.Should().Be(1);
+
+            // cleanup
+            cm1.Waitlist.RemoveLast();
         }
 
         [Given(@"Participant Bob og et cm der er fuld booket")]
         public void GivenParticipantBobOgEtCmDerErFuldBooket()
         {
-            throw new PendingStepException();
+            // se statiske felter og BeforeScenario øverst
         }
 
         [When(@"Bob vil blive tilmeldt cm")]
         public void WhenBobVilBliveTilmeldtCm()
         {
-            throw new PendingStepException();
+            testScenario3(cm2, bob);
         }
 
         [Then(@"Bob bliver tilmeldt ventelisten og står som den første")]
         public void ThenBobBliverTilmeldtVentelistenOgStarSomDenForste()
         {
-            throw new PendingStepException();
+            cm2.Waitlist.First().participant.Should().Be(bob);
         }
 
         [Given(@"Participant Bob og cm med ledige pladser")]
         public void GivenParticipantBobOgCmMedLedigePladser()
         {
-            throw new PendingStepException();
+            // se statiske felter og BeforeScenario øverst
         }
 
         [When(@"Bob vil gerne tilmelde sig cm")]
         public void WhenBobVilGerneTilmeldeSigCm()
         {
-            throw new PendingStepException();
+            testScenario3(cm3, bob);
         }
 
         [Then(@"Bob bliver ikke tilmeldt ventelisten men cm")]
         public void ThenBobBliverIkkeTilmeldtVentelistenMenCm()
         {
-            throw new PendingStepException();
+            cm3.Registrations.Last().participant.Should().Be(bob);
+            cm3.Waitlist.Should().BeEmpty();
         }
 
         [Given(@"Participant Bob, der allerede er på ventelisten")]
         public void GivenParticipantBobDerAlleredeErPaVentelisten()
         {
-            throw new PendingStepException();
+            cm4.Registrations.Add(new Registration(jim, cm4));
+            cm4.Waitlist.AddFirst(new WaitRegistration(bob, cm4));
         }
 
         [When(@"Der er en ledig plads")]
         public void WhenDerErEnLedigPlads()
         {
-            throw new PendingStepException();
+            Unsub(cm4, jim);
         }
 
         [Then(@"Bob er tilmeldt cm og står ikke længere på ventelisten")]
         public void ThenBobErTilmeldtCmOgStarIkkeLaengerePaVentelisten()
         {
-            throw new PendingStepException();
+            cm4.Registrations.Last().participant.Should().Be(bob);
+            cm4.Waitlist.Should().BeEmpty();
         }
     }
 }

@@ -145,7 +145,7 @@ namespace SchoolBytes.Controllers
 
             //Course course = dBConnection.courses.Find(courseId);
 
-            if (courseModule.Capacity <= courseModule.MaxCapacity)
+            if (courseModule.Capacity < courseModule.MaxCapacity)
             {
                 if(DBConnection.IsEligibleToSubscribe(participant))
                 {
