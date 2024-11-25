@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using SchoolBytes.Models;
 using SchoolBytes.util;
 using static SchoolBytes.util.DatabaseUtils;
+using static SchoolBytes.util.VentelisteUtil;
 
 namespace SchoolBytes.Controllers
 {
@@ -144,7 +145,7 @@ namespace SchoolBytes.Controllers
 
             //Course course = dBConnection.courses.Find(courseId);
 
-            if (courseModule.Capacity <= courseModule.MaxCapacity)
+            if (courseModule.Capacity < courseModule.MaxCapacity)
             {
                 if(DBConnection.IsEligibleToSubscribe(participant))
                 {
@@ -159,15 +160,10 @@ namespace SchoolBytes.Controllers
             }
             else
             {
-                //VENTELISTE LOGIK SKAL IND HER
+                AddToWaitlist(courseModule, participant);
                 
-                dBConnection.Update(courseModule);
-                WaitRegistration yeet = new WaitRegistration(participant, courseModule, DateTime.Now);
-
-                courseModule.Waitlist.AddLast(yeet);
-                dBConnection.SaveChangesV2();
                 return RedirectToAction(courseId +"/" + courseModule.Id + "/signup/waitlist", "course");
-                }
+            }
 
 
                 return TheView(null);
