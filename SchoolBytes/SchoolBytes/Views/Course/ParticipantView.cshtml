@@ -1,0 +1,45 @@
+﻿@model List<SchoolBytes.Models.Course>
+@{
+    ViewBag.Title = "ParticipantView";
+}
+
+<h2>ParticipantView</h2>
+
+
+<h1>Opret Tilmelding</h1>
+<form id="create-form" action="course/74/30/tilmeld" method="post">
+    <div class="participant-group">
+        <label class="participant-label" for="Name">Navn:</label>
+        <input class="participant-input" type="text" id="Name" name="Name" required />
+    </div>
+
+    <div class="participant-group">
+        <label class="participant-label" for="PhoneNumber">Telefon nummer:</label>
+        <input class="participant-input" type="text" id="PhoneNumber" name="PhoneNumber" required />
+    </div>
+    
+    <div class="participant-group">
+        <label class="participant-label" for="Course">Hold:</label>
+        <select asp-for="Id" class="select-course">
+            <option value="">Vælg et hold</option>
+            @foreach (var course in Model)
+            {
+                <option value="@course.Id">@course.Name </option>
+            }
+        </select>
+    </div>
+
+    <div class="participant-group">
+        <label class="participant-label" for="CourseModule">Moduler</label>
+        <ul>
+            @foreach (var module in Model )
+            {
+                <li>@module.CoursesModules</li>
+            }
+        </ul>
+    </div>
+
+    <div class="participant-group">
+        <button class="participant-button" type="submit">Opret ny tilmelding</button>
+    </div>
+</form>

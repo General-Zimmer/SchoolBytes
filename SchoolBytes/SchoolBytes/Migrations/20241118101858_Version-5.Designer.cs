@@ -9,8 +9,8 @@ using SchoolBytes.Models;
 namespace SchoolBytes.Migrations
 {
     [DbContext(typeof(DBConnection))]
-    [Migration("20241108084207_initial")]
-    partial class initial
+    [Migration("20241118101858_Version-5")]
+    partial class Version5
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,7 +19,48 @@ namespace SchoolBytes.Migrations
                 .HasAnnotation("ProductVersion", "2.1.14-servicing-32113")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Course", b =>
+            modelBuilder.Entity("Participant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("CourseId");
+
+                    b.Property<int?>("FoodModuleId");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("PhoneNumber");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("FoodModuleId");
+
+                    b.ToTable("participants");
+                });
+
+            modelBuilder.Entity("Registration", b =>
+                {
+                    b.Property<int>("Id");
+
+                    b.Property<int?>("CourseModuleId1");
+
+                    b.Property<DateTime>("Timestamp");
+
+                    b.Property<int?>("participantId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseModuleId1");
+
+                    b.HasIndex("participantId");
+
+                    b.ToTable("Registration");
+                });
+
+            modelBuilder.Entity("SchoolBytes.Models.Course", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -43,7 +84,7 @@ namespace SchoolBytes.Migrations
                     b.ToTable("courses");
                 });
 
-            modelBuilder.Entity("CourseModule", b =>
+            modelBuilder.Entity("SchoolBytes.Models.CourseModule", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -59,6 +100,8 @@ namespace SchoolBytes.Migrations
                     b.Property<int?>("FoodModuleId");
 
                     b.Property<string>("Location");
+
+                    b.Property<int>("MaxCapacity");
 
                     b.Property<string>("Name");
 
@@ -77,7 +120,7 @@ namespace SchoolBytes.Migrations
                     b.ToTable("courseModules");
                 });
 
-            modelBuilder.Entity("FoodModule", b =>
+            modelBuilder.Entity("SchoolBytes.Models.FoodModule", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -107,26 +150,6 @@ namespace SchoolBytes.Migrations
                     b.ToTable("foodModules");
                 });
 
-            modelBuilder.Entity("Participant", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("CourseId");
-
-                    b.Property<string>("Email");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("participants");
-                });
-
             modelBuilder.Entity("Teacher", b =>
                 {
                     b.Property<int>("Id")
@@ -139,20 +162,47 @@ namespace SchoolBytes.Migrations
                     b.ToTable("teachers");
                 });
 
-            modelBuilder.Entity("Course", b =>
+            modelBuilder.Entity("Participant", b =>
+                {
+                    b.HasOne("SchoolBytes.Models.Course")
+                        .WithMany("Participants")
+                        .HasForeignKey("CourseId");
+
+                    b.HasOne("SchoolBytes.Models.FoodModule")
+                        .WithMany("Participants")
+                        .HasForeignKey("FoodModuleId");
+                });
+
+            modelBuilder.Entity("Registration", b =>
+                {
+                    b.HasOne("SchoolBytes.Models.CourseModule")
+                        .WithMany("Waitlist")
+                        .HasForeignKey("CourseModuleId1");
+
+                    b.HasOne("SchoolBytes.Models.CourseModule", "CourseModule")
+                        .WithMany("Registrations")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Participant", "participant")
+                        .WithMany()
+                        .HasForeignKey("participantId");
+                });
+
+            modelBuilder.Entity("SchoolBytes.Models.Course", b =>
                 {
                     b.HasOne("Teacher", "Teacher")
                         .WithMany("Courses")
                         .HasForeignKey("TeacherId");
                 });
 
-            modelBuilder.Entity("CourseModule", b =>
+            modelBuilder.Entity("SchoolBytes.Models.CourseModule", b =>
                 {
-                    b.HasOne("Course", "Course")
-                        .WithMany("Courses")
+                    b.HasOne("SchoolBytes.Models.Course", "Course")
+                        .WithMany("CoursesModules")
                         .HasForeignKey("CourseId");
 
-                    b.HasOne("FoodModule", "FoodModule")
+                    b.HasOne("SchoolBytes.Models.FoodModule", "FoodModule")
                         .WithMany()
                         .HasForeignKey("FoodModuleId");
 
@@ -161,22 +211,15 @@ namespace SchoolBytes.Migrations
                         .HasForeignKey("TeacherId");
                 });
 
-            modelBuilder.Entity("FoodModule", b =>
+            modelBuilder.Entity("SchoolBytes.Models.FoodModule", b =>
                 {
-                    b.HasOne("Course", "Course")
+                    b.HasOne("SchoolBytes.Models.Course", "Course")
                         .WithMany()
                         .HasForeignKey("CourseId");
 
                     b.HasOne("Teacher", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId");
-                });
-
-            modelBuilder.Entity("Participant", b =>
-                {
-                    b.HasOne("Course")
-                        .WithMany("Participants")
-                        .HasForeignKey("CourseId");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,24 @@
+﻿@model SchoolBytes.Models.CourseModule
+
+
+<link rel="stylesheet" href="/Content/CourseModuleStyles.css" />
+
+<h1>Du står nu på ventelisten</h1>
+<div>
+    <h3>@Model.Name (@Model.Course.Name)</h3>
+    <p><strong>Dato:</strong> <input type="date" name="Date" value="@Model.Date.ToString("yyyy-MM-dd")" disabled /></p>
+    <p><strong>Start:</strong> <input type="time" name="StartTime" value="@Model.StartTime.ToString("HH:mm")" disabled /></p>
+    <p><strong>Slut:</strong> <input type="time" name="EndTime" value="@Model.EndTime.ToString("HH:mm")" disabled /></p>
+    <p><strong>Lokale:</strong> <input type="text" name="Location" value="@Model.Location" disabled /></p>
+    <br />
+</div>
+
+<strong>Venteliste:</strong>
+<li>
+    <div>
+        @foreach (var registration in Model.Waitlist)
+        {
+            <ol>@registration.participant.Name</ol>
+        }
+    </div>
+</li>
