@@ -244,6 +244,7 @@
     <Compile Include="Models\DBConnection.cs" />
     <Compile Include="Models\FoodModule.cs" />
     <Compile Include="Models\IModule.cs" />
+    <Compile Include="Models\MailService.cs" />
     <Compile Include="Models\Participant.cs" />
     <Compile Include="Models\Teacher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
