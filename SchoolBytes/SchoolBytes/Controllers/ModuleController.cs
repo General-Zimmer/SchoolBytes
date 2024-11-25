@@ -279,7 +279,7 @@ namespace SchoolBytes.Controllers
             var participants = dBConnection.participants;
             foreach (var participant in participants) 
             { 
-                module.Waitlist.AddLast(participant);
+                //module.Waitlist.AddLast(participant);
             }
 
             return View(module);

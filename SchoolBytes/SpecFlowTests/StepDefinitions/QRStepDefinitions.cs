@@ -12,7 +12,6 @@ namespace SpecFlowTests.StepDefinitions
     {
         private string initialId;
         private string newId;
-        private bool isAttendanceUpdated;
         private Course testCourse;
         private CourseModule courseTestModule;
         private Participant participantTest;
