@@ -125,8 +125,8 @@ namespace SpecFlowTests.StepDefinitions
             
             _context.Add(cm4);
 
-            WaitRegistration waitReg = new WaitRegistration(bob, cm4);
 
+            WaitRegistration waitReg = new WaitRegistration(bob, cm4);
             _context.SaveChanges();
 
         }
@@ -151,7 +151,17 @@ namespace SpecFlowTests.StepDefinitions
         public void ThenTheParticipantFromTheWaitingListShouldBeAddedToTheCourseModule()
         {
             
+            var courseModule = _context.courseModules.FirstOrDefault(cm => cm.Waitlist.Any());
+            Assert.IsNotNull(courseModule, "No course module with a waiting list was found.");
+
             
+            var firstWaitlistedParticipant = courseModule.Waitlist.First.Value.participant;
+
+            
+            var isParticipantRegistered = courseModule.Registrations.Any(reg => reg.participant.Id == firstWaitlistedParticipant.Id);
+
+            Assert.IsTrue(isParticipantRegistered, "The participant from the waiting list was not added to the course module.");
+
         }
     }
 }
