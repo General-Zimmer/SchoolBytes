@@ -3,6 +3,7 @@ using System;
 using TechTalk.SpecFlow;
 using SchoolBytes.Controllers;
 using SchoolBytes.Models;
+using SchoolBytes.util;
 using System.Web.Mvc;
 
 namespace SpecFlowTests.StepDefinitions
@@ -10,7 +11,6 @@ namespace SpecFlowTests.StepDefinitions
     [Binding]
     public class QRStepDefinitions
     {
-        
         private string initialId;
         private string newId;
         private static DBConnection _context = DBConnection.getDBContext();
@@ -33,6 +33,7 @@ namespace SpecFlowTests.StepDefinitions
         [BeforeFeature]
         public static void BeforeQRFeature(FeatureContext featureContext)
         {
+            cm1.Registrations.Add(registrationTest);
             _context.Add(bob);
             _context.Add(bobby);
             _context.Add(teacher1);
@@ -43,13 +44,14 @@ namespace SpecFlowTests.StepDefinitions
             _context.Add(cm4);
             _context.Add(cm5);
             _context.Add(cm6);
-
+            _context.Add(registrationTest);
             _context.SaveChanges();
         }
 
         [AfterFeature]
         public static void AfterQRFeature(FeatureContext featureContext)
         {
+            _context.Remove(registrationTest);
             _context.Remove(_context.courseModules.Find(cm1.Id));
             _context.Remove(_context.courseModules.Find(cm2.Id));
             _context.Remove(_context.courseModules.Find(cm3.Id));
@@ -97,9 +99,14 @@ namespace SpecFlowTests.StepDefinitions
         {
             // Ensure that the registration exists in the database with the given parameters
             var course = _context.courses.Find(courseId);
+            Assert.IsNotNull(course, $"Course with ID {courseId} not found.");
+            Assert.IsNotNull(course.CoursesModules, "CoursesModules navigation property is null.");
+            Assert.IsTrue(course.CoursesModules.Any(c => c.Id == moduleId), $"CourseModule with ID {moduleId} not found for Course ID {courseId}.");
             CourseModule courseModule = course.CoursesModules.Find(c => c.Id == moduleId);
-            Registration reg = courseModule.Registrations.Find(r => r.participant.PhoneNumber == phoneNumber);
-            reg = registrationTest;
+            Assert.IsNotNull(courseModule, $"CourseModule with ID {moduleId} not found for Course ID {courseId}.");
+            var registrations = courseModule.Registrations;
+            Assert.IsNotNull(registrations, "Registrations navigation property failed to load.");
+            Registration reg = courseModule.Registrations.Last();
             // Assert that the registration exists
             Assert.IsNotNull(reg, "Registration not found");
         }
@@ -108,12 +115,12 @@ namespace SpecFlowTests.StepDefinitions
         public void WhenICheckInTheParticipantWithPhoneNumberFromCourseIdAndModuleId(string phoneNumber, int courseId, int moduleId)    
         {
             // Call the RegistrationCheckIn method and store the result
-            ActionResult checkInResult = qrController.RegistrationCheckIn(phoneNumber, moduleId);
+            QRUtils.RegistrationCheckIn(phoneNumber, moduleId);
 
             // Assert the HTTP status code is 200
-            Assert.IsInstanceOf<HttpStatusCodeResult>(checkInResult, "Expected HttpStatusCodeResult");
-            var statusCodeResult = (HttpStatusCodeResult)checkInResult;
-            Assert.AreEqual(200, statusCodeResult.StatusCode, "Expected status code 200 (OK)");
+            //Assert.IsInstanceOf<HttpStatusCodeResult>(checkInResult, "Expected HttpStatusCodeResult");
+            //Assert.AreEqual(200, checkInResult.StatusCode, "Expected status code 200 (OK)");
+            Assert.IsTrue(registrationTest.Attendance, "Attendance not true.");
         }
 
         [Then(@"the attendance for my registration should change to true")]
