@@ -106,27 +106,45 @@ namespace SpecFlowTests.StepDefinitions
         public void ThenAnErrorWithStatusCodeAndMessageShouldBeReturned(int statusCode, string errorMessage)
         {
 
-            //HttpStatusCodeResult status = HttpStatusCodeResult(HttpStatusCode.BadRequest, "No registration found for the couse with the phonenumber.");
-            var status = new HttpStatusCodeResult((int)HttpStatusCode.BadRequest, "No registration found for the course with the phonenumber.");
+            
+            var expectedStatus = new HttpStatusCodeResult(statusCode, errorMessage);
 
+            
+            Assert.AreEqual(expectedStatus.StatusCode, statusCode, "Statuskoderne matcher ikke.");
 
-            Assert.Equals(status.StatusCode, statusCode);
-            Assert.Equals(status.StatusDescription, errorMessage);
- 
+            
+            Assert.AreEqual(expectedStatus.StatusDescription, errorMessage, "Statusbeskederne matcher ikke.");
+
         }
 
         [Given(@"a course module exists with id (.*) with a waiting list participant")]
         public void GivenACourseModuleExistsWithIdWithAWaitingListParticipant(int moduleId)
         {
 
+
+
             
+            CourseModule cm4 = new CourseModule
+            {
+                Name = "cm4",
+                Id = moduleId,
+                Teacher = teacher1,
+                Course = course2,
+                StartTime = DateTime.Now.AddDays(1),
+                Capacity = 5,
+                MaxCapacity = 5
+            };
 
-            CourseModule cm4 = new CourseModule() { Name = "cm4", Id = moduleId, Teacher = teacher1, Course = course2, StartTime = DateTime.Now.AddDays(1), Capacity = 5, MaxCapacity = 5 };
             
-            _context.Add(cm4);
+            _context.courseModules.Add(cm4);
 
-
+            
             WaitRegistration waitReg = new WaitRegistration(bob, cm4);
+
+            
+            cm4.Waitlist.AddLast(waitReg);
+
+            
             _context.SaveChanges();
 
         }
@@ -135,14 +153,29 @@ namespace SpecFlowTests.StepDefinitions
         public void GivenTheModuleHasAParticipantWithPhoneNumber(string phoneNumber)
         {
 
+            
             Participant bob2 = new Participant("Bobski", phoneNumber);
-            _context.Add(bob2);
+            _context.participants.Add(bob2); 
 
-            CourseModule cm3 = new CourseModule() { Name = "cm3", Id = 236, Teacher = teacher1, Course = course2, StartTime = DateTime.Now.AddDays(1), Capacity = 5, MaxCapacity = 5 };
-            _context.Add(cm3);
+            
+            CourseModule cm3 = new CourseModule
+            {
+                Name = "cm3",
+                Id = 236,
+                Teacher = teacher1,
+                Course = course2,
+                StartTime = DateTime.Now.AddDays(1),
+                Capacity = 5,
+                MaxCapacity = 5
+            };
+            _context.courseModules.Add(cm3); 
 
-
+            
             Registration regi = new Registration(bob2, cm3);
+            cm3.Registrations.Add(regi); 
+
+            
+            _context.SaveChanges();
 
 
         }
