@@ -28,10 +28,10 @@ namespace SpecFlowTests.StepDefinitions
         private static Participant bobby = new Participant("Bobby", "69695512");
         private static Registration registrationTest = new Registration(bob, cm1);
 
-        private static QRController qrController = new();
+        private QRController qrController = new();
 
         [BeforeFeature]
-        public static void BeforeTilmeldingFeature(FeatureContext featureContext)
+        public static void BeforeQRFeature(FeatureContext featureContext)
         {
             _context.Add(bob);
             _context.Add(bobby);
@@ -48,7 +48,7 @@ namespace SpecFlowTests.StepDefinitions
         }
 
         [AfterFeature]
-        public static void AfterTilmeldingFeature(FeatureContext featureContext)
+        public static void AfterQRFeature(FeatureContext featureContext)
         {
             _context.Remove(_context.courseModules.Find(cm1.Id));
             _context.Remove(_context.courseModules.Find(cm2.Id));
@@ -63,39 +63,6 @@ namespace SpecFlowTests.StepDefinitions
 
             _context.SaveChanges();
         }
-        
-
-        /*private static Course testCourse = new Course("TestCourse", "test", DateTime.Now, DateTime.Now.AddMinutes(5), 1, 1);
-        private static CourseModule courseTestModule = new CourseModule { Id = 1, Name = "Test Course Module",
-            Date = DateTime.Now, StartTime = DateTime.Now.AddMinutes(10), EndTime = DateTime.Now.AddMinutes(15), 
-            Capacity = 30, MaxCapacity = 50, Location = "Room 101", Teacher = new Teacher { Id = 1, Name = "John Doe" }, Course = testCourse };
-        private static Participant participantTest = new Participant("TestParticipant", "12345678");
-        private static Registration registrationTest = new Registration(participantTest, courseTestModule);
-        private static DBConnection dbConnection = DBConnection.getDBContext();
-
-        [BeforeFeature]
-        public static void SetUp()
-        {
-            testCourse.CoursesModules.Add(courseTestModule);
-            participantTest.Id = 1;
-            courseTestModule.Registrations.Add(registrationTest);
-            dbConnection.Add(testCourse);
-            dbConnection.Add(courseTestModule);
-            dbConnection.Add(participantTest);
-            dbConnection.Add(registrationTest);
-            dbConnection.SaveChanges();
-        }
-
-        [AfterFeature]
-        public static void CleanUp()
-        {
-            // Clean up the test data from the database after the test
-            dbConnection.Remove(testCourse);
-            dbConnection.Remove(courseTestModule);
-            dbConnection.Remove(participantTest);
-            dbConnection.Remove(registrationTest);
-            dbConnection.SaveChanges();
-        }*/
 
         // Scenario: ID for check-in changes when new QR Code is generated
         [Given(@"I have access to the Generation Webpage")]
