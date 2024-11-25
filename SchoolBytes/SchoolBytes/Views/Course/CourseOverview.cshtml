@@ -116,10 +116,9 @@
                             },
                             success: function (data) {
 
-                                console.log("Server Response:", data); //testig testing
+                                console.log("Server Response:", data); //testing testing
 
                                 $('#dropdown-participant option[value="' + selectedParticpant + '"]').remove();
-
                                 $('#responseContainer').html('<p>participant deleted</p>');
                             },
                             error: function () {
@@ -129,7 +128,6 @@
                         });
                     });
                 </script>
-
 
                 <script>
                     function confirmDelete() {
@@ -149,10 +147,6 @@
                         document.querySelectorAll('.course-details input, .course-details textarea').forEach(field => {
                             field.setAttribute("disabled", 'disabled');
                         });
-                    }
-
-                    function enableParticipantDelete() {
-
                     }
                 </script>
             }
@@ -194,7 +188,6 @@
     </div>
 
     <h2>Vælg kursus dage</h2>
-
     <label><input name="Monday" type="checkbox" checked=false/> Mandag</label><br>
     <label><input name="Tuesday" type="checkbox" checked=false> Tirsdag</label><br>
     <label><input name="Wednesday" type="checkbox" checked=false> Onsdag</label><br>

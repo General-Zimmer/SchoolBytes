@@ -185,10 +185,10 @@ namespace SchoolBytes.Controllers
             {
                 return HttpNotFound("Participant not found.");
             }
-            //else if (!course.Participants.Contains(participant))
-            //{
-            //        return HttpNotFound("Participant not associated with this course.");
-            //}
+            else if (!course.Participants.Contains(participant))
+            {
+                    return HttpNotFound("Participant not associated with course.");
+            }
             else
             {
                 course.Participants.Remove(participant);
