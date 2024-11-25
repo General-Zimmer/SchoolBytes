@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Remotion.Linq.Parsing;
 using SchoolBytes.Models;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ namespace SchoolBytes.util
             {
                 //placeholder
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "No registration found for the couse with the phonenumber.");
+                
             }
         }
         public static int SaveChangesV2(this DbContext FOK)

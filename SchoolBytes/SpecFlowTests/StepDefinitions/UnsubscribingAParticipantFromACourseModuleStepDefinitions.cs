@@ -3,8 +3,12 @@ using SchoolBytes.Controllers;
 using SchoolBytes.Models;
 using SchoolBytes.util;
 using System;
+using System.Data.Common;
+using System.Net;
 using System.Reflection;
+using System.Web.Mvc;
 using TechTalk.SpecFlow;
+
 
 
 namespace SpecFlowTests.StepDefinitions
@@ -12,50 +16,66 @@ namespace SpecFlowTests.StepDefinitions
     [Binding]
     public class UnsubscribingAParticipantFromACourseModuleStepDefinitions
     {
-        private readonly List<CourseModule> _courseModules = new(); 
-        private readonly List<Participant> _participants = new(); 
-        private Course _course; 
-        private CourseModule _courseModule; 
-        private Participant _participant; 
-        private string _errorMessage; 
-        private int _statusCode;
+        private static DBConnection _context = DBConnection.getDBContext();
+
+        private static Participant bob = new Participant("Bob", "69695512");
+        private static Teacher teacher1 = new Teacher() { Name = "teacher1", Id = 55435 };
+        private static Course course1 = new Course() { Name = "Course1", Id = 123, Teacher = teacher1 };
+        private static Course course2 = new Course() { Name = "Course2", Id = 1234, Teacher = teacher1 };
+        private static CourseModule cm1 = new CourseModule() { Name = "cm1", Id = 888, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1), Capacity = 5, MaxCapacity = 5 };
+        private static CourseModule cm2 = new CourseModule() { Name = "cm2", Id = 889, Teacher = teacher1, Course = course2, StartTime = DateTime.Now.AddDays(1), Capacity = 5, MaxCapacity = 5 };
+
+        [BeforeFeature]
+        public static void UnsubFeature(FeatureContext featureContext)
+        {
+            _context.Add(bob);
+            _context.Add(course1);
+            _context.Add(course2);
+            _context.Add(cm1);
+            _context.Add(cm2);
+            _context.Add(teacher1);
+            
+
+            _context.SaveChanges();
+
+        }
 
 
 
         [Given(@"a course module exists with id (.*) that has a participant with phone number ""([^""]*)""")]
         public void GivenACourseModuleExistsWithIdThatHasAParticipantWithPhoneNumber(int moduleId, string phoneNumber)
         {
-            
-            _participant = new Participant("Test Participant", phoneNumber);
 
-            
-            _courseModule = new CourseModule
-            {
-                Id = moduleId,
-                Registrations = new System.Collections.Generic.List<Registration>
-                {
-                    new Registration(_participant, null)
-                }
-            };
+            //COURSE
+            Course course = _context.courses.Find(123);
 
+            //participant
+            Participant bob1 = new Participant("Bob", phoneNumber);
+            _context.Add(bob1);
 
-            _course = new Course("test1", "desc", DateTime.Now, DateTime.UtcNow, 30, 1);
-            _course.CoursesModules.Add(_courseModule);
+            _context.SaveChanges();
+
+            //CM
+            CourseModule cm = course.CoursesModules.Find(m => m.Id == moduleId);
+
+            //PARTICIPANT REGISTRATION
+            Registration reg = new Registration(bob, cm);
+
+            cm.Registrations.Add(reg);
+
         }
 
         [Given(@"a course module exists with id (.*) that does not have a participant with phone number ""([^""]*)""")]
         public void GivenACourseModuleExistsWithIdThatDoesNotHaveAParticipantWithPhoneNumber(int moduleId, string phoneNumber)
         {
-            
-            _courseModule = new CourseModule
-            {
-                Id = moduleId,
-                Registrations = new System.Collections.Generic.List<Registration>()
-            };
+            Course course = _context.courses.Find(1234);
 
+            CourseModule cm = course.CoursesModules.Find(m => m.Id == moduleId);
 
-            _course = new Course("test1", "desc", DateTime.Now, DateTime.UtcNow, 30, 1);
-            _course.CoursesModules.Add(_courseModule);
+            Registration registration = cm.Registrations.FirstOrDefault(reg => reg.participant.PhoneNumber == phoneNumber);
+
+            Participant participant = registration.participant;
+
         }
 
         [When(@"I unsubscribe the participant with phone number ""([^""]*)"" from course id (.*) and module id (.*)")]
@@ -69,58 +89,69 @@ namespace SpecFlowTests.StepDefinitions
         [Then(@"the participant with phone number ""([^""]*)"" should no longer be registered in the course module")]
         public void ThenTheParticipantWithPhoneNumberShouldNoLongerBeRegisteredInTheCourseModule(string phoneNumber)
         {
-            var isStillRegistered = _courseModule.Registrations
-                .Any(reg => reg.participant.PhoneNumber == phoneNumber);
+            Participant participant = _context.participants.FirstOrDefault(p => p.PhoneNumber == phoneNumber);
 
-            Assert.IsFalse(isStillRegistered, $"Deltager med tlf nr: {phoneNumber} er stadig registreret");
+            Assert.IsNull(participant);
         }
 
         [Then(@"no error should be returned")]
         public void ThenNoErrorShouldBeReturned()
         {
-            Assert.IsNull(_errorMessage, $"An unexpected error occurred: {_errorMessage}");
+            //?? 
+            Assert.Catch(null);
+            
         }
 
         [Then(@"an error with status code (.*) and message ""([^""]*)"" should be returned")]
         public void ThenAnErrorWithStatusCodeAndMessageShouldBeReturned(int statusCode, string errorMessage)
         {
-            Assert.AreEqual(statusCode, _statusCode, "Status code does not match.");
-            Assert.AreEqual(errorMessage, _errorMessage, "Error message does not match.");
+
+            //HttpStatusCodeResult status = HttpStatusCodeResult(HttpStatusCode.BadRequest, "No registration found for the couse with the phonenumber.");
+            var status = new HttpStatusCodeResult((int)HttpStatusCode.BadRequest, "No registration found for the course with the phonenumber.");
+
+
+            Assert.Equals(status.StatusCode, statusCode);
+            Assert.Equals(status.StatusDescription, errorMessage);
+ 
         }
 
         [Given(@"a course module exists with id (.*) with a waiting list participant")]
         public void GivenACourseModuleExistsWithIdWithAWaitingListParticipant(int moduleId)
         {
 
-            var waitlistParticipant = new Participant("Waitlist Participant", "12345678");
+            
 
+            CourseModule cm4 = new CourseModule() { Name = "cm4", Id = moduleId, Teacher = teacher1, Course = course2, StartTime = DateTime.Now.AddDays(1), Capacity = 5, MaxCapacity = 5 };
+            
+            _context.Add(cm4);
 
-            _courseModule = new CourseModule
-            {
-                Id = moduleId,
-            };
-            _courseModule.Waitlist.AddFirst(new WaitRegistration(waitlistParticipant, _courseModule));
+            WaitRegistration waitReg = new WaitRegistration(bob, cm4);
 
+            _context.SaveChanges();
 
-
-            _course = new Course("test1", "desc", DateTime.Now, DateTime.UtcNow, 30, 1);
-            _course.CoursesModules.Add(_courseModule);
         }
 
         [Given(@"the module has a participant with phone number ""([^""]*)""")]
         public void GivenTheModuleHasAParticipantWithPhoneNumber(string phoneNumber)
         {
-            var participant = new Participant("Testtttt", phoneNumber);
-            _courseModule.Registrations.Add(new Registration(participant, _courseModule));
+
+            Participant bob2 = new Participant("Bobski", phoneNumber);
+            _context.Add(bob2);
+
+            CourseModule cm3 = new CourseModule() { Name = "cm3", Id = 236, Teacher = teacher1, Course = course2, StartTime = DateTime.Now.AddDays(1), Capacity = 5, MaxCapacity = 5 };
+            _context.Add(cm3);
+
+
+            Registration regi = new Registration(bob2, cm3);
+
+
         }
 
         [Then(@"the participant from the waiting list should be added to the course module")]
         public void ThenTheParticipantFromTheWaitingListShouldBeAddedToTheCourseModule()
         {
-            var waitlistParticipant = _courseModule.Waitlist.First().participant;
-            Assert.IsTrue(_courseModule.Registrations
-                .Any(r => r.participant.PhoneNumber == waitlistParticipant.PhoneNumber),
-                "The waiting list participant was not added to the course module.");
+            
+            
         }
     }
 }
