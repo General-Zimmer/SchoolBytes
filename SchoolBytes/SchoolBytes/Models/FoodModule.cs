@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace SchoolBytes.Models
 {
@@ -17,6 +18,7 @@ namespace SchoolBytes.Models
         public string Location { get; set; }
         public string Name { get; set; }
         public virtual Teacher Teacher { get; set; }
+        public virtual List<Participant> Participants{ get; set; } = new List<Participant>();
 
         public int Id { get; set; }
     }

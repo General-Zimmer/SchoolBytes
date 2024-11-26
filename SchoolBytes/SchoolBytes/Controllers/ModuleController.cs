@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Common;
@@ -6,10 +7,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
+using Gherkin.CucumberMessages.Types;
+using Microsoft.Ajax.Utilities;
 using Microsoft.EntityFrameworkCore;
 using SchoolBytes.Models;
+using SchoolBytes.util;
+using static SchoolBytes.util.DatabaseUtils;
 
 namespace SchoolBytes.Controllers
 {
@@ -77,7 +83,7 @@ namespace SchoolBytes.Controllers
             module.Date = updatedCourseModule.Date;
             module.StartTime = updatedCourseModule.StartTime;
             module.EndTime = updatedCourseModule.EndTime;
-            module.Capacity = updatedCourseModule.Capacity;
+            module.MaxCapacity = updatedCourseModule.MaxCapacity;
             module.Location = updatedCourseModule.Location;
             dBConnection.Update(module);
             dBConnection.SaveChanges();
@@ -115,14 +121,166 @@ namespace SchoolBytes.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
-        [HttpPost]
-        public ActionResult setFoodModule(FoodModule fm)
+        [HttpGet]
+        [Route("Module/SubModalWindow/{courseId}/{ModuleId}")]
+        public ActionResult SubModal(int courseId, int ModuleId)
         {
-      
+            var course = dBConnection.courses.Find(courseId);
+            var module = dBConnection.courseModules.Find(ModuleId);
+            ViewBag.CourseId = courseId;
+            ViewBag.ModuleId = ModuleId;
+            ViewBag.CourseName = course.Name;
+            ViewBag.ModuleName = module.Name;
+            return View("SubModal");
+        }
 
-            Debug.Print("TEEEEEEEEEEEEEEEST  " + fm.Name);
+        //TILMELDINGER
+        
+        [HttpPost]
+        [Route("course/{courseId}/module/{moduleId}/tilmeld")]
+        public ActionResult Subscribe(int courseId, int moduleId, Participant participant)
+        {
+            CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
 
-            return new HttpStatusCodeResult(HttpStatusCode.OK);
+            //Course course = dBConnection.courses.Find(courseId);
+
+            if (courseModule.Capacity <= courseModule.MaxCapacity)
+            {
+                if(DBConnection.IsEligibleToSubscribe(participant))
+                {
+
+                    Registration registration = new Registration(participant, courseModule);
+                    courseModule.Capacity += 1;
+                    dBConnection.UpdateSub(registration, courseModule);
+                } else
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Du har allerede tilmeldt dig maksimum antal hold.");
+                }
+            }
+            else
+            {
+                //VENTELISTE LOGIK SKAL IND HER
+                
+                dBConnection.Update(courseModule);
+                WaitRegistration yeet = new WaitRegistration(participant, courseModule, DateTime.Now);
+
+                courseModule.Waitlist.AddLast(yeet);
+                dBConnection.SaveChangesV2();
+                return RedirectToAction(courseId +"/" + courseModule.Id + "/signup/waitlist", "course");
+                }
+
+
+                return TheView(null);
+            }
+
+            //TODO: Skal det her med?
+            [HttpPost]
+            [Route("Module/course/{courseId}/module/{moduleId}/tilmeld")]
+            public ActionResult Subscribe(int courseId, List<int> moduleIds, Participant participant)
+        {
+            Course course = dBConnection.courses.Find(courseId);
+
+            if (course == null)
+            {
+                //burde være en httpstatuscode
+                return HttpNotFound("Course does not");
+            }
+
+            List<CourseModule> selectedModules = new List<CourseModule>();
+            List<CourseModule> skippedModules = new List<CourseModule> ();
+
+            foreach (var moduleId in moduleIds)
+            {
+                CourseModule module = dBConnection.courseModules.Find(moduleId);
+
+                if (module != null && module.Capacity < module.MaxCapacity)
+                {
+                    selectedModules.Add(module);
+                }
+                else
+                {
+                   skippedModules.Add(module);
+                }
+            }
+
+
+
+           //TODO: edit the 5 so it comes from some kind of setting. It's the max amount of subcribtions u can have at once
+            if (selectedModules.Count + DBConnection.GetSubscribeCount(participant) > 5) {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Deltager er tilmeldt for mange hold."); 
+            }
+
+            selectedModules.ForEach(sm =>
+            {
+                Registration registration = new Registration(participant, sm);
+                sm.Registrations.Add(registration);
+
+            });
+
+
+            dBConnection.Update(selectedModules);
+            dBConnection.SaveChanges();
+
+            return TheView(skippedModules);
+        }
+
+        [HttpGet]
+        [Route("course/{courseId}/{moduleId}/afmeld")]
+        public ActionResult unsub(int courseId, int moduleId)
+        {
+            var course = dBConnection.courses.Find(courseId);
+            var module = dBConnection.courseModules.Find(moduleId);
+
+            ViewBag.CourseId = courseId;
+            ViewBag.ModuleId = moduleId;
+            ViewBag.CourseName = course.Name;
+            ViewBag.ModuleName = module.Name;
+
+
+            return View("UnSubModal");
+        }
+
+        [HttpPost]
+        [Route("course/{courseId}/module/{moduleId}/afmeld/{tlfNr}")]
+        public ActionResult Unsub(int courseId, int moduleId, string tlfNr)
+        {
+            //Returns null if succesful or HTTPstatus code result if it did not work.
+            HttpStatusCodeResult res = DatabaseUtils.Unsub(courseId, moduleId, tlfNr);
+            if(res != null)
+            {
+                return res;
+            }
+
+
+
+            return Redirect("~/course/" + courseId + "/ModuleOverview");
+        }
+
+        [HttpGet]
+        public ActionResult TheView(IList skippedModules)
+        {
+            ViewBag.skippedModules = skippedModules;
+            return View("ParticipantView");
+        }
+
+        // GET: api/course/{courseId}/{moduleId}/signup/waitlist (Sign up for the waitlist for a course module)
+        [HttpGet]
+        [Route("course/{courseId}/{moduleId}/signup/waitlist")]
+        public ActionResult WaitlistSignup(int courseId, int moduleId)
+        {
+            var course = dBConnection.courses.Find(courseId);
+            if (course == null)
+            {
+                return HttpNotFound("Course not found");
+            }
+
+            var module = course.CoursesModules.Find(m => m.Id == moduleId);
+            if (module == null)
+            {
+                return HttpNotFound("Course module not found");
+            }
+
+            return View(module);
         }
     }
 }
