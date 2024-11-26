@@ -123,7 +123,7 @@ namespace SchoolBytes.Models
             List<Registration> registrations = recentCMs.SelectMany(cm => cm.Registrations).ToList();
 
             //Finder participants der har 3 eller flere udeblivelser indenfor seneste 2 months
-            List<Participant> absentees = getDBContext().participants.Where(p => registrations.Count(r => r.participant.Id == p.Id && !r.Attendance) > 2).ToList();
+            List<Participant> absentees = registrations.Where(r => r.Attendance == false).GroupBy(r => r.participant).Where(g => g.Count() > 2).Select(g => g.Key).ToList();
 
             return absentees;
         }
