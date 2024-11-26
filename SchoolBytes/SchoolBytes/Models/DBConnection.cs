@@ -127,11 +127,11 @@ namespace SchoolBytes.Models
             Debug.WriteLine("No of recent registrations: " + registrations.Count());
 
             //Finder participants der har 3 eller flere udeblivelser indenfor seneste 2 months
-            List<Participant> absentees = getDBContext().participants.Where(p => registrations.Count(r => r.participant.Id == p.Id && !r.Attendance) > 2).ToList();
+            List<Participant> absentees = getDBContext().participants.Where(p => registrations.Sum(r => r.participant.Id == p.Id && !r.Attendance) > 2).ToList();
 
             int test = absentees.Count();
-            
-            Debug.WriteLine("No of absentees: " + absentees.Count());
+
+            string testString = string.Join(", ", absentees);
 
             return absentees;
         }
