@@ -1,4 +1,6 @@
-﻿using System.Net.Mail;
+﻿using System;
+using System.Diagnostics;
+using System.Net.Mail;
 
 namespace SchoolBytes.Models
 {
@@ -55,6 +57,11 @@ namespace SchoolBytes.Models
             // Noget i stil med "Hej participant.name, hold undervisningen cm.name for cm.course.name er desværre 
             //  aflyst.   /Kompetencehuset
 
+            // the following logic is FOR TEST PURPOSES ONLY!!!
+            foreach (Registration reg in cm.Registrations) 
+            {
+                Debug.WriteLine("Email notification sent to participant " + reg.participant.Name);
+            }
         }
     }
 }

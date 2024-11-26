@@ -284,36 +284,16 @@ namespace SchoolBytes.Controllers
         // Aflys enkelt undervisning
         [HttpPost]
         [Route("course/{courseId}/module/{moduleId}/cancel")]
-        public ActionResult CancelCourseModule(int courseId, int moduleId)
+        public ActionResult CancelCourseModule(int moduleId)
         {
-            Course course = dBConnection.courses.Find(courseId);
             CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
-            
-            // should only be able to cancel if there's more than a day/24h before the start time
-            if (courseModule.StartTime <= DateTime.Now.AddHours(-24))
+            if (courseModule == null)
             {
-                courseModule.IsCancelled = true;
-
-                // if there's a related Food Module, then that gets cancelled too
-                if (courseModule.FoodModule != null)
-                {
-                    courseModule.FoodModule.IsCancelled = true;
-                }
-
-                // if there are any participants in the course
-                if (courseModule.Capacity > 0)
-                {
-                    // notify all participants
-                    MailService service = new MailService("host");
-                    service.ClassCanceledNotification(courseModule);
-                }
+                return HttpNotFound("Course module not found");
             }
 
-            else
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Det er for sent at aflyse denne undervisningsgang.");
-            }
-            
+            dBConnection.CancelModule(courseModule);
+
             return TheView(null);
         }
     }
