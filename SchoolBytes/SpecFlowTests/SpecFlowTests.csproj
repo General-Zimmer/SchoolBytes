@@ -37,4 +37,8 @@
     <ProjectReference Include="..\SchoolBytes\SchoolBytes.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="System.Web" />
+  </ItemGroup>
+
 </Project>
