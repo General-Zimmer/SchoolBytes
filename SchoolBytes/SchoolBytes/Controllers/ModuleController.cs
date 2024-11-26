@@ -283,7 +283,7 @@ namespace SchoolBytes.Controllers
 
         // Aflys enkelt undervisning
         [HttpPost]
-        [Route("course/{courseId}/module/{moduleId}/aflys")]
+        [Route("course/{courseId}/module/{moduleId}/cancel")]
         public ActionResult CancelCourseModule(int courseId, int moduleId)
         {
             Course course = dBConnection.courses.Find(courseId);

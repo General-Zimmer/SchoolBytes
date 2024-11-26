@@ -53,6 +53,8 @@
                     <button type="button" class="toggle-module-edit" onclick="enableModuleEditing('@module.Id')">Rediger modul</button>
                     <button type="button" onclick="updateModule(@module.Course.Id, @module.Id)" class="save-module-button" style="display: none;">Gem ændringer</button>
                     <button type="button" class="delete-module-button" onclick="confirmDeleteModule(@module.Course.Id, @module.Id)">Slet modul</button>
+                    <button type="button" action="@Url.Action("CancelCourseModule", "Module")" class="cancel-module-button" onclick="confirmCancelModule(@module.Course.Id, @module.Id)">Aflys modul</button>
+
                 </form>
             </div>
         </li>
@@ -122,6 +124,24 @@
                 error: function (xhr, status, error) {
                     console.error("Error details:", xhr.responseText); // This logs the response
                     alert("Fejl ved sletning af modul.");
+                }
+            });
+        }
+    }
+
+    function confirmCancelModule(courseId, moduleId) {
+        if (confirm("Er du sikker på, at du vil aflyse dette modul?")) {
+            console.log(`Attempting to cancel module with ID ${moduleId} in course ${courseId}`);
+            $.ajax({
+                url: `/course/${courseId}/module/${moduleId}/cancel`,
+                method: 'POST',
+                success: function () {
+                    alert("Modul aflyst!");
+                    location.reload(); // Reloads the page
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error details:", xhr.responseText); // This logs the response
+                    alert("Fejl ved aflysning af modul.");
                 }
             });
         }
