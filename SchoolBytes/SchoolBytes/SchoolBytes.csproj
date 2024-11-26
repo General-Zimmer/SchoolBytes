@@ -327,6 +327,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="App_Data\ConnectionCredentials.json" />
     <Content Include="appsettings.json" />
+    <Content Include="App_Data\EmailCredentials.json" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
