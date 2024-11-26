@@ -29,14 +29,14 @@ namespace SpecFlowTests.StepDefinitions
         private static CourseModule cmOutdated2 = new CourseModule() { Name = "Outdated coursemodule 2", Id = ++rId, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddMonths(-3) };
         private static CourseModule cmOutdated3 = new CourseModule() { Name = "Outdated coursemodule 3", Id = ++rId, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddMonths(-3) };
 
-        private static Registration r1 = new Registration() { Id = ++rId, participant = absentBob, CourseModule = cm1, Attendance = false };
-        private static Registration r2 = new Registration() { Id = ++rId, participant = absentBob, CourseModule = cm2, Attendance = false };
-        private static Registration r3 = new Registration() { Id = ++rId, participant = absentBob, CourseModule = cm3, Attendance = false };
+        private static Registration r1 = new Registration() { Id = cm1.Id, participant = absentBob, CourseModule = cm1, Attendance = false };
+        private static Registration r2 = new Registration() { Id = cm2.Id, participant = absentBob, CourseModule = cm2, Attendance = false };
+        private static Registration r3 = new Registration() { Id = cm3.Id, participant = absentBob, CourseModule = cm3, Attendance = false };
 
 
-        private static Registration r4 = new Registration() { Id = ++rId, participant = bob, CourseModule = cmOutdated1, Attendance = false };
-        private static Registration r5 = new Registration() { Id = ++rId, participant = bob, CourseModule = cmOutdated2, Attendance = false };
-        private static Registration r6 = new Registration() { Id = ++rId, participant = bob, CourseModule = cmOutdated3, Attendance = false };
+        private static Registration r4 = new Registration() { Id = cmOutdated1.Id, participant = bob, CourseModule = cmOutdated1, Attendance = false };
+        private static Registration r5 = new Registration() { Id = cmOutdated2.Id, participant = bob, CourseModule = cmOutdated2, Attendance = false };
+        private static Registration r6 = new Registration() { Id = cmOutdated3.Id, participant = bob, CourseModule = cmOutdated3, Attendance = false };
 
         private string tempNotification = "";
 
