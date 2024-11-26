@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Web.Mvc;
 using SchoolBytes.DTO;
 using SchoolBytes.Models;
+using SchoolBytes.util;
 
 namespace SchoolBytes.Controllers
 {
@@ -171,31 +172,16 @@ namespace SchoolBytes.Controllers
 
         // DELETE: api/course/{participantId}
         [HttpPost]
-        //[Route("course/{courseId}/delete/{participantId}")]
         public ActionResult DeleteParticipant(int participantId, int courseId)
-        {    
-            Course course = dbConnection.courses.Find(courseId);
-            Participant participant = dbConnection.participants.Find(participantId);
+        {
+            //Returns null if succesful or HTTPstatus code result if it did not work.
+            HttpStatusCodeResult result = DatabaseUtils.DeleteParticipant(participantId, courseId);
+            if (result != null)
+            {
+                return result;
+            }
 
-            if (course == null)
-            {
-                return HttpNotFound("Course not found.");
-            }
-            else if (participant == null)
-            {
-                return HttpNotFound("Participant not found.");
-            }
-            else if (!course.Participants.Contains(participant))
-            {
-                    return HttpNotFound("Participant not associated with course.");
-            }
-            else
-            {
-                course.Participants.Remove(participant);
-                dbConnection.SaveChanges();
-
-                return RedirectToAction("CourseOverview");
-            }
+            return Redirect("CourseOverview");
         }
 
 

@@ -41,7 +41,7 @@ namespace SpecFlowTests.StepDefinitions
         [When(@"\[When user removes participant from course]")]
         public void WhenWhenUserRemovesParticipantFromCourse()
         {
-            RemoveParticipantFromCourse.DeleteParticipant(mulan.Id, course.Id, context);
+            DatabaseUtils.DeleteParticipant(mulan.Id, course.Id);
         }
 
         [Then(@"\[Participant should be removed from the list in course]")]
@@ -56,7 +56,7 @@ namespace SpecFlowTests.StepDefinitions
             var stringWriter = new StringWriter();
             Console.SetOut(stringWriter);
 
-            RemoveParticipantFromCourse.DeleteParticipant(mulan.Id, course.Id, context);
+            DatabaseUtils.DeleteParticipant(mulan.Id, course.Id);
             string consoleOutput = stringWriter.ToString(); 
             Assert.That(consoleOutput, Does.Contain("participant not associated with course"));
 

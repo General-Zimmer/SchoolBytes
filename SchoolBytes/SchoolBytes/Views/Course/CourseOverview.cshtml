@@ -84,8 +84,9 @@
 
                 <!-- Fjern elev -->
                 <b>Vælg deltager som skal fjernes fra kurset</b>
-                <form method="post" action="@Url.Action("DeleteParticipant", "Course")">
+                <form method="post" action="@Url.Action("DeleteParticipant", "Course")" id="delete-participant-form">
                     <select id="dropdown-participant" name="participantId">
+                        <option value="">Vælg deltager</option>
                         @foreach (var participant in course.Participants)
                         {
                             <option value="@participant.Id">@participant.Name</option>
@@ -94,6 +95,17 @@
                     <input type="hidden" name="courseId" value="@course.Id" />
                     <button id="delete-participant-btn">Slet deltager</button>
                 </form>
+
+                <script>
+                    document.getElementById("delete-participant-form").onsubmit = function (event) {
+                        var participantId = document.getElementById("dropdown-participant").value;
+
+                        if (!participantId) {
+                            alert("Du har ikke valgt en deltager du vil slette.");
+                            event.preventDefault();
+                        }
+                    };
+                </script>
 
                 <script>
                     function confirmDelete() {
