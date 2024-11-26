@@ -121,13 +121,7 @@ namespace SpecFlowTests.StepDefinitions
             Assert.IsNull(participant);
         }
 
-        [Then(@"no error should be returned")]
-        public void ThenNoErrorShouldBeReturned()
-        {
-            //?? 
-            Assert.Catch(null);
-            
-        }
+        
 
         [Then(@"an error with status code (.*) and message ""([^""]*)"" should be returned")]
         public void ThenAnErrorWithStatusCodeAndMessageShouldBeReturned(int statusCode, string errorMessage)
