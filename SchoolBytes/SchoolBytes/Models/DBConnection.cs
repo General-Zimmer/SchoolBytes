@@ -119,19 +119,11 @@ namespace SchoolBytes.Models
         {
             //Finder courseModules afholdt inden for seneste 2 months
             List<CourseModule> recentCMs = getDBContext().courseModules.Where(cm => DateTime.Compare(DateTime.Now.AddMonths(-2), cm.StartTime)<0).ToList();
-
-            Debug.WriteLine("No of recent CMS: " + recentCMs.Count());
                 
             List<Registration> registrations = recentCMs.SelectMany(cm => cm.Registrations).ToList();
 
-            Debug.WriteLine("No of recent registrations: " + registrations.Count());
-
             //Finder participants der har 3 eller flere udeblivelser indenfor seneste 2 months
-            List<Participant> absentees = getDBContext().participants.Where(p => registrations.Sum(r => r.participant.Id == p.Id && !r.Attendance) > 2).ToList();
-
-            int test = absentees.Count();
-
-            string testString = string.Join(", ", absentees);
+            List<Participant> absentees = getDBContext().participants.Where(p => registrations.Count(r => r.participant.Id == p.Id && !r.Attendance) > 2).ToList();
 
             return absentees;
         }
@@ -144,8 +136,6 @@ namespace SchoolBytes.Models
             resultString += string.Join(", " + System.Environment.NewLine, absentees);
 
             if (absentees.Count() == 0) resultString = "";
-
-            Console.WriteLine("TTTTTTTEST: " + resultString);
 
             return resultString;
         }
