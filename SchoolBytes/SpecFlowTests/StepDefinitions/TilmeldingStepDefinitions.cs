@@ -58,7 +58,7 @@ namespace SpecFlowTests.StepDefinitions
             _context.Remove(_context.teachers.Find(teacher1.Id));
             _context.Remove(_context.participants.Find(bob.Id));
             _context.Remove(_context.participants.Find(bobby.Id));
-            _context.Remove(_context.participants.Find(bob2.Id));
+            //_context.Remove(_context.participants.Find(bob2.Id));
 
             _context.SaveChanges();
         }
