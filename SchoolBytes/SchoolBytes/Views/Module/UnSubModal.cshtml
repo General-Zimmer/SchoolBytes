@@ -1,0 +1,72 @@
+@{
+    Layout = null;
+}
+
+@functions {
+    public string GetHttp()
+    {
+        var courseId = ViewBag.CourseId;
+        var moduleId = ViewBag.ModuleId;
+
+        return $"/course/{courseId}/module/{moduleId}/afmeld/";
+    }
+}
+
+<body>
+    <h1>Afmeld</h1>
+    <form id="unsub-form" method="post">
+        <div class="participant-group">
+            <label class="participant-label" for="PhoneNumber">Telefon nummer:</label>
+            <input class="participant-input" type="text" id="PhoneNumber" name="PhoneNumber" required />
+        </div>
+
+        <div class="participant-group">
+            <label class="participant-label" name="course" id="@ViewBag.CourseId" for="Course">Hold: @ViewBag.CourseName</label>
+        </div>
+
+        <div class="participant-group">
+            <label class="participant-label" name="module" id="@ViewBag.ModuleId" for="CourseModule">Modul: @ViewBag.ModuleName</label>
+        </div>
+
+        <div class="participant-group">
+            <button class="participant-button" type="button" onclick="youSure()">Afmeld</button>
+        </div>
+    </form>
+</body>
+
+<script>
+    function youSure() {
+        if (confirm("Er du sikker på at du vil afmelde?")) {
+            let courseId = $('[name="course"]').attr('id');
+            let moduleId = $('[name="module"]').attr('id');
+            let phoneNr = $('#PhoneNumber').val();
+            if (phoneNr.length !== 8) {
+                //add some error msg to user
+                return;
+            }
+
+            if (TryParseInt(phoneNr, null) == null) {
+                return;
+            }
+
+
+            $('#unsub-form').attr('action', `/course/${courseId}/module/${moduleId}/afmeld/${phoneNr}`)
+            debugger;
+            $('#unsub-form').submit();
+        } else {
+            //do nothing
+        }
+    }
+
+    function TryParseInt(str, defaultValue) {
+        var retValue = defaultValue;
+        if (str !== null) {
+            if (str.length > 0) {
+                if (!isNaN(str)) {
+                    retValue = parseInt(str);
+                }
+            }
+        }
+        return retValue;
+    }
+</script>

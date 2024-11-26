@@ -15,6 +15,9 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using System.Text;
+using System.Data.Common;
+using System.Net;
+using System.Reflection;
 
 
 namespace SchoolBytes.Models
@@ -60,6 +63,8 @@ namespace SchoolBytes.Models
                    .WithOne(r => r.CourseModule)
                    .HasPrincipalKey(cm => cm.Id) // Specifies the primary key on CourseModule
                    .HasForeignKey(r => r.Id); // Define the foreign key property in Registration
+
+
         }
 
         public static DBConnection getDBContext()
@@ -76,8 +81,10 @@ namespace SchoolBytes.Models
 
         private static string getCredentialsPath()
         {
-            string filePath = @"C:\Users\victo\Source\Repos\General-Zimmer\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
-            StreamReader credJson = new StreamReader(filePath); //HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json")
+            string filePath = @"C:\Users\rgmar\Source\Repos\General-Zimmer\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
+            //string filePath = HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
+            StreamReader credJson = new StreamReader(filePath);
+            //HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
             return (string)JObject.Parse(credJson.ReadToEnd())["credentials"];
         }
 

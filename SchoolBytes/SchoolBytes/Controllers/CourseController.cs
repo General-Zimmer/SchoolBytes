@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web.Mvc;
 using SchoolBytes.DTO;
 using SchoolBytes.Models;
@@ -45,62 +46,50 @@ namespace SchoolBytes.Controllers
                 Id = courseDTO.Id
             };
 
-            var modules = new List<CourseModule>();
+            var req = Request.Form;
+
             var activeDays = new List<DayOfWeek>();
 
-            if (courseDTO.Monday)
-                activeDays.Add(DayOfWeek.Monday);
-            if (courseDTO.Tuesday)
-                activeDays.Add(DayOfWeek.Tuesday);
-            if (courseDTO.Wednesday)
-                activeDays.Add(DayOfWeek.Wednesday);
-            if (courseDTO.Thursday)
-                activeDays.Add(DayOfWeek.Thursday);
-            if (courseDTO.Friday)
-                activeDays.Add(DayOfWeek.Friday);
-            if (courseDTO.Saturday)
-                activeDays.Add(DayOfWeek.Saturday);
-            if (courseDTO.Sunday)
-                activeDays.Add(DayOfWeek.Sunday);
-            //TODO: delete this line
-            activeDays.Add(DayOfWeek.Monday);
+            foreach (DayOfWeek day in (DayOfWeek[])Enum.GetValues(typeof(DayOfWeek)))
+            {
+                bool isDayContained = req.AllKeys.Contains(day.ToString());
+
+                if (isDayContained) activeDays.Add(day);
+
+                PropertyInfo prop = course.GetType().GetProperty(day.ToString(), BindingFlags.Public | BindingFlags.Instance);
+                if (null != prop && prop.CanWrite)
+                {
+                    prop.SetValue(course, isDayContained, null);
+                }
+            }
+
             var daysCount = activeDays.Count;
             
             if (daysCount == 0)
             {
-                //yeh this is not a good way of doing it... smider en hen på en fejlside
-                throw new InvalidOperationException("Ingen dage valgt på kursus.");
-            }
+                //TODO: yeh this is not a good way of doing it... smider en hen på en fejlside
+                throw new InvalidOperationException("Ingen dage valgt for kursus.");
+            }         
 
-            var modulesPerDay = courseDTO.numberOfModules / daysCount;
-            var remainingModules = courseDTO.numberOfModules % daysCount;
-            var currentDate = DateTime.Now;
-            //Dunno about this?
-            foreach (var activeDayDate in activeDays.Select(day => GetDayForWeekday(currentDate, day)))
+
+            for (DateTime start = course.StartDate; start <= course.EndDate; start=start.AddDays(1))
             {
-                for (var i = 0; i < modulesPerDay; i++)
+                if (activeDays.Contains(start.DayOfWeek))
                 {
-                    modules.Add(new CourseModule()
+                    CourseModule cm = new CourseModule()
                     {
-                        Name = $"Module {modules.Count + 1}",
-                        Date = activeDayDate
-                    });
-                }
+                        Name = $"Lektion {course.CoursesModules.Count + 1}",
+                        Date = start,
+                        MaxCapacity = course.MaxCapacity,
+                        Teacher = course.Teacher,
+                    };
+                    dbConnection.Add(cm);
+                    course.CoursesModules.Add(cm);
 
-                if (remainingModules > 0)
-                {
-                    modules.Add(new CourseModule()
-                    {
-                        Name = $"Module {modules.Count + 1}",
-                        Date = activeDayDate
-                    });
-                    remainingModules--;
                 }
             }
 
-            course.CoursesModules.AddRange(modules);
             dbConnection.Add(course);
-
             dbConnection.SaveChanges();
 
             return RedirectToAction("CourseOverview");

@@ -10,10 +10,14 @@ using System.Net.Http;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
+using Gherkin.CucumberMessages.Types;
 using Microsoft.Ajax.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SchoolBytes.Models;
+using SchoolBytes.util;
+using static SchoolBytes.util.DatabaseUtils;
+using static SchoolBytes.util.VentelisteUtil;
 
 namespace SchoolBytes.Controllers
 {
@@ -61,8 +65,8 @@ namespace SchoolBytes.Controllers
 
     // POST: api/course/{courseid}/update/{moduleid} (Update course module)
     [HttpPost]
-        [Route("course/{courseId}/update/{moduleId}/{teacherId}")]
-        public ActionResult Update(int courseId, int moduleId, int teacherId, CourseModule updatedCourseModule)
+        [Route("course/{courseId}/update/{moduleId}")]
+        public ActionResult Update(int courseId, int moduleId, CourseModule updatedCourseModule)
         {
             //updatedCourse module already has all this info, do we really need course id and module id? It's in updatedCourseModule
             var course = dBConnection.courses.Find(courseId);
@@ -79,17 +83,31 @@ namespace SchoolBytes.Controllers
        
             module.Name = updatedCourseModule.Name;
 
+            FoodModule fm = updatedCourseModule.FoodModule;
+
+            
+            //FoodModule code
+            if (fm!= null && fm.Name != "")
+            {
+                Debug.Print("TEEEEEEEEEEEEEEEEEEST: " + fm.Name);
+                fm.Course = course;
+                fm.Date = updatedCourseModule.Date;
+                fm.Capacity = updatedCourseModule.Capacity;
+                fm.Teacher = updatedCourseModule.Teacher;
+                module.FoodModule = fm;
+                dBConnection.Add(fm);
+            }
+
 
             //TODO: need to find a better way of doing this - fetching the teacherID in this way is not very elegant!!
-            
-            Teacher updatedTeacher = dBConnection.teachers.ToList().Where(t => t.Id == teacherId).FirstOrDefault();
+
+            Teacher updatedTeacher = dBConnection.teachers.ToList().Where(t => t.Id == updatedCourseModule.Teacher.Id).FirstOrDefault();
             module.Teacher = updatedTeacher;
-            
-       
+
             module.Date = updatedCourseModule.Date;
             module.StartTime = updatedCourseModule.StartTime;
             module.EndTime = updatedCourseModule.EndTime;
-            module.Capacity = updatedCourseModule.Capacity;
+            module.MaxCapacity = updatedCourseModule.MaxCapacity;
             module.Location = updatedCourseModule.Location;
             dBConnection.Update(module);
             dBConnection.SaveChanges();
@@ -150,16 +168,14 @@ namespace SchoolBytes.Controllers
 
             //Course course = dBConnection.courses.Find(courseId);
 
-            if (courseModule.Capacity <= courseModule.MaxCapacity)
+            if (courseModule.Capacity < courseModule.MaxCapacity)
             {
                 if(DBConnection.IsEligibleToSubscribe(participant))
                 {
 
-                
-                Participant newParticipant = new Participant(participant.Name, participant.PhoneNumber);
-                Registration registration = new Registration(newParticipant, courseModule);
-                courseModule.Capacity += 1;
-                dBConnection.UpdateSub(registration, courseModule);
+                    Registration registration = new Registration(participant, courseModule);
+                    courseModule.Capacity += 1;
+                    dBConnection.UpdateSub(registration, courseModule);
                 } else
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Du har allerede tilmeldt dig maksimum antal hold.");
@@ -167,17 +183,19 @@ namespace SchoolBytes.Controllers
             }
             else
             {
-                //VENTELISTE LOGIK SKAL IND HER - PLACEHOLDER INDTIL VIDERE
-                return HttpNotFound("Hold fyldt");
+                AddToWaitlist(courseModule, participant);
+                
+                return RedirectToAction(courseId +"/" + courseModule.Id + "/signup/waitlist", "course");
             }
 
 
-            return TheView(null);
-        }
-        //TODO: Skal det her med?
-        [HttpPost]
-        [Route("Module/course/{courseId}/module/{moduleId}/tilmeld")]
-        public ActionResult Subscribe(int courseId, List<int> moduleIds, Participant participant)
+                return TheView(null);
+            }
+
+            //TODO: Skal det her med?
+            [HttpPost]
+            [Route("Module/course/{courseId}/module/{moduleId}/tilmeld")]
+            public ActionResult Subscribe(int courseId, List<int> moduleIds, Participant participant)
         {
             Course course = dBConnection.courses.Find(courseId);
 
@@ -225,31 +243,36 @@ namespace SchoolBytes.Controllers
             return TheView(skippedModules);
         }
 
-        [HttpPost]
-        [Route("Module/course/{courseId}/{moduleId}/afmeld")]
-        public ActionResult Cancel(int courseId, int moduleId, string tlfNr)
+        [HttpGet]
+        [Route("course/{courseId}/{moduleId}/afmeld")]
+        public ActionResult unsub(int courseId, int moduleId)
         {
-            CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
+            var course = dBConnection.courses.Find(courseId);
+            var module = dBConnection.courseModules.Find(moduleId);
 
-            Course course = dBConnection.courses.Find(courseId);
+            ViewBag.CourseId = courseId;
+            ViewBag.ModuleId = moduleId;
+            ViewBag.CourseName = course.Name;
+            ViewBag.ModuleName = module.Name;
 
-            Participant participant = course.Participants.Find(p => p.PhoneNumber == tlfNr);
-            if (participant != null)
+
+            return View("UnSubModal");
+        }
+
+        [HttpPost]
+        [Route("course/{courseId}/module/{moduleId}/afmeld/{tlfNr}")]
+        public ActionResult Unsub(int courseId, int moduleId, string tlfNr)
+        {
+            //Returns null if succesful or HTTPstatus code result if it did not work.
+            HttpStatusCodeResult res = DatabaseUtils.Unsub(courseId, moduleId, tlfNr);
+            if(res != null)
             {
-                course.Participants.Remove(participant);
-
-                dBConnection.Update(courseModule);
-                dBConnection.SaveChanges();
-            }
-            else
-            {
-                //placeholder
-                return HttpNotFound("Ingen tilmeldte med opgivne informationer fundet");
+                return res;
             }
 
 
 
-            return TheView(null);
+            return Redirect("~/course/" + courseId + "/ModuleOverview");
         }
 
         [HttpGet]
@@ -274,12 +297,6 @@ namespace SchoolBytes.Controllers
             if (module == null)
             {
                 return HttpNotFound("Course module not found");
-            }
-
-            var participants = dBConnection.participants;
-            foreach (var participant in participants) 
-            { 
-                module.Waitlist.AddLast(participant);
             }
 
             return View(module);

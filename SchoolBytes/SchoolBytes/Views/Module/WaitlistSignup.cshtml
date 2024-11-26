@@ -16,9 +16,9 @@
 <strong>Venteliste:</strong>
 <li>
     <div>
-        @foreach (var participant in Model.Waitlist)
+        @foreach (var registration in Model.Waitlist)
         {
-            <ol>@participant.Name</ol>
+            <ol>@registration.participant.Name</ol>
         }
     </div>
 </li>
