@@ -140,39 +140,18 @@ namespace SchoolBytes.Controllers
         [Route("course/{courseId}/module/{moduleId}/tilmeld")]
         public ActionResult Subscribe(int courseId, int moduleId, Participant participant)
         {
-            CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
+            int resultCode = DBConnection.Subscribe(courseId, moduleId, participant);
 
-            //Course course = dBConnection.courses.Find(courseId);
+            CourseModule courseModule = DBConnection.getDBContext().courseModules.Find(moduleId);
 
-            if (courseModule.Capacity <= courseModule.MaxCapacity)
+            switch (resultCode)
             {
-                if (DBConnection.IsEligibleToSubscribe(participant))
-                {
-
-
-
-                    Registration registration = new Registration(participant, courseModule);
-                    courseModule.Capacity += 1;
-                    dBConnection.UpdateSub(registration, courseModule);
-                } else
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Du har allerede tilmeldt dig maksimum antal hold.");
-                }
+                case 1: return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Du har allerede tilmeldt dig maksimum antal hold.");
+                case 2: return RedirectToAction(courseId + "/" + courseModule.Id + "/signup/waitlist", "course");
+                case 3: return TheView(null);
+                case 4: return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Valgte kursusgang er overstået.");
+                default: return TheView(null);
             }
-            else
-            {
-                //VENTELISTE LOGIK SKAL IND HER
-
-                dBConnection.Update(courseModule);
-                WaitRegistration yeet = new WaitRegistration(participant, courseModule, DateTime.Now);
-
-                courseModule.Waitlist.AddLast(yeet);
-                dBConnection.SaveChangesV2();
-                return RedirectToAction(courseId + "/" + courseModule.Id + "/signup/waitlist", "course");
-            }
-
-
-            return TheView(null);
         }
 
         //TODO: Skal det her med?

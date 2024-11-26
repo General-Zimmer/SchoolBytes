@@ -8,22 +8,24 @@ namespace SpecFlowTests.StepDefinitions
     [Binding]
     public class TilmeldingStepDefinitions
     {
+        private static Random r = new Random();
+        private static int rId = r.Next(1_000_000, 10_000_000);
 
         private static DBConnection _context = DBConnection.getDBContext();
         private static Participant bob = new Participant("Bob", "69695512");
-        private static Teacher teacher1 = new Teacher() { Name = "teacher1", Id = 55435 };
-        private static Course course1 = new Course() { Name = "Course1", Id = 4235252, Teacher = teacher1 };
-        private static CourseModule cm1 = new CourseModule() { Name = "cm1", Id = 423112221, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
-        private static CourseModule cmOutdated = new CourseModule() { Name = "Outdated coursemodule", Id = 62343, Teacher = teacher1, Course = course1, Date = DateTime.Now.AddDays(-1), StartTime = DateTime.Now.AddDays(-1) };
+        private static Teacher teacher1 = new Teacher() { Name = "teacher1", Id = ++rId };
+        private static Course course1 = new Course() { Name = "Course1", Id = ++rId, Teacher = teacher1 };
+        private static CourseModule cm1 = new CourseModule() { Name = "cm1", Id = ++rId, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cmOutdated = new CourseModule() { Name = "Outdated coursemodule", Id = ++rId, Teacher = teacher1, Course = course1, Date = DateTime.Now.AddDays(-1), StartTime = DateTime.Now.AddDays(-1) };
 
-        private static CourseModule cm2 = new CourseModule() { Name = "cm2", Id = 123132232, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
-        private static CourseModule cm3 = new CourseModule() { Name = "cm3", Id = 423524, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
-        private static CourseModule cm4 = new CourseModule() { Name = "cm4", Id = 68368833, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
-        private static CourseModule cm5 = new CourseModule() { Name = "cm5", Id = 345372, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
-        private static CourseModule cm6 = new CourseModule() { Name = "cm6", Id = 323411114, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cm2 = new CourseModule() { Name = "cm2", Id = ++rId, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cm3 = new CourseModule() { Name = "cm3", Id = ++rId, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cm4 = new CourseModule() { Name = "cm4", Id = ++rId, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cm5 = new CourseModule() { Name = "cm5", Id = ++rId, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
+        private static CourseModule cm6 = new CourseModule() { Name = "cm6", Id = ++rId, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1) };
 
         private static Participant bobby = new Participant("Bobby", "A69695512");
-        private static Participant bob2 = new Participant("Bob2", "69695512") { Id = 47284 };
+        private static Participant bob2 = new Participant("Bob2", "69695512") { Id = ++rId };
 
         [BeforeFeature]
         public static void BeforeTilmeldingFeature(FeatureContext featureContext)
@@ -73,7 +75,7 @@ namespace SpecFlowTests.StepDefinitions
         [When(@"Bob bliver tilmeldt cm1")]
         public void WhenBobBliverTilmeldtCm1()
         {
-            DBConnection.SubscribeTest(course1.Id, cm1.Id, bob);
+            DBConnection.Subscribe(course1.Id, cm1.Id, bob);
         }
 
         [Then(@"Er Bob tilmeldt og relationerne findes i DB")]
@@ -94,7 +96,7 @@ namespace SpecFlowTests.StepDefinitions
         [When(@"Bob bliver tilmeldt cm1 igen")]
         public void WhenBobBliverTilmeldtCm1Igen()
         {
-            DBConnection.SubscribeTest(course1.Id, cm1.Id, bob);
+            DBConnection.Subscribe(course1.Id, cm1.Id, bob);
         }
 
         [Then(@"Er der kun en registration i DB")]
@@ -112,7 +114,7 @@ namespace SpecFlowTests.StepDefinitions
         [When(@"Bob bliver tilmeldt A")]
         public void WhenBobBliverTilmeldtA()
         {
-            DBConnection.SubscribeTest(course1.Id, cmOutdated.Id, bob);
+            DBConnection.Subscribe(course1.Id, cmOutdated.Id, bob);
         }
 
         [Then(@"Er der ikke en ny registration i DB A")]
@@ -124,16 +126,16 @@ namespace SpecFlowTests.StepDefinitions
         [Given(@"Participant Bob med 5 aktive tilmeldte kurser")]
         public void GivenParticipantBobMed5AktiveTilmeldteKurser()
         {
-            DBConnection.SubscribeTest(course1.Id, cm2.Id, bob);
-            DBConnection.SubscribeTest(course1.Id, cm3.Id, bob);
-            DBConnection.SubscribeTest(course1.Id, cm4.Id, bob);
-            DBConnection.SubscribeTest(course1.Id, cm5.Id, bob);
+            DBConnection.Subscribe(course1.Id, cm2.Id, bob);
+            DBConnection.Subscribe(course1.Id, cm3.Id, bob);
+            DBConnection.Subscribe(course1.Id, cm4.Id, bob);
+            DBConnection.Subscribe(course1.Id, cm5.Id, bob);
         }
 
         [When(@"Bob bliver tilmeldt B")]
         public void WhenBobBliverTilmeldtB()
         {
-            DBConnection.SubscribeTest(course1.Id, cm6.Id, bob);
+            DBConnection.Subscribe(course1.Id, cm6.Id, bob);
         }
 
         [Then(@"Er der ikke en ny registration i DB B")]
@@ -152,7 +154,7 @@ namespace SpecFlowTests.StepDefinitions
         [When(@"Bobby bliver tilmeldt")]
         public void WhenBobbyBliverTilmeldt()
         {
-            DBConnection.SubscribeTest(course1.Id, cm6.Id, bobby);
+            DBConnection.Subscribe(course1.Id, cm6.Id, bobby);
         }
 
         [Then(@"Er der ikk en ny registration i DB C")]
@@ -172,7 +174,7 @@ namespace SpecFlowTests.StepDefinitions
         [When(@"Bob2 bliver tilmeldt")]
         public void WhenBob2BliverTilmeldt()
         {
-            DBConnection.SubscribeTest(course1.Id, cm6.Id, bob2);
+            DBConnection.Subscribe(course1.Id, cm6.Id, bob2);
         }
 
         [Then(@"Er der hverken en ny registration eller ny participant")]

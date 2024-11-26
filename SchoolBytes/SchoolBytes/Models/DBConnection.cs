@@ -23,6 +23,7 @@ using System.Data.Common;
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using SchoolBytes.util;
 
 
 namespace SchoolBytes.Models
@@ -187,24 +188,25 @@ namespace SchoolBytes.Models
             }
         }
 
-        public static void SubscribeTest(int courseId, int moduleId, Participant participant)
+        public static int Subscribe(int courseId, int moduleId, Participant participant)
         {
+            int resultCode = -1;
+
             CourseModule courseModule = getDBContext().courseModules.Find(moduleId);
 
-            if (DateTime.Compare(DateTime.Now, courseModule.StartTime) > 0) return; //Checks if courseModule date has been passed
+            if (DateTime.Compare(DateTime.Now, courseModule.StartTime) > 0) return 4; //Checks if courseModule date has been passed
 
             if (courseModule.Capacity <= courseModule.MaxCapacity)
             {
                 if (DBConnection.IsEligibleToSubscribe(participant) && DBConnection.IsParticipantFormatValid(participant))
                 {
-
                     Registration registration = new Registration(participant, courseModule);
                     courseModule.Capacity += 1;
                     getDBContext().UpdateSub(registration, courseModule);
                 }
                 else
                 {
-                    Console.WriteLine("Du har allerede tilmeldt dig maksimum antal hold.");
+                    return 1;
                 }
             }
             else
@@ -214,9 +216,14 @@ namespace SchoolBytes.Models
                 getDBContext().Update(courseModule);
                 WaitRegistration yeet = new WaitRegistration(participant, courseModule, DateTime.Now);
 
-                //courseModule.Waitlist.AddLast(yeet);
-                //getDBContext().SaveChangesV2();
+                courseModule.Waitlist.AddLast(yeet);
+                getDBContext().SaveChangesV2();
+                return 2;
             }
+
+
+            return 3;
         }
+
     }
 }
