@@ -46,5 +46,15 @@ namespace SchoolBytes.Models
             mail = new MailMessage(from, to);
             SmtpClient.Send(mail);
         }
+
+        // dummy
+        public void ClassCanceledNotification(CourseModule cm)
+        {
+
+            // send emails til alle cm.registrations.participants med en predefineret email
+            // Noget i stil med "Hej participant.name, hold undervisningen cm.name for cm.course.name er desværre 
+            //  aflyst.   /Kompetencehuset
+
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace SchoolBytes.Models
         public virtual Course Course { get; set; }
         public string Location { get; set; }
         public int MaxCapacity { get; set; }
-
+        public bool IsCancelled { get; set; } = false;
 
     }
 }
