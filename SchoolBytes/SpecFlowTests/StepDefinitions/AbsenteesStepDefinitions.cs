@@ -98,7 +98,7 @@ namespace SpecFlowTests.StepDefinitions
         [Then(@"Findes Participants navn i stringen")]
         public void ThenFindesParticipantsNavnIStringen()
         {
-            tempNotification.Contains("absentBob").Should().BeTrue();
+            tempNotification.Contains("Absent Bob").Should().BeTrue();
         }
 
         [Given(@"Participant med 3 gamle udeblivelser")]
