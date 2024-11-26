@@ -80,8 +80,10 @@ namespace SchoolBytes.Models
 
         private static string getCredentialsPath()
         {
-            string filePath = @"C:\Users\jakob\source\repos\General-Zimmer\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
-            StreamReader credJson = new StreamReader(filePath); //HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json")
+            string filePath = @"C:\Users\rgmar\Source\Repos\General-Zimmer\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
+            //string filePath = HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
+            StreamReader credJson = new StreamReader(filePath);
+            //HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
             return (string)JObject.Parse(credJson.ReadToEnd())["credentials"];
         }
 

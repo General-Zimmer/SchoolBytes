@@ -283,6 +283,7 @@
     <Compile Include="Models\DBConnection.cs" />
     <Compile Include="Models\FoodModule.cs" />
     <Compile Include="Models\IModule.cs" />
+    <Compile Include="Models\MailService.cs" />
     <Compile Include="Models\Participant.cs" />
     <Compile Include="Models\Registration.cs" />
     <Compile Include="Models\QRGeneratorService.cs" />
@@ -290,6 +291,7 @@
     <Compile Include="Models\WaitRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="util\DatabaseUtils.cs" />
+    <Compile Include="util\VentelisteUtil.cs" />
     <Compile Include="util\QRUtils.cs" />
   </ItemGroup>
   <ItemGroup>
