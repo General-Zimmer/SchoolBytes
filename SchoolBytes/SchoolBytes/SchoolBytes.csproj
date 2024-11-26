@@ -281,6 +281,10 @@
     <Compile Include="Migrations\20241126083651_Version-9.Designer.cs">
       <DependentUpon>20241126083651_Version-9.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20241126120720_Version-10-EmailParticipant.cs" />
+    <Compile Include="Migrations\20241126120720_Version-10-EmailParticipant.Designer.cs">
+      <DependentUpon>20241126120720_Version-10-EmailParticipant.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\DBConnectionModelSnapshot.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\CourseModule.cs" />
