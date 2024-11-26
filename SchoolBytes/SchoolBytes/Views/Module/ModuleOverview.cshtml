@@ -58,12 +58,12 @@
                     <p><strong>Madklub:</strong> <input type="text" value="@(module.FoodModule == null ? "Ikke tilføjet" : module.FoodModule.ToString())" disabled /></p>
                     <p><strong>Ny madklub:</strong> <input type="button" onclick="test(this)" value="Opret madhold" id="testBtn" disabled /></p>
 
-                    <button type="button" class="delete-module-button" onclick="subscribeModal(@module.Course.Id,@module.Id)"  @(module.IsCancelled ? "disabled" : "")>Tilmeld</button>
-                    <button type="button" class="delete-module-button" onclick="unSubscribeModal(@module.Course.Id,@module.Id)" @(module.IsCancelled ? "disabled" : "")>Afmeld</button>
-                    <button type="button" class="toggle-module-edit" onclick="enableModuleEditing('@module.Id')" @(module.IsCancelled ? "disabled" : "")>Rediger modul</button>
-                    <button type="button" onclick="updateModule(@module.Course.Id, @module.Id)" class="save-module-button" style="display: none;" @(module.IsCancelled ? "disabled" : "")>Gem ændringer</button>
-                    <button type="button" class="delete-module-button" onclick="confirmDeleteModule(@module.Course.Id, @module.Id)" @(module.IsCancelled ? "disabled" : "")>Slet modul</button>
-                    <button type="button" action="@Url.Action("CancelCourseModule", "Module")" class="cancel-module-button" onclick="confirmCancelModule(@module.Course.Id, @module.Id)" @(module.IsCancelled ? "disabled" : "")>Aflys modul</button>
+                    <button type="button" class="delete-module-button" onclick="subscribeModal(@module.Course.Id,@module.Id)"  @(module.IsCancelled || module.Date < DateTime.Now ? "disabled" : "")>Tilmeld</button>
+                    <button type="button" class="delete-module-button" onclick="unSubscribeModal(@module.Course.Id,@module.Id)" @(module.IsCancelled || module.Date < DateTime.Now ? "disabled" : "")>Afmeld</button>
+                    <button type="button" class="toggle-module-edit" onclick="enableModuleEditing('@module.Id')" @(module.IsCancelled || module.Date < DateTime.Now ? "disabled" : "")>Rediger modul</button>
+                    <button type="button" onclick="updateModule(@module.Course.Id, @module.Id)" class="save-module-button" style="display: none;" @(module.IsCancelled || module.Date < DateTime.Now ? "disabled" : "")>Gem ændringer</button>
+                    <button type="button" class="delete-module-button" onclick="confirmDeleteModule(@module.Course.Id, @module.Id)" @(module.IsCancelled || module.Date < DateTime.Now ? "disabled" : "")>Slet modul</button>
+                    <button type="button" action="@Url.Action("CancelCourseModule", "Module")" class="cancel-module-button" onclick="confirmCancelModule(@module.Course.Id, @module.Id)" @(module.IsCancelled || module.Date < DateTime.Now ? "disabled" : "")>Aflys modul</button>
 
                 </form>
             </div>
