@@ -76,12 +76,17 @@ namespace SchoolBytes.Controllers
             {
                 if (activeDays.Contains(start.DayOfWeek))
                 {
+                    //TODO: Hardcoded value should really come from form?
+                    var endTime = start.AddHours(4);
                     CourseModule cm = new CourseModule()
                     {
                         Name = $"Lektion {course.CoursesModules.Count + 1}",
                         Date = start,
                         MaxCapacity = course.MaxCapacity,
                         Teacher = course.Teacher,
+                        StartTime = start,
+                        EndTime = endTime
+
                     };
                     dbConnection.Add(cm);
                     course.CoursesModules.Add(cm);
