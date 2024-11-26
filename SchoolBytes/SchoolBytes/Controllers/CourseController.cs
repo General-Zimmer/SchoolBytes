@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using SchoolBytes.DTO;
 using SchoolBytes.Models;
+using SchoolBytes.util;
 
 namespace SchoolBytes.Controllers
 {
@@ -23,7 +25,7 @@ namespace SchoolBytes.Controllers
             {
                 ViewBag.SelectedCourseId = selectedCourseId;
             }
-
+           
             return View(dbConnection.courses.ToList());
         }
       
@@ -76,12 +78,17 @@ namespace SchoolBytes.Controllers
             {
                 if (activeDays.Contains(start.DayOfWeek))
                 {
+                    //TODO: Hardcoded value should really come from form?
+                    var endTime = start.AddHours(4);
                     CourseModule cm = new CourseModule()
                     {
                         Name = $"Lektion {course.CoursesModules.Count + 1}",
                         Date = start,
                         MaxCapacity = course.MaxCapacity,
                         Teacher = course.Teacher,
+                        StartTime = start,
+                        EndTime = endTime
+
                     };
                     dbConnection.Add(cm);
                     course.CoursesModules.Add(cm);
@@ -96,19 +103,19 @@ namespace SchoolBytes.Controllers
 
         }
      
-        // GET: api/course/{id} (Get course by ID)
-        [Route("course/{id}")]
-        public ActionResult GetCourse(int id)
-        {
-            Course course = dbConnection.courses.Find(id);
+        //// GET: api/course/{id} (Get course by ID)
+        //[Route("course/{id}")]
+        //public ActionResult GetCourse(int id)
+        //{
+        //    Course course = dbConnection.courses.Find(id);
 
-            if (course == null)
-            {
-                return HttpNotFound("Course not found");
-            }
+        //    if (course == null)
+        //    {
+        //        return HttpNotFound("Course not found");
+        //    }
 
-            return View(course);
-        }
+        //    return View(course);
+        //}
 
         // POST: api/course/update/{id} (Update course)
         [HttpPost]
@@ -165,10 +172,8 @@ namespace SchoolBytes.Controllers
 
                  return RedirectToAction("CourseOverview");
             }
-
         }
 
-        
         private static DateTime GetDayForWeekday(DateTime currentDate, DayOfWeek dayOfWeek)
         {
             var daysToAdd = ((int)dayOfWeek - (int)currentDate.DayOfWeek + 7) % 7;

@@ -13,9 +13,11 @@ using System.Web.Mvc;
 using Gherkin.CucumberMessages.Types;
 using Microsoft.Ajax.Utilities;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SchoolBytes.Models;
 using SchoolBytes.util;
 using static SchoolBytes.util.DatabaseUtils;
+using static SchoolBytes.util.VentelisteUtil;
 
 namespace SchoolBytes.Controllers
 {
@@ -39,10 +41,32 @@ namespace SchoolBytes.Controllers
             return View(course.CoursesModules.ToList()); // Passes only the course modules to the view
         }
 
-        // POST: api/course/{courseid}/update/{moduleid} (Update course module)
-        [HttpPost]
-        [Route("course/{courseId}/update/{moduleId}")]
-        public ActionResult Update(int courseId, int moduleId, CourseModule updatedCourseModule)
+        // Get all course modules for a course as a JSON object
+        [HttpGet]
+        [Route("course/{id}/modules")]
+        public ActionResult ModuleList(int id)
+    {
+        List<CourseModule> courseModules = dBConnection.courses.ToList().Where(c => c.Id == id).First().CoursesModules;
+        if (courseModules == null)
+        {
+            return HttpNotFound("Course not found");
+        }
+            Dictionary<int, string> dict = new Dictionary<int, string>();
+
+            courseModules.ForEach(cm =>
+            {
+                if (cm.Date.Date == DateTime.Today)
+                {
+                    dict.Add(cm.Id, cm.Name);
+                }
+            });
+            return Json(JsonConvert.SerializeObject(dict), JsonRequestBehavior.AllowGet); // Passes the course modules as JSON
+        }
+
+    // POST: api/course/{courseid}/update/{moduleid} (Update course module)
+    [HttpPost]
+        [Route("course/{courseId}/update/{moduleId}/{teacherId}")]
+        public ActionResult Update(int courseId, int moduleId, int teacherId, CourseModule updatedCourseModule)
         {
             //updatedCourse module already has all this info, do we really need course id and module id? It's in updatedCourseModule
             var course = dBConnection.courses.Find(courseId);
@@ -187,7 +211,8 @@ namespace SchoolBytes.Controllers
 
 
             //TODO: edit the 5 so it comes from some kind of setting. It's the max amount of subcribtions u can have at once
-            if (selectedModules.Count + DBConnection.GetSubscribeCount(participant) > 5) {
+            if (selectedModules.Count + DBConnection.GetSubscribeCount(participant) > 5)
+            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Deltager er tilmeldt for mange hold.");
             }
 
@@ -227,7 +252,7 @@ namespace SchoolBytes.Controllers
         {
             //Returns null if succesful or HTTPstatus code result if it did not work.
             HttpStatusCodeResult res = DatabaseUtils.Unsub(courseId, moduleId, tlfNr);
-            if(res != null)
+            if (res != null)
             {
                 return res;
             }
@@ -261,10 +286,30 @@ namespace SchoolBytes.Controllers
                 return HttpNotFound("Course module not found");
             }
 
+            var participants = dBConnection.participants;
+            foreach (var participant in participants) 
+            { 
+                //module.Waitlist.AddLast(participant);
+            }
+
             return View(module);
         }
 
-  
+        // Aflys enkelt undervisning
+        [HttpPost]
+        [Route("course/{courseId}/module/{moduleId}/cancel")]
+        public ActionResult CancelCourseModule(int moduleId)
+        {
+            CourseModule courseModule = dBConnection.courseModules.Find(moduleId);
+            if (courseModule == null)
+            {
+                return HttpNotFound("Course module not found");
+            }
+
+            dBConnection.CancelModule(courseModule);
+
+            return TheView(null);
+        }
     }
 }
 

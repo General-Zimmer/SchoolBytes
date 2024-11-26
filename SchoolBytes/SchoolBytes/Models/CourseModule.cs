@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -20,7 +21,7 @@ namespace SchoolBytes.Models
         public virtual Course Course { get; set; }
         public string Location { get; set; }
         public int MaxCapacity { get; set; }
-
+        public bool IsCancelled { get; set; } = false;
 
     }
 }

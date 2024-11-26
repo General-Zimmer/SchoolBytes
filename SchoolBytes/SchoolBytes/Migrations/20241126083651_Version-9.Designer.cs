@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolBytes.Models;
 
 namespace SchoolBytes.Migrations
 {
     [DbContext(typeof(DBConnection))]
-    partial class DBConnectionModelSnapshot : ModelSnapshot
+    [Migration("20241126083651_Version-9")]
+    partial class Version9
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,8 +25,6 @@ namespace SchoolBytes.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int?>("CourseId");
-
-                    b.Property<string>("Email");
 
                     b.Property<int?>("FoodModuleId");
 
@@ -44,8 +44,6 @@ namespace SchoolBytes.Migrations
             modelBuilder.Entity("Registration", b =>
                 {
                     b.Property<int>("Id");
-
-                    b.Property<bool>("Attendance");
 
                     b.Property<int?>("participantId");
 
