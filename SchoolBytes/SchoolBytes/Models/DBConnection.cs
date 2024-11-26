@@ -119,25 +119,28 @@ namespace SchoolBytes.Models
 
         public void CancelModule(CourseModule courseModule) 
         {
-            courseModule.IsCancelled = true;
-
-            // if there's a related Food Module, then that gets cancelled too
-            if (courseModule.FoodModule != null)
+            if (courseModule.StartTime > DateTime.Now)  // cannot cancel a courseModule that's from the past!
             {
-                courseModule.FoodModule.IsCancelled = true;
-                self.Update(courseModule.FoodModule);
-            }
+                courseModule.IsCancelled = true;
 
-            // if there are any participants in the course
-            if (courseModule.Capacity > 0)
-            {
-                // notify all participants
-                MailService service = new MailService("host");
-                service.ClassCanceledNotification(courseModule);
-            }
+                // if there's a related Food Module, then that gets cancelled too
+                if (courseModule.FoodModule != null)
+                {
+                    courseModule.FoodModule.IsCancelled = true;
+                    self.Update(courseModule.FoodModule);
+                }
 
-            self.Update(courseModule);
-            self.SaveChanges();
+                // if there are any participants in the course
+                if (courseModule.Capacity > 0)
+                {
+                    // notify all participants
+                    MailService service = new MailService("host");
+                    service.ClassCanceledNotification(courseModule);
+                }
+
+                self.Update(courseModule);
+                self.SaveChanges();
+            }
         }
     }
 }
