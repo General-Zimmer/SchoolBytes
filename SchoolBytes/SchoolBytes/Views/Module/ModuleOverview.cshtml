@@ -24,7 +24,16 @@
 
             <div class="module-details" id="module-details-@module.Id" style="display: none;">
                 <form id="module-update-form-@module.Id" onsubmit="updateModule(@module.Course.Id, @module.Id); return false;">
-                    <input type="hidden" name="Name" value="@module.Name" />
+                    @if (module.IsCancelled)
+                    {
+                        <span style="font-weight: bold; font-size: larger; color: red;">
+                            @module.Name - AFLYST! <br />
+                        </span>
+                    }
+                    else
+                    {
+                        <input type="hidden" name="Name" value="@module.Name" />
+                    }
 
                     <strong>Underviser:</strong>
                     <select id="Teacher" @*name="Teacher"*@ disabled>
@@ -40,6 +49,7 @@
                             }
                         }
                     </select>
+
                     <p><strong>Dato:</strong> <input type="date" name="Date" value="@module.Date.ToString("yyyy-MM-dd")" disabled /></p>
                     <p><strong>Start:</strong> <input type="time" name="StartTime" value="@module.StartTime.ToString("HH:mm")" disabled /></p>
                     <p><strong>Slut:</strong> <input type="time" name="EndTime" value="@module.EndTime.ToString("HH:mm")" disabled /></p>
@@ -48,16 +58,49 @@
                     <p><strong>Madklub:</strong> <input type="text" value="@(module.FoodModule == null ? "Ikke tilføjet" : module.FoodModule.ToString())" disabled /></p>
                     <p><strong>Ny madklub:</strong> <input type="button" onclick="test(this)" value="Opret madhold" id="testBtn" disabled /></p>
 
-                    <button type="button" class="delete-module-button" onclick="subscribeModal(@module.Course.Id,@module.Id)">Tilmeld</button>
-                    <button type="button" class="delete-module-button" onclick="unSubscribeModal(@module.Course.Id,@module.Id)">Afmeld</button>
-                    <button type="button" class="toggle-module-edit" onclick="enableModuleEditing('@module.Id')">Rediger modul</button>
-                    <button type="button" onclick="updateModule(@module.Course.Id, @module.Id)" class="save-module-button" style="display: none;">Gem ændringer</button>
-                    <button type="button" class="delete-module-button" onclick="confirmDeleteModule(@module.Course.Id, @module.Id)">Slet modul</button>
+                    <button type="button" class="delete-module-button" onclick="subscribeModal(@module.Course.Id,@module.Id)"  @(module.IsCancelled || module.Date < DateTime.Now ? "disabled" : "")>Tilmeld</button>
+                    <button type="button" class="delete-module-button" onclick="unSubscribeModal(@module.Course.Id,@module.Id)" @(module.IsCancelled || module.Date < DateTime.Now ? "disabled" : "")>Afmeld</button>
+                    <button type="button" class="toggle-module-edit" onclick="enableModuleEditing('@module.Id')" @(module.IsCancelled || module.Date < DateTime.Now ? "disabled" : "")>Rediger modul</button>
+                    <button type="button" onclick="updateModule(@module.Course.Id, @module.Id)" class="save-module-button" style="display: none;" @(module.IsCancelled || module.Date < DateTime.Now ? "disabled" : "")>Gem ændringer</button>
+                    <button type="button" class="delete-module-button" onclick="confirmDeleteModule(@module.Course.Id, @module.Id)" @(module.IsCancelled || module.Date < DateTime.Now ? "disabled" : "")>Slet modul</button>
+                    <button type="button" action="@Url.Action("CancelCourseModule", "Module")" class="cancel-module-button" onclick="confirmCancelModule(@module.Course.Id, @module.Id)" @(module.IsCancelled || module.Date < DateTime.Now ? "disabled" : "")>Aflys modul</button>
+
                 </form>
+
+                <!-- Fjern elev -->
+                <b>Vælg deltager som skal fjernes fra kurset</b>
+                @foreach (var registration in module.Registrations) 
+                {
+                <form method="post" action="@Url.Action("Unsub", "Module", new { courseId = module.Course.Id, moduleId = module.Id, tlfNr = registration.participant.PhoneNumber })" id="delete-participant-form">
+                    <select id="dropdown-participant" name="participantId">
+                        <option value="">Vælg deltager</option>
+                        @foreach (var participant in module.Registrations)
+                        {
+                            <option value="@participant.participant.Id|@participant.participant.PhoneNumber">@participant.participant.Id</option>
+                        }
+                    </select>
+                    <input type="hidden" name="courseId" value="@module.Course.Id" />
+                    <button id="delete-participant-btn">Slet deltager</button>
+                </form>
+                }
+
+                <script>
+                    document.getElementById("delete-participant-form").onsubmit = function (event) {
+                        var participantId = document.getElementById("dropdown-participant").value;
+
+                        if (!participantId) {
+                            alert("Du har ikke valgt en deltager du vil slette."); // måske unødvendig, da den forvinder hvis der ingen deltagere er
+                            event.preventDefault();
+                        }
+                    };
+                </script>
+
             </div>
         </li>
     }
 </ul>
+
+
 <div id='subModal' class='modal'>
     <div class="modal-dialog">
         <div class="modal-content">
@@ -66,6 +109,7 @@
         </div>
     </div>
 </div>
+
 <div id='myModal' class='modal'>
     <div class="modal-dialog">
         <div class="modal-content">
@@ -122,6 +166,24 @@
                 error: function (xhr, status, error) {
                     console.error("Error details:", xhr.responseText); // This logs the response
                     alert("Fejl ved sletning af modul.");
+                }
+            });
+        }
+    }
+
+    function confirmCancelModule(courseId, moduleId) {
+        if (confirm("Er du sikker på, at du vil aflyse dette modul?")) {
+            console.log(`Attempting to cancel module with ID ${moduleId} in course ${courseId}`);
+            $.ajax({
+                url: `/course/${courseId}/module/${moduleId}/cancel`,
+                method: 'POST',
+                success: function () {
+                    alert("Modul aflyst!");
+                    location.reload(); // Reloads the page
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error details:", xhr.responseText); // This logs the response
+                    alert("Fejl ved aflysning af modul.");
                 }
             });
         }

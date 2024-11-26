@@ -3,6 +3,7 @@ using Remotion.Linq.Parsing;
 using SchoolBytes.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Linq;
@@ -38,6 +39,7 @@ namespace SchoolBytes.util
                 
             }
         }
+
         public static int SaveChangesV2(this DbContext FOK)
         {
             try

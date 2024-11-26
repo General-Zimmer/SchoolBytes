@@ -1,0 +1,44 @@
+
+<main aria-labelledby="title">
+    <div style="display: flex; align-items: center;">
+        <div style="display: inline-block; margin-right: 300px;">
+            <h2 id="title">QR Kode Oprettelse.</h2>
+            <p>
+               På denne side kan du genere en ny QR kode. <br />
+               Når en ny kode er lavet, virker den tidligere ikke.
+            </p>
+        </div>
+
+        <button onClick="GenerateQRCode()">Ny QR</button>
+    </div>
+
+    <!-- JavaScript Code -->
+    <script>
+        function GenerateQRCode() {
+
+            $.ajax({
+                url: `/QR/Generation/Generate`,
+                method: 'GET',
+                success: function (data) {
+                    const base64Image = data.qrCode;
+
+                    // Convert the base64 string to a data URI
+                    const dataUri = `data:image/png;base64,${base64Image}`;
+
+                    // Create a temporary <a> element to trigger the download
+                    const link = document.createElement('a');
+                    link.href = dataUri;
+                    link.download = 'QRCode.png'; // File name for the downloaded image
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    alert("Nyt ID genereret for at checke ind, gamle QR koder er ikke længere valide.");
+                },
+                error: function () {
+                    alert("En fejl opstod under generationen af QR koden.");
+                }
+            });
+        }
+    </script>
+
+</main>

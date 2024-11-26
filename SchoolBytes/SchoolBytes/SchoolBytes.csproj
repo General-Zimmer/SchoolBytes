@@ -122,6 +122,11 @@
     <Reference Include="Pomelo.JsonObject, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Pomelo.JsonObject.2.0.0\lib\netstandard2.0\Pomelo.JsonObject.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="QRCoder, Version=1.6.0.0, Culture=neutral, PublicKeyToken=c4ed5b9ae8358a28, processorArchitecture=MSIL">
+      <HintPath>..\packages\QRCoder.1.6.0\lib\net40\QRCoder.dll</HintPath>
+    </Reference>
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
     </Reference>
@@ -228,6 +233,7 @@
       <Private>True</Private>
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
@@ -242,6 +248,7 @@
     <Compile Include="Controllers\FoodController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
+    <Compile Include="Controllers\QRController.cs" />
     <Compile Include="DTO\CourseDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -266,18 +273,30 @@
     <Compile Include="Migrations\20241118115434_version-7.Designer.cs">
       <DependentUpon>20241118115434_version-7.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20241118100240_QRRegistration.cs" />
+    <Compile Include="Migrations\20241118100240_QRRegistration.Designer.cs">
+      <DependentUpon>20241118100240_QRRegistration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20241126083651_Version-9.cs" />
+    <Compile Include="Migrations\20241126083651_Version-9.Designer.cs">
+      <DependentUpon>20241126083651_Version-9.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\DBConnectionModelSnapshot.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\CourseModule.cs" />
     <Compile Include="Models\DBConnection.cs" />
     <Compile Include="Models\FoodModule.cs" />
     <Compile Include="Models\IModule.cs" />
+    <Compile Include="Models\MailService.cs" />
     <Compile Include="Models\Participant.cs" />
     <Compile Include="Models\Registration.cs" />
+    <Compile Include="Models\QRGeneratorService.cs" />
     <Compile Include="Models\Teacher.cs" />
     <Compile Include="Models\WaitRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="util\DatabaseUtils.cs" />
+    <Compile Include="util\VentelisteUtil.cs" />
+    <Compile Include="util\QRUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />
@@ -307,6 +326,8 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="App_Data\ConnectionCredentials.json" />
+    <Content Include="appsettings.json" />
+    <Content Include="App_Data\EmailCredentials.json" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -341,6 +362,9 @@
     <Content Include="Views\Module\WaitlistSignup.cshtml" />
     <Content Include="Views\Module\SubModal.cshtml" />
     <Content Include="Views\Module\UnSubModal.cshtml" />
+    <Content Include="Views\QR\Generation.cshtml" />
+    <Content Include="Views\QR\Index.cshtml" />
+    <Content Include="Views\QR\InvalidId.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

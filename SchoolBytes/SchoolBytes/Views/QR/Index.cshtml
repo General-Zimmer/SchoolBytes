@@ -1,0 +1,108 @@
+@model List<SchoolBytes.Models.Course>
+
+
+<h1>@ViewBag.Title</h1>
+<br />
+<!-- Course Dropdown Form -->
+
+<select name="selectedCourseId" id="courseDropdown" onchange="populateCourseModules()">
+    <option value="0">-- Select a course --</option>
+    @foreach (var course in Model)
+    {
+        <option value="@course.Id">@course.Name</option>
+    }
+</select>
+
+
+<!-- CourseModules Dropdown -->
+<label for="moduleDropdown">Select a module:</label>
+<select id="moduleDropdown" name="selectedModuleId">
+    <option value="0">-- Select a module --</option>
+</select>
+
+<noscript>
+    <button type="submit">Submit</button>
+</noscript>
+
+<!-- Tlf. form -->
+<br />
+<label for="inputField">Enter tlf. nr:</label>
+<input type="text" id="tlfNummer" name="tlfNummer" placeholder="Tlf. Nummer">
+
+<button onClick="SubmitRegistrationCheckIn()">Tjek Ind</button>
+
+
+<!-- JavaScript Code -->
+@using Newtonsoft;
+<script>
+    // Serialize course data to a JavaScript object
+    const courses = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+
+    // Function to register attendance on a registration
+    function SubmitRegistrationCheckIn() {
+        const tlfNummer = document.getElementById("tlfNummer").value;
+        if (tlfNummer.length !== 8 || isNaN(tlfNummer) || !Number.isInteger(parseFloat(tlfNummer))) {
+            alert("Tlf. nummer ikke gyldigt, skal være et tal og 8 cifre langt.");
+            return;
+        }
+        const moduleId = $('#moduleDropdown').find(":selected").val();
+        if (moduleId < 1 || moduleId === undefined || Number.isNaN(moduleId)) {
+            alert("Holdmodul ikke valgt.");
+            return;
+        }
+
+        $.ajax({
+            url: `/QR/Index/RegistrationCheckIn/${tlfNummer}/${moduleId}`,
+            method: 'POST',
+            success: function () {
+            alert("Fremmøde registreret");
+            },
+            error: function (xhr, status, error) {
+                if(xhr.status === 400) {
+                    alert("Holdmodul eller tlf. nummer mangler.");
+                }
+                if(xhr.status === 404) {
+                    alert("Tilmelding ikke fundet.");
+                }
+            }
+});
+    }
+
+
+    // Function to populate the modules dropdown based on selected course
+    function populateCourseModules() {
+        // Clear the existing modules
+        const courseDropdown = document.getElementById("courseDropdown");
+        const moduleDropdown = document.getElementById("moduleDropdown");
+        moduleDropdown.innerHTML = '<option value="">-- Select a module --</option>';
+
+        const selectedCourseId = parseInt($('#courseDropdown').find(":selected").val());
+
+        //modules for the selected course
+        let modules;
+
+        // Todays date
+        $.ajax({
+            url: `/course/${selectedCourseId}/modules`,
+            method: 'GET',
+            success: function (data) {
+                modules = JSON.parse(data); // Ensure the data is parsed if it's serialized JSON
+                if (modules && Object.keys(modules).length > 0) {
+                    Object.entries(modules).forEach(([key, value]) => {
+                        const option = document.createElement("option");
+                        option.value = key; // key from the dictionary
+                        option.textContent = value; // value from the dictionary
+                        moduleDropdown.appendChild(option);
+                    });
+                } else {
+                    // Handle the case where there are no modules for today
+                    moduleDropdown.innerHTML = '<option value="">No modules available</option>';
+                }
+            },
+            error: function () {
+                moduleDropdown.innerHTML = '<option value="">Error loading modules</option>';
+            }
+        });
+        }
+
+</script>
