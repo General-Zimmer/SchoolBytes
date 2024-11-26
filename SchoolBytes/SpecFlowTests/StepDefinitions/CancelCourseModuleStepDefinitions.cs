@@ -9,10 +9,10 @@ namespace SpecFlowTests.StepDefinitions
     public class CancelCourseModuleStepDefinitions
     {
         private static DBConnection _context = DBConnection.getDBContext();
-        private static Teacher teacher1 = new Teacher() { Name = "teacher1", Id = 55435 };
-        private static Course course1 = new Course() { Name = "Course1", Id = 666, Teacher = teacher1 };
-        private static CourseModule cm1 = new CourseModule() { Name = "cm1", Id = 888, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1), Capacity = 5, MaxCapacity = 5 };
-        private static CourseModule cm2 = new CourseModule() { Name = "cm2", Id = 123132232, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(-1), Capacity = 10, MaxCapacity = 10 };
+        private static Teacher teacher1 = new Teacher() { Name = "teacher1", Id = 456 };
+        private static Course course1 = new Course() { Name = "Course1", Id = 567, Teacher = teacher1 };
+        private static CourseModule cm1 = new CourseModule() { Name = "cm1", Id = 678, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(1), Capacity = 5, MaxCapacity = 5 };
+        private static CourseModule cm2 = new CourseModule() { Name = "cm2", Id = 789, Teacher = teacher1, Course = course1, StartTime = DateTime.Now.AddDays(-1), Capacity = 10, MaxCapacity = 10 };
 
         [BeforeFeature]
         public static void BeforeTilmeldingFeature(FeatureContext featureContext)
