@@ -41,33 +41,60 @@ namespace SpecFlowTests.StepDefinitions
         }
 
 
+        [AfterFeature]
+        public static void AfterTilmeldingFeature(FeatureContext featureContext)
+        {
+            _context.Remove(_context.courseModules.Find(cm1.Id));
+            _context.Remove(_context.courseModules.Find(cm2.Id));
+            _context.Remove(_context.courses.Find(course1.Id));
+            _context.Remove(_context.courses.Find(course2.Id));
+            _context.Remove(_context.teachers.Find(teacher1.Id));
+            _context.Remove(_context.participants.Find(bob.Id));
+
+            //TEST1
+            _context.Remove(_context.participants.FirstOrDefault(p => p.Name == "tester1"));
+
+            //TEST2
+            _context.Remove(_context.courseModules.FirstOrDefault(cm => cm.Name == "cm4"));
+
+            //TEST 3
+            _context.Remove(_context.participants.FirstOrDefault(p => p.Name == "Bobski"));
+            _context.Remove(_context.courseModules.FirstOrDefault(cm => cm.Name == "cm3"));
+
+            _context.SaveChanges();
+        }
+
+
+
 
         [Given(@"a course module exists with id (.*) that has a participant with phone number ""([^""]*)""")]
         public void GivenACourseModuleExistsWithIdThatHasAParticipantWithPhoneNumber(int moduleId, string phoneNumber)
         {
-
-            //COURSE
+            //TEST1
+            
             Course course = _context.courses.Find(123);
 
-            //participant
-            Participant bob1 = new Participant("Bob", phoneNumber);
+            
+            Participant bob1 = new Participant("tester1", phoneNumber);
             _context.Add(bob1);
 
             _context.SaveChanges();
 
-            //CM
+            
             CourseModule cm = course.CoursesModules.Find(m => m.Id == moduleId);
 
-            //PARTICIPANT REGISTRATION
+            
             Registration reg = new Registration(bob, cm);
 
             cm.Registrations.Add(reg);
+
 
         }
 
         [Given(@"a course module exists with id (.*) that does not have a participant with phone number ""([^""]*)""")]
         public void GivenACourseModuleExistsWithIdThatDoesNotHaveAParticipantWithPhoneNumber(int moduleId, string phoneNumber)
         {
+            
             Course course = _context.courses.Find(1234);
 
             CourseModule cm = course.CoursesModules.Find(m => m.Id == moduleId);
@@ -121,7 +148,7 @@ namespace SpecFlowTests.StepDefinitions
         public void GivenACourseModuleExistsWithIdWithAWaitingListParticipant(int moduleId)
         {
 
-
+            //Test 2
 
             
             CourseModule cm4 = new CourseModule
@@ -153,7 +180,7 @@ namespace SpecFlowTests.StepDefinitions
         public void GivenTheModuleHasAParticipantWithPhoneNumber(string phoneNumber)
         {
 
-            
+            //test 3
             Participant bob2 = new Participant("Bobski", phoneNumber);
             _context.participants.Add(bob2); 
 
