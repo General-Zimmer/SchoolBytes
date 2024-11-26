@@ -1,4 +1,5 @@
 ﻿using System.Net.Mail;
+using System.Web.WebPages;
 
 namespace SchoolBytes.Models
 {
@@ -50,7 +51,15 @@ namespace SchoolBytes.Models
 
         public void ClassCanceledNotification(CourseModule cm)
         {
-            
+            setCredentials("FUUUUUCK", "YOUUUUUU");
+            mail.Subject = "Class Canceled";
+            foreach (var registration in cm.Registrations)
+            {
+                var participant = registration.participant;
+                if (participant.Email == null && participant.Email.IsEmpty()) continue;
+                mail.Body = $"Dear {participant.Name},\n\nWe regret to inform you that the class {cm.Name} has been canceled.\n\nWe apologize for any inconvenience this may have caused.\n\nSincerely,\n\nThe SchoolBytes Team";
+                send("notifications.SchoolBytes.com", participant.Email); 
+            }
         }
     }
 }
