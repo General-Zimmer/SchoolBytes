@@ -38,31 +38,6 @@ namespace SchoolBytes.util
             }
         }
 
-        public static HttpStatusCodeResult DeleteParticipant(int participantId, int courseId)
-        {
-            Course course = self.courses.Find(courseId);
-            Participant participant = self.participants.Find(participantId);
-
-            if (course == null)
-            {
-                return new HttpNotFoundResult("Course not found.");
-            }
-            else if (participant == null)
-            {
-                return new HttpNotFoundResult("Participant not found.");
-            }
-            else if (!course.Participants.Contains(participant))
-            {
-                return new HttpNotFoundResult("Participant not associated with course.");
-            }
-            else
-            {
-                course.Participants.Remove(participant);
-                self.SaveChanges();
-                return new HttpStatusCodeResult(200); //success
-
-            }
-        }
         public static int SaveChangesV2(this DbContext FOK)
         {
             try

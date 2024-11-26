@@ -25,8 +25,8 @@ namespace SchoolBytes.Controllers
             {
                 ViewBag.SelectedCourseId = selectedCourseId;
             }
-            var fuuuuuck = dbConnection.courses.ToList();
-            return View(fuuuuuck);
+           
+            return View(dbConnection.courses.ToList());
         }
       
 
@@ -167,23 +167,7 @@ namespace SchoolBytes.Controllers
 
                  return RedirectToAction("CourseOverview");
             }
-
         }
-
-        // DELETE: api/course/{participantId}
-        [HttpPost]
-        public ActionResult DeleteParticipant(int participantId, int courseId)
-        {
-            //Returns null if succesful or HTTPstatus code result if it did not work.
-            HttpStatusCodeResult result = DatabaseUtils.DeleteParticipant(participantId, courseId);
-            if (result != null)
-            {
-                return result;
-            }
-
-            return Redirect("CourseOverview");
-        }
-
 
         private static DateTime GetDayForWeekday(DateTime currentDate, DayOfWeek dayOfWeek)
         {
