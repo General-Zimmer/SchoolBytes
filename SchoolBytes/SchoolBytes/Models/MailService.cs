@@ -42,9 +42,15 @@ namespace SchoolBytes.Models
             SmtpClient.Credentials = new System.Net.NetworkCredential(username, password);
         }
 
-        public void send(string from, string to) {
+        public void send(string from, string to)
+        {
             mail = new MailMessage(from, to);
             SmtpClient.Send(mail);
+        }
+
+        public void ClassCanceledNotification(CourseModule cm)
+        {
+            
         }
     }
 }
