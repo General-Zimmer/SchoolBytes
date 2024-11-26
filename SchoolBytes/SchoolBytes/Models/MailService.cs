@@ -1,5 +1,8 @@
-﻿using System.Net.Mail;
+﻿using Newtonsoft.Json.Linq;
+using System.IO;
+using System.Net.Mail;
 using System.Web.WebPages;
+using System.Web;
 
 namespace SchoolBytes.Models
 {
@@ -43,6 +46,16 @@ namespace SchoolBytes.Models
             SmtpClient.Credentials = new System.Net.NetworkCredential(username, password);
         }
 
+        public void setCredentialsfromConfig()
+        {
+            string filePath = HttpContext.Current.Server.MapPath("~/App_Data/EmailCredentials.json");
+            StreamReader credJson = new StreamReader(filePath);
+            string[] cred = ((string)JObject.Parse(credJson.ReadToEnd())["credentials"]).Split(" ".ToCharArray());
+            string username = cred[0];
+            string password = cred[1];
+            SmtpClient.Credentials = new System.Net.NetworkCredential(username, password);
+        }
+
         public void send(string from, string to)
         {
             mail = new MailMessage(from, to);
@@ -51,7 +64,7 @@ namespace SchoolBytes.Models
 
         public void ClassCanceledNotification(CourseModule cm)
         {
-            setCredentials("FUUUUUCK", "YOUUUUUU");
+            setCredentialsfromConfig();
             mail.Subject = "Class Canceled";
             foreach (var registration in cm.Registrations)
             {

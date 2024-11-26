@@ -1,27 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Web;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Remotion.Linq.Parsing.Structure.IntermediateModel;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
-using System.Web.UI.WebControls;
-using System.Data.Common;
-using System.Net;
-using System.Reflection;
 
 
 namespace SchoolBytes.Models
