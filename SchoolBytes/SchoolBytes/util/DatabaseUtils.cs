@@ -2,6 +2,7 @@
 using SchoolBytes.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace SchoolBytes.util
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "No registration found for the couse with the phonenumber.");
             }
         }
+
         public static int SaveChangesV2(this DbContext FOK)
         {
             try
