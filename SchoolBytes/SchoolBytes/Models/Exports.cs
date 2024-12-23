@@ -12,32 +12,45 @@ public class Exports
     }
     public WorkBook ConvertToXls()
     {
-        WorkBook workbook = WorkBook.Create(ExcelFileFormat.XLSX);
+        WorkBook workbook = WorkBook.Create(ExcelFileFormat.XLS);
+        WorkSheet sheet = workbook.CreateWorkSheet("Attendance Report");
 
-        WorkSheet sheet = workbook.CreateWorkSheet("Fravær statistik");
+        //ws headers
+        sheet["A1"].Value = "Participant Name";
+        sheet["B1"].Value = "Course Name";
+        sheet["C1"].Value = "Attendance (%)";
+        sheet["D1"].Value = "Overall Attendance (%)";
 
-        //th's
-        string[] headers = { "Participant Name", "Course Name", "Attendance (%)" };
-        for (int i = 0; i < headers.Length; i++)
+
+        var sortedData = ExportData.OrderBy(ed => ed.participant.Name).ToList();
+
+        int row = 2; // Start from the second row for data
+        foreach (var export in sortedData)
         {
-            sheet[$"A{1 + i}"].Value = headers[i];
-        }
+            string participantName = export.participant.Name;
 
-       //td stuff
-        int rowIndex = 2; // Start from the second row, assuming the first row is headers
-        foreach (var data in ExportData)
-        {
-            foreach (var courseAttendance in data.attendanceContainer.Attendances)
+            float overallAttendance = export.attendanceContainer.OverallAttendance * 100;
+
+            bool isFirstCourseForParticipant = true;
+
+            foreach (var courseAttendance in export.attendanceContainer.Attendances)
             {
-        
-                sheet[$"A{rowIndex}"].Value = data.participant.Name;
-                sheet[$"B{rowIndex}"].Value = courseAttendance.Course.Name;
-                //2 decimals on the number
-                sheet[$"C{rowIndex}"].Value = (courseAttendance.Attendance * 100).ToString("F2") + "%";
+                if (isFirstCourseForParticipant)
+                {
+                    sheet[$"A{row}"].Value = participantName;
+                    isFirstCourseForParticipant = false;
+                }
 
-                rowIndex++;
+                sheet[$"B{row}"].Value = courseAttendance.Course.Name;
+                sheet[$"C{row}"].Value = (courseAttendance.Attendance * 100).ToString("0.00");
+
+                row++;
             }
+
+            // Add the overall attendance row for the participant
+            sheet[$"D{row - 1}"].Value = overallAttendance.ToString("0.00");
         }
+
 
         return workbook;
     }
