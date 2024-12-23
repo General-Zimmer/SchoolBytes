@@ -1,3 +1,4 @@
+using Castle.Core.Internal;
 using IronXL;
 using SchoolBytes.Models;
 using SchoolBytes.util;
@@ -92,25 +93,33 @@ public class ExportsBuilder
         //if queury for participants is set
         if (participant != null)
         {
-            this.exports.ExportData.Add(produceInfo(participant));
+            this.exports.ExportData.Add(produceInfo(participant, this.className));
         }
         //if queury for participants is set
-        if (participants != null)
+        if (!participants.IsNullOrEmpty())
         {
             foreach (Participant p in participants)
             {
-                this.exports.ExportData.Add(produceInfo(p));
+                this.exports.ExportData.Add(produceInfo(p, this.className));
             }
+        }
+
+        if(participant == null && participants.IsNullOrEmpty())
+        {
+            var parts = db.participants.ToList();
+            if (parts.IsNullOrEmpty()) return null;
+
+            parts.ForEach(p => this.exports.ExportData.Add(produceInfo(p, this.className)));
         }
         return this.exports;
     }
-    private ExportData produceInfo(Participant p)
+    private ExportData produceInfo(Participant p, string className)
     {
         ExportData ed = new ExportData();
         ed.participant = p;
         //setting up container
         ed.attendanceContainer = new AttendanceContainer();
-        List<Course> courses;
+        List<Course> courses = new List<Course>();
         if (className == "All")
         {
             courses = DatabaseUtils.GetCoursesByParticipant(p);
@@ -135,7 +144,8 @@ internal class ExportData
 internal class AttendanceContainer
 {
     public float OverallAttendance { get; set; }
-    public List<CourseAttendance> Attendances { get; set; }
+    public List<CourseAttendance> Attendances { get; set; } = new List<CourseAttendance> ();
+
     public void CalcOverallAttendance(Participant p)
     {
         Attendances.ForEach(attendance => attendance.CalcCourseAttendance(p));
