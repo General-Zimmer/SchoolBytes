@@ -135,3 +135,4 @@ $RECYCLE.BIN/
 
 _NCrunch*
 SchoolBytes/SchoolBytes/App_Data/ConnectionCredentials.json
+/SchoolBytes/SchoolBytes/App_Data/EmailCredentials.json
