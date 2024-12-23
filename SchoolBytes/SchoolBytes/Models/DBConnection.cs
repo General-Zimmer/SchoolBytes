@@ -17,6 +17,7 @@ using System.Web.UI.WebControls;
 using System.Data.Common;
 using System.Net;
 using System.Reflection;
+using Gherkin.CucumberMessages.Types;
 
 
 namespace SchoolBytes.Models
@@ -110,6 +111,31 @@ namespace SchoolBytes.Models
         {
            return getDBContext().courseModules.Sum(cm => cm.Registrations.Count(r => r.participant == participant));
         }
-      
+
+        public void CancelModule(CourseModule courseModule) 
+        {
+            if (courseModule.StartTime > DateTime.Now)  // cannot cancel a courseModule that's from the past!
+            {
+                courseModule.IsCancelled = true;
+
+                // if there's a related Food Module, then that gets cancelled too
+                if (courseModule.FoodModule != null)
+                {
+                    courseModule.FoodModule.IsCancelled = true;
+                    self.Update(courseModule.FoodModule);
+                }
+
+                // if there are any participants in the course
+                if (courseModule.Capacity > 0)
+                {
+                    // notify all participants
+                    MailService service = new MailService("host");
+                    service.ClassCanceledNotification(courseModule);
+                }
+
+                self.Update(courseModule);
+                self.SaveChanges();
+            }
+        }
     }
 }

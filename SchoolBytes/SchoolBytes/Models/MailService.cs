@@ -1,4 +1,6 @@
-﻿using System.Net.Mail;
+﻿using System;
+using System.Diagnostics;
+using System.Net.Mail;
 
 namespace SchoolBytes.Models
 {
@@ -45,6 +47,21 @@ namespace SchoolBytes.Models
         public void send(string from, string to) {
             mail = new MailMessage(from, to);
             SmtpClient.Send(mail);
+        }
+
+        // dummy
+        public void ClassCanceledNotification(CourseModule cm)
+        {
+
+            // send emails til alle cm.registrations.participants med en predefineret email
+            // Noget i stil med "Hej participant.name, hold undervisningen cm.name for cm.course.name er desværre 
+            //  aflyst.   /Kompetencehuset
+
+            // the following logic is FOR TEST PURPOSES ONLY!!!
+            foreach (Registration reg in cm.Registrations) 
+            {
+                Debug.WriteLine("Email notification sent to participant " + reg.participant.Name);
+            }
         }
     }
 }
