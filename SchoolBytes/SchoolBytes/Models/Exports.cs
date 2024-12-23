@@ -12,7 +12,33 @@ public class Exports
     }
     public WorkBook ConvertToXls()
     {
-        WorkBook workbook = new WorkBook();
+        WorkBook workbook = WorkBook.Create(ExcelFileFormat.XLSX);
+
+        WorkSheet sheet = workbook.CreateWorkSheet("Fravær statistik");
+
+        //th's
+        string[] headers = { "Participant Name", "Course Name", "Attendance (%)" };
+        for (int i = 0; i < headers.Length; i++)
+        {
+            sheet[$"A{1 + i}"].Value = headers[i];
+        }
+
+       //td stuff
+        int rowIndex = 2; // Start from the second row, assuming the first row is headers
+        foreach (var data in ExportData)
+        {
+            foreach (var courseAttendance in data.attendanceContainer.Attendances)
+            {
+        
+                sheet[$"A{rowIndex}"].Value = data.participant.Name;
+                sheet[$"B{rowIndex}"].Value = courseAttendance.Course.Name;
+                //2 decimals on the number
+                sheet[$"C{rowIndex}"].Value = (courseAttendance.Attendance * 100).ToString("F2") + "%";
+
+                rowIndex++;
+            }
+        }
+
         return workbook;
     }
 }
