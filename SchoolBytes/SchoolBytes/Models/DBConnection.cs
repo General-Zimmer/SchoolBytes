@@ -60,6 +60,12 @@ namespace SchoolBytes.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Ignore<Exports>();
+            modelBuilder.Ignore<ExportData>();
+            modelBuilder.Ignore<AttendanceContainer>();
+            modelBuilder.Ignore<CourseAttendance>();
+
+
             modelBuilder.Entity<CourseModule>()
                    .HasMany(cm => cm.Registrations)
                    .WithOne(r => r.CourseModule)
@@ -83,10 +89,9 @@ namespace SchoolBytes.Models
 
         private static string getCredentialsPath()
         {
-            //string filePath = @"C:\Users\rgmar\Source\Repos\General-Zimmer\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
-            string filePath = HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
+            string filePath = @"C:\Users\andre\Desktop\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
+           //string filePath = HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
             StreamReader credJson = new StreamReader(filePath);
-            //HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
             return (string)JObject.Parse(credJson.ReadToEnd())["credentials"];
         }
 

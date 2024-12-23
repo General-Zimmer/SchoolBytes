@@ -38,6 +38,17 @@ namespace SchoolBytes.util
             }
         }
 
+        public static List<Course> GetCoursesByParticipant(Participant p)
+        {
+
+            return self.courses.Where(c => c.CoursesModules.Any(cm => cm.Registrations.Any(r => r.participant == p))).ToList();
+        }
+
+        internal static List<Course> GetCourseByName(string className)
+        {
+            return self.courses.Where(c => c.Name == className).ToList();
+        }
+
         public static int SaveChangesV2(this DbContext FOK)
         {
             try
