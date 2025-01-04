@@ -65,13 +65,17 @@ namespace SchoolBytes.Models
             modelBuilder.Ignore<AttendanceContainer>();
             modelBuilder.Ignore<CourseAttendance>();
 
+            // Configure cascading delete for Course -> CourseModule
+            modelBuilder.Entity<Course>()
+                .HasMany(c => c.CoursesModules)
+                .WithOne(cm => cm.Course)
+                .OnDelete(DeleteBehavior.Cascade);
 
+            // Configure cascading delete for CourseModule -> Registration
             modelBuilder.Entity<CourseModule>()
-                   .HasMany(cm => cm.Registrations)
-                   .WithOne(r => r.CourseModule)
-                   .HasPrincipalKey(cm => cm.Id) // Specifies the primary key on CourseModule
-                   .HasForeignKey(r => r.Id); // Define the foreign key property in Registration
-
+                .HasMany(cm => cm.Registrations)
+                .WithOne(r => r.CourseModule)
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
 
@@ -89,7 +93,7 @@ namespace SchoolBytes.Models
 
         private static string getCredentialsPath()
         {
-            string filePath = @"C:\Users\andre\Desktop\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
+            string filePath = @"C:\Users\Duff\Desktop\SchoolBytes\SchoolBytes\SchoolBytes\App_Data\ConnectionCredentials.json";
            //string filePath = HttpContext.Current.Server.MapPath("~/App_Data/ConnectionCredentials.json");
             StreamReader credJson = new StreamReader(filePath);
             return (string)JObject.Parse(credJson.ReadToEnd())["credentials"];
@@ -105,6 +109,7 @@ namespace SchoolBytes.Models
 
             return registrations<=4;
         }
+
 
         public static bool IsParticipantFormatValid(Participant participant)
         {
@@ -136,9 +141,6 @@ namespace SchoolBytes.Models
             }
 
 
-            //Tester hvis telefon nummeret er brugt allerede, ved en participant med andet navn
-
-            if (getDBContext().participants.ToList().Exists(p => p.PhoneNumber.Equals(participant.PhoneNumber) && !p.Name.Equals(participant.Name))) return false;
 
 
             return true;
@@ -189,6 +191,12 @@ namespace SchoolBytes.Models
             }
         }
 
+        public static bool DoesParticipantExist(Participant p)
+        {
+            return getDBContext().participants.Any(part => part.PhoneNumber == p.PhoneNumber);
+            
+        }
+
         public static int Subscribe(int courseId, int moduleId, Participant participant)
         {
             int resultCode = -1;
@@ -201,6 +209,10 @@ namespace SchoolBytes.Models
             {
                 if (DBConnection.IsEligibleToSubscribe(participant) && DBConnection.IsParticipantFormatValid(participant))
                 {
+                    if(DoesParticipantExist(participant))
+                    {
+                        participant =  getDBContext().participants.First(p => p.PhoneNumber == participant.PhoneNumber);
+                    }
                     Registration registration = new Registration(participant, courseModule);
                     courseModule.Capacity += 1;
                     getDBContext().UpdateSub(registration, courseModule);
@@ -250,6 +262,22 @@ namespace SchoolBytes.Models
                 self.Update(courseModule);
                 self.SaveChanges();
             }
+        }
+
+
+        internal void CascadingCourseRemove(Course course)
+        {
+            foreach (var cm in course.CoursesModules)
+            {
+                if (cm.FoodModule != null)
+                {
+                    self.Remove(cm.FoodModule);  // Remove instead of just marking as deleted
+                }
+                self.RemoveRange(cm.Registrations);
+            }
+            self.Remove(course);
+            self.SaveChanges();
+
         }
     }
 }

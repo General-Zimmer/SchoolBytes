@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SchoolBytes.Migrations
 {
-    public partial class Version3 : Migration
+    public partial class CascDeletes : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -58,7 +58,8 @@ namespace SchoolBytes.Migrations
                     Name = table.Column<string>(nullable: true),
                     TeacherId = table.Column<int>(nullable: true),
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    IsCancelled = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -92,7 +93,8 @@ namespace SchoolBytes.Migrations
                     Capacity = table.Column<int>(nullable: false),
                     CourseId = table.Column<int>(nullable: true),
                     Location = table.Column<string>(nullable: true),
-                    MaxCapacity = table.Column<int>(nullable: false)
+                    MaxCapacity = table.Column<int>(nullable: false),
+                    IsCancelled = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -102,7 +104,7 @@ namespace SchoolBytes.Migrations
                         column: x => x.CourseId,
                         principalTable: "courses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_courseModules_foodModules_FoodModuleId",
                         column: x => x.FoodModuleId,
@@ -125,9 +127,8 @@ namespace SchoolBytes.Migrations
                     PhoneNumber = table.Column<string>(nullable: true),
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Email = table.Column<string>(nullable: true),
                     CourseId = table.Column<int>(nullable: true),
-                    CourseModuleId = table.Column<int>(nullable: true),
-                    CourseModuleId1 = table.Column<int>(nullable: true),
                     FoodModuleId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -140,21 +141,63 @@ namespace SchoolBytes.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_participants_courseModules_CourseModuleId",
+                        name: "FK_participants_foodModules_FoodModuleId",
+                        column: x => x.FoodModuleId,
+                        principalTable: "foodModules",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Registration",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Attendance = table.Column<bool>(nullable: false),
+                    participantId = table.Column<int>(nullable: true),
+                    CourseModuleId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Registration", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Registration_courseModules_CourseModuleId",
+                        column: x => x.CourseModuleId,
+                        principalTable: "courseModules",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Registration_participants_participantId",
+                        column: x => x.participantId,
+                        principalTable: "participants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WaitRegistration",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    participantId = table.Column<int>(nullable: true),
+                    CourseModuleId = table.Column<int>(nullable: true),
+                    Timestamp = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WaitRegistration", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WaitRegistration_courseModules_CourseModuleId",
                         column: x => x.CourseModuleId,
                         principalTable: "courseModules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_participants_courseModules_CourseModuleId1",
-                        column: x => x.CourseModuleId1,
-                        principalTable: "courseModules",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_participants_foodModules_FoodModuleId",
-                        column: x => x.FoodModuleId,
-                        principalTable: "foodModules",
+                        name: "FK_WaitRegistration_participants_participantId",
+                        column: x => x.participantId,
+                        principalTable: "participants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -195,28 +238,44 @@ namespace SchoolBytes.Migrations
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_participants_CourseModuleId",
-                table: "participants",
-                column: "CourseModuleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_participants_CourseModuleId1",
-                table: "participants",
-                column: "CourseModuleId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_participants_FoodModuleId",
                 table: "participants",
                 column: "FoodModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Registration_CourseModuleId",
+                table: "Registration",
+                column: "CourseModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Registration_participantId",
+                table: "Registration",
+                column: "participantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WaitRegistration_CourseModuleId",
+                table: "WaitRegistration",
+                column: "CourseModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WaitRegistration_participantId",
+                table: "WaitRegistration",
+                column: "participantId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "participants");
+                name: "Registration");
+
+            migrationBuilder.DropTable(
+                name: "WaitRegistration");
 
             migrationBuilder.DropTable(
                 name: "courseModules");
+
+            migrationBuilder.DropTable(
+                name: "participants");
 
             migrationBuilder.DropTable(
                 name: "foodModules");

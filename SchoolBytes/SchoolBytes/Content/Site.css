@@ -29,9 +29,17 @@ textarea {
 .page-wrapper {
     display: flex;
     max-width: 1350px; /* Adjust as needed */
+    flex-direction:column;
     margin: 0 auto;
+    min-height: 100vh;
     align-items: flex-start;
 }
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+
 
 /* Main content area (navbar, main content, and footer) */
 .main-content {
@@ -49,9 +57,18 @@ footer {
     color: white;
     padding: 10px 0;
     background-color: #383f47; /* Optional */
-    max-height: 200px
-    /*margin-top: 20px;*/
+    height: 200px;
+    bottom: 0;
+    width: 69%;
 }
+
+body::after {
+    content: '';
+    display: block;
+    height: 200px;
+    /* Set same as footer's height */
+}
+
 
 /* Responsive design for smaller screens */
 @media (max-width: 768px) {

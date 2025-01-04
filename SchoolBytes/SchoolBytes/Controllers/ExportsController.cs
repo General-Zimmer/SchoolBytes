@@ -1,24 +1,46 @@
 using IronXL;
+using Microsoft.Ajax.Utilities;
 using SchoolBytes.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using System.Windows.Documents;
 namespace SchoolBytes.Controllers
 {
     public class ExportsController : Controller
     {
 
-        [HttpGet]
-        [Route("report")]
-        public ActionResult DownloadReport(Participant selectedParticipant = null, Course selectedCourse = null)
+        private static DBConnection _connection = DBConnection.getDBContext();
+
+        [Route("index")]
+        public ActionResult Index()
         {
+            ViewBag.Courses = _connection.courses.ToList();
+            ViewBag.Participants = _connection.participants.ToList();
+
+
+            return View();
+        }
+
+        [HttpPost]
+        [Route("report/download")]
+        public ActionResult DownloadReport(FormCollection request)
+        {
+            var selectedCourseId = Int32.Parse(request[1]);
+            var selectedParticipantId = Int32.Parse(request[0]);
+
+            var selectedCourse = _connection.courses.Find(selectedParticipantId);
+            var selectedParticipant = _connection.participants.Find(selectedParticipantId);
+
             ExportsBuilder builder = new ExportsBuilder();
-            if (selectedParticipant.Id != 0)
+            if (selectedParticipant != null)
             {
                 builder.ForParticipant(selectedParticipant);
             }
-            if (selectedCourse.Id != 0)
+            if (selectedCourse != null)
             {
                 builder.ForClass(selectedCourse.Name);
             } else

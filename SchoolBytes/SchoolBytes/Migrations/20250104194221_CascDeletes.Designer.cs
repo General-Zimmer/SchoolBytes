@@ -9,8 +9,8 @@ using SchoolBytes.Models;
 namespace SchoolBytes.Migrations
 {
     [DbContext(typeof(DBConnection))]
-    [Migration("20241118100240_QRRegistration")]
-    partial class QRRegistration
+    [Migration("20250104194221_CascDeletes")]
+    partial class CascDeletes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,7 +26,7 @@ namespace SchoolBytes.Migrations
 
                     b.Property<int?>("CourseId");
 
-                    b.Property<int?>("CourseModuleId");
+                    b.Property<string>("Email");
 
                     b.Property<int?>("FoodModuleId");
 
@@ -38,8 +38,6 @@ namespace SchoolBytes.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("CourseModuleId");
-
                     b.HasIndex("FoodModuleId");
 
                     b.ToTable("participants");
@@ -47,13 +45,18 @@ namespace SchoolBytes.Migrations
 
             modelBuilder.Entity("Registration", b =>
                 {
-                    b.Property<int>("Id");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<bool>("Attendance");
+
+                    b.Property<int?>("CourseModuleId");
 
                     b.Property<int?>("participantId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CourseModuleId");
 
                     b.HasIndex("participantId");
 
@@ -99,6 +102,8 @@ namespace SchoolBytes.Migrations
 
                     b.Property<int?>("FoodModuleId");
 
+                    b.Property<bool>("IsCancelled");
+
                     b.Property<string>("Location");
 
                     b.Property<int>("MaxCapacity");
@@ -133,6 +138,8 @@ namespace SchoolBytes.Migrations
 
                     b.Property<DateTime>("EndTime");
 
+                    b.Property<bool>("IsCancelled");
+
                     b.Property<string>("Location");
 
                     b.Property<string>("Name");
@@ -148,6 +155,26 @@ namespace SchoolBytes.Migrations
                     b.HasIndex("TeacherId");
 
                     b.ToTable("foodModules");
+                });
+
+            modelBuilder.Entity("SchoolBytes.Models.WaitRegistration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("CourseModuleId");
+
+                    b.Property<DateTime>("Timestamp");
+
+                    b.Property<int?>("participantId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseModuleId");
+
+                    b.HasIndex("participantId");
+
+                    b.ToTable("WaitRegistration");
                 });
 
             modelBuilder.Entity("Teacher", b =>
@@ -168,10 +195,6 @@ namespace SchoolBytes.Migrations
                         .WithMany("Participants")
                         .HasForeignKey("CourseId");
 
-                    b.HasOne("SchoolBytes.Models.CourseModule")
-                        .WithMany("Waitlist")
-                        .HasForeignKey("CourseModuleId");
-
                     b.HasOne("SchoolBytes.Models.FoodModule")
                         .WithMany("Participants")
                         .HasForeignKey("FoodModuleId");
@@ -181,7 +204,7 @@ namespace SchoolBytes.Migrations
                 {
                     b.HasOne("SchoolBytes.Models.CourseModule", "CourseModule")
                         .WithMany("Registrations")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("CourseModuleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Participant", "participant")
@@ -200,7 +223,8 @@ namespace SchoolBytes.Migrations
                 {
                     b.HasOne("SchoolBytes.Models.Course", "Course")
                         .WithMany("CoursesModules")
-                        .HasForeignKey("CourseId");
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("SchoolBytes.Models.FoodModule", "FoodModule")
                         .WithMany()
@@ -220,6 +244,17 @@ namespace SchoolBytes.Migrations
                     b.HasOne("Teacher", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId");
+                });
+
+            modelBuilder.Entity("SchoolBytes.Models.WaitRegistration", b =>
+                {
+                    b.HasOne("SchoolBytes.Models.CourseModule", "CourseModule")
+                        .WithMany("Waitlist")
+                        .HasForeignKey("CourseModuleId");
+
+                    b.HasOne("Participant", "participant")
+                        .WithMany()
+                        .HasForeignKey("participantId");
                 });
 #pragma warning restore 612, 618
         }

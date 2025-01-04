@@ -78,8 +78,9 @@ namespace SchoolBytes.Controllers
             {
                 if (activeDays.Contains(start.DayOfWeek))
                 {
-                    //TODO: Hardcoded value should really come from form?
-                    var endTime = start.AddHours(4);
+                    //gets the start of the current module's day then adds the hours corresponding to the ending time for the module. This
+                    //time comes from the initial 'end' field and is the time chosen from this field. This value is the end value for every module.
+                    var endTime = start.Date.AddHours(courseDTO.EndDate.Hour);           
                     CourseModule cm = new CourseModule()
                     {
                         Name = $"Lektion {course.CoursesModules.Count + 1}",
@@ -167,6 +168,15 @@ namespace SchoolBytes.Controllers
             }        
             else
             {
+                //neccesarry evil because for some reason foodmodule has a ref to course instead of cm. Ideally would change this instead
+                //but it's more time consuming
+                foreach(var cm in course.CoursesModules)
+                {
+                    if(cm.FoodModule != null)
+                    {
+                        dbConnection.Entry(cm.FoodModule).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
+                    }
+                }
                  dbConnection.Remove(course);
                  dbConnection.SaveChanges();
 

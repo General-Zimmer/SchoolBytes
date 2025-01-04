@@ -259,37 +259,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\20241116152314_Version-3.cs" />
-    <Compile Include="Migrations\20241116152314_Version-3.Designer.cs">
-      <DependentUpon>20241116152314_Version-3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20241117172125_parti-Regi-Fix.cs" />
-    <Compile Include="Migrations\20241117172125_parti-Regi-Fix.Designer.cs">
-      <DependentUpon>20241117172125_parti-Regi-Fix.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20241118101858_Version-5.cs" />
-    <Compile Include="Migrations\20241118101858_Version-5.Designer.cs">
-      <DependentUpon>20241118101858_Version-5.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20241118112052_version-6.cs" />
-    <Compile Include="Migrations\20241118112052_version-6.Designer.cs">
-      <DependentUpon>20241118112052_version-6.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20241118115434_version-7.cs" />
-    <Compile Include="Migrations\20241118115434_version-7.Designer.cs">
-      <DependentUpon>20241118115434_version-7.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20241118100240_QRRegistration.cs" />
-    <Compile Include="Migrations\20241118100240_QRRegistration.Designer.cs">
-      <DependentUpon>20241118100240_QRRegistration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20241126083651_Version-9.cs" />
-    <Compile Include="Migrations\20241126083651_Version-9.Designer.cs">
-      <DependentUpon>20241126083651_Version-9.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20241126120720_Version-10-EmailParticipant.cs" />
-    <Compile Include="Migrations\20241126120720_Version-10-EmailParticipant.Designer.cs">
-      <DependentUpon>20241126120720_Version-10-EmailParticipant.cs</DependentUpon>
+    <Compile Include="Migrations\20250104194221_CascDeletes.cs" />
+    <Compile Include="Migrations\20250104194221_CascDeletes.Designer.cs">
+      <DependentUpon>20250104194221_CascDeletes.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\DBConnectionModelSnapshot.cs" />
     <Compile Include="Models\Course.cs" />
@@ -376,6 +348,7 @@
     <Content Include="Views\QR\Generation.cshtml" />
     <Content Include="Views\QR\Index.cshtml" />
     <Content Include="Views\QR\InvalidId.cshtml" />
+    <Content Include="Views\Exports\Index.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

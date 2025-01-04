@@ -43,13 +43,18 @@ namespace SchoolBytes.Migrations
 
             modelBuilder.Entity("Registration", b =>
                 {
-                    b.Property<int>("Id");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<bool>("Attendance");
+
+                    b.Property<int?>("CourseModuleId");
 
                     b.Property<int?>("participantId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CourseModuleId");
 
                     b.HasIndex("participantId");
 
@@ -197,7 +202,7 @@ namespace SchoolBytes.Migrations
                 {
                     b.HasOne("SchoolBytes.Models.CourseModule", "CourseModule")
                         .WithMany("Registrations")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("CourseModuleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Participant", "participant")
@@ -216,7 +221,8 @@ namespace SchoolBytes.Migrations
                 {
                     b.HasOne("SchoolBytes.Models.Course", "Course")
                         .WithMany("CoursesModules")
-                        .HasForeignKey("CourseId");
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("SchoolBytes.Models.FoodModule", "FoodModule")
                         .WithMany()

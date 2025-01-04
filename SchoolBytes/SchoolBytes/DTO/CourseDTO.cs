@@ -16,7 +16,7 @@ namespace SchoolBytes.DTO
         public DateTime EndDate { get; set; }
         public int MaxCapacity { get; set; }
         public int Id { get; set; }
-        
+
         public bool Monday { get; set; }
         public bool Tuesday { get; set; }
         public bool Wednesday { get; set; }
@@ -27,9 +27,9 @@ namespace SchoolBytes.DTO
 
         public CourseDTO()
         {
-        
+
         }
-    
+
         public CourseDTO(string name, string description, DateTime startDate, DateTime endDate, int maxCapacity, int id)
         {
             Name = name;
@@ -39,7 +39,7 @@ namespace SchoolBytes.DTO
             MaxCapacity = maxCapacity;
             Id = id;
         }
-    
+
         // +Teacher
         public CourseDTO(string name, string description, Teacher teacher, DateTime startDate, DateTime endDate, int maxCapacity, int id)
         {

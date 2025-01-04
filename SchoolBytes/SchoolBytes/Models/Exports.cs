@@ -18,9 +18,10 @@ public class Exports
 
         //ws headers
         sheet["A1"].Value = "Participant Name";
-        sheet["B1"].Value = "Course Name";
-        sheet["C1"].Value = "Attendance (%)";
-        sheet["D1"].Value = "Overall Attendance (%)";
+        sheet["B1"].Value = "Phone Number";
+        sheet["C1"].Value = "Course Name";
+        sheet["D1"].Value = "Attendance (%)";
+        sheet["E1"].Value = "Overall Attendance (%)";
 
 
         var sortedData = ExportData.OrderBy(ed => ed.participant.Name).ToList();
@@ -39,17 +40,18 @@ public class Exports
                 if (isFirstCourseForParticipant)
                 {
                     sheet[$"A{row}"].Value = participantName;
+                    sheet[$"B{row}"].Value = export.participant.PhoneNumber;
                     isFirstCourseForParticipant = false;
                 }
 
-                sheet[$"B{row}"].Value = courseAttendance.Course.Name;
-                sheet[$"C{row}"].Value = (courseAttendance.Attendance * 100).ToString("0.00");
+                sheet[$"C{row}"].Value = courseAttendance.Course.Name;
+                sheet[$"D{row}"].Value = (courseAttendance.Attendance * 100).ToString("0.00");
 
                 row++;
             }
 
             // Add the overall attendance row for the participant
-            sheet[$"D{row - 1}"].Value = overallAttendance.ToString("0.00");
+            sheet[$"E{row - 1}"].Value = overallAttendance.ToString("0.00");
         }
 
 
