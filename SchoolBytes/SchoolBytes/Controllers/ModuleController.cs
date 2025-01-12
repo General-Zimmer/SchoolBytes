@@ -172,9 +172,9 @@ namespace SchoolBytes.Controllers
             {
                 case 1: return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Du har allerede tilmeldt dig maksimum antal hold.");
                 case 2: return RedirectToAction(courseId + "/" + courseModule.Id + "/signup/waitlist", "course");
-                case 3: return TheView(null);
+                case 3: return Redirect(Request.UrlReferrer.ToString());
                 case 4: return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Valgte kursusgang er overstået.");
-                default: return TheView(null);
+                default: return Redirect(Request.UrlReferrer.ToString());
             }
         }
 
